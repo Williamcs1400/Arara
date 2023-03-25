@@ -5,7 +5,7 @@ const knownCommands = [
     '#FIMPROGRAMA;',
 ];
 
-const knownOperators = [];
+// const knownOperators = [];
 
 export function isCommand(word){
     return knownCommands.includes(word);

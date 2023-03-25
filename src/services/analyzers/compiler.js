@@ -1,5 +1,3 @@
-import React, {useState} from 'react';
-
 import {lexicalAnalyze} from './lexing/lexicalAnalyzer.js';
 import {semanticAnalyzer} from './semantic/semanticAnalyzer.js';
 
@@ -39,8 +37,4 @@ export function Compiler() {
     } catch (error) {
         return {sucess: false, message: '' + error};
     }
-}
-
-function callLexical(){
-
 }

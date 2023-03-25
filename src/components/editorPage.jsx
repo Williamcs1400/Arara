@@ -23,7 +23,7 @@ export default function EditorPage() {
 
     useEffect(() => {
         onChange(defaultCode);
-    }, [defaultCode]);
+    }, []);
 
     window.addEventListener("resize", updateSize);
 
