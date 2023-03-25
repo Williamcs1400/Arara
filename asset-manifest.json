@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Arara/static/css/main.45b0debc.css",
+    "main.js": "/Arara/static/js/main.cd557fa5.js",
+    "static/media/logo512.png": "/Arara/static/media/logo512.ab457196c40c9f03f2fd.png",
+    "static/media/playButton.png": "/Arara/static/media/playButton.566f38c25bc502d1e59a.png",
+    "index.html": "/Arara/index.html",
+    "main.45b0debc.css.map": "/Arara/static/css/main.45b0debc.css.map",
+    "main.cd557fa5.js.map": "/Arara/static/js/main.cd557fa5.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.45b0debc.css",
+    "static/js/main.cd557fa5.js"
+  ]
+}
