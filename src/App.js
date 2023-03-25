@@ -1,18 +1,29 @@
 import React from 'react';
-import {Container} from "@mui/material";
-import EditorPage from "./pages/editorPage";
-import Header from "./pages/header";
+import EditorPage from "./components/editorPage";
+import Header from "./components/header";
+import Sidebar from "./components/sidebar";
 
 function App() {
-  return (
-      <div style={{display: 'flex', justifyItems: 'start', alignItems: 'start'}}>
-        <Header/>
+    return (
+        <div style={{
+            display: 'flex',
+            flex: 1,
+            justifyItems: 'start',
+            alignItems: 'start',
+            flexDirection: 'column',
+            position: 'absolute'
+        }}>
+            <div>
+                <Sidebar/>
+            </div>
 
-        {/*<EditorPage/>*/}
+            <div style={{marginLeft: 64}}>
+                <Header/>
+                <EditorPage/>
+            </div>
 
-      </div>
-
-  );
+        </div>
+    );
 }
 
 export default App;
