@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import SideNav, {NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
 import '../styles/sidebar.css';
 import playButton from '../assets/playButton.png';
-import {Compiler} from '../services/analyzers/compiler.js';
+import {Compiler} from '../services/analyzers/compiler.js'
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -11,11 +11,13 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Sidebar() {
+export default function Sidebar({openTerminal}) {
     const [open, setOpen] = React.useState(false);
     const [result, setResult] = React.useState({});
     const [message, setMessage] = React.useState('');
     const [typeOfAlert, setTypeOfAlert] = React.useState('');
+
+    const [openInOut, setOpenInOut] = React.useState(true);
 
     useEffect(() => {
         if(result.sucess === undefined && result.message === undefined)
@@ -29,6 +31,7 @@ export default function Sidebar() {
 
     const handleClick = () => {
         setOpen(true);
+        setOpenInOut(!openInOut);
     };
 
     const handleClose = (event, reason) => {
@@ -44,6 +47,7 @@ export default function Sidebar() {
                 onSelect={(selected) => {
                     if (selected === 'home') {
                         setResult(Compiler());
+                        openTerminal();
                     }
                 }}
             >

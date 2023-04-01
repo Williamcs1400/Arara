@@ -1,0 +1,26 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.textOut {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #008F11;
+    display: flex;
+    white-space: pre-wrap;
+}
+
+.textIn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    width: 100%;
+    color: #F4F6F7;
+    background: #2F2F2F;
+    border: none;
+}
+
+.textIn:focus {
+    outline: none;
+}

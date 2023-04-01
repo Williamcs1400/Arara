@@ -1,31 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {setCodeFromEditor} from '../services/analyzers/compiler.js';
 import {defaultCode} from '../services/utils/definitions.js';
+import {c_cppHighlightRules} from '../services/utils/codeEditorCustomHighlightRules.js';
 
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
 
-export default function EditorPage() {
+// import 'ace/lib/oop';
+// import 'ace/mode/text';
+// import 'ace/mode/text_highlight_rules';
+
+export default function EditorPage({height, width}) {
     const [value, setValue] = React.useState(defaultCode);
-    const [height, setHeight] = React.useState(document.querySelector("#height"));
-    const [width, setWidth] = React.useState(document.querySelector("#width"));
-
-    function updateSize() {
-        setHeight(window.innerHeight);
-        setWidth(window.innerWidth);
-    }
-
-    useEffect(() => {
-        updateSize();
-    }, []);
 
     useEffect(() => {
         onChange(defaultCode);
     }, []);
-
-    window.addEventListener("resize", updateSize);
 
     function onChange(newValue) {
         setCodeFromEditor(newValue);
