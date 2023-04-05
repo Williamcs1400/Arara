@@ -8,7 +8,7 @@ body {
     font-weight: bold;
     color: #008F11;
     display: flex;
-    white-space: pre-wrap;
+    white-space: pre-line;
 }
 
 .textIn {

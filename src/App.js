@@ -6,6 +6,7 @@ import InOut from "./components/in_out";
 
 function App() {
     const [openTerminal, setOpenTerminal] = React.useState(false);
+    const [executedCode, setExecutedCode] = React.useState([]);
     const [height, setHeight] = React.useState(document.querySelector("#height"));
     const [width, setWidth] = React.useState(document.querySelector("#width"));
 
@@ -22,13 +23,16 @@ function App() {
 
     window.addEventListener("resize", updateSize);
 
-    function handleTerminal(){
-        if(openTerminal === false){
+    function handleTerminal(message){
+        if(message !== undefined){
+            setExecutedCode(message);
             setTerminalHeight((height / 3) + 150)
+            setOpenTerminal(true);
         }else {
+            setExecutedCode(message);
             setTerminalHeight(0)
+            setOpenTerminal(false);
         }
-        setOpenTerminal(!openTerminal);
     }
 
     return (
@@ -47,7 +51,7 @@ function App() {
             <div style={{marginLeft: 64}}>
                 <Header />
                 <EditorPage height={height - terminalHeight} width={width}/>
-                {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={handleTerminal}/> : null}
+                {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={handleTerminal} executableCode={executedCode}/> : null}
             </div>
 
         </div>

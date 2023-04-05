@@ -17,21 +17,22 @@ export default function Sidebar({openTerminal}) {
     const [message, setMessage] = React.useState('');
     const [typeOfAlert, setTypeOfAlert] = React.useState('');
 
-    const [openInOut, setOpenInOut] = React.useState(true);
-
     useEffect(() => {
         if(result.sucess === undefined && result.message === undefined)
             return;
 
         result.sucess === true ? setTypeOfAlert('success') : setTypeOfAlert('error');
         setMessage(result.message);
+
+        if(result.sucess === true)
+            openTerminal(result.executableCode);
+
         handleClick();
     }, [result]);
 
 
     const handleClick = () => {
         setOpen(true);
-        setOpenInOut(!openInOut);
     };
 
     const handleClose = (event, reason) => {
@@ -47,7 +48,7 @@ export default function Sidebar({openTerminal}) {
                 onSelect={(selected) => {
                     if (selected === 'home') {
                         setResult(Compiler());
-                        openTerminal();
+
                     }
                 }}
             >
