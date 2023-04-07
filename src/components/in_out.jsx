@@ -9,6 +9,7 @@ import {ExecutableActionType} from "../services/analyzers/definitions/actionType
 export default function InOut({height, width, closeTerminal, executableCode}) {
     const [text, setText] = React.useState('');
     const [input, setInput] = React.useState('');
+    const [readingEnabled, setReadingEnabled] = React.useState(false);
 
     function onChange(newValue) {
         setInput(newValue);
@@ -65,6 +66,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                         setInput('');
                     }
                 }}
+                style={{visibility: readingEnabled ? 'visible' : 'hidden'}}
             />
         </div>
     );

@@ -1,1 +1,1 @@
-export const defaultCode = '#INICIOPROGRAMA;\n\nescreva(\'Hello World!\');\n\n#FIMPROGRAMA;';
+export const defaultCode = '#INICIOPROGRAMA;\n\nvariavel x;\n\nescreva(\'Hello World!\');\n\n#FIMPROGRAMA;';

@@ -1,5 +1,6 @@
-export function semanticAnalyzer(code){
+export function semanticAnalyzer(code, variables){
     findBeginAndEnd(code);
+    findDuplicatedVariables(variables);
 }
 
 function findBeginAndEnd(code){
@@ -16,5 +17,12 @@ function findBeginAndEnd(code){
 
     if(begin > end){
         throw new Error('Erro semântico | O comando #INICIOPROGRAMA deve vir antes do comando #FIMPROGRAMA');
+    }
+}
+
+function findDuplicatedVariables(variables){
+    const duplicated = variables.filter((item, index) => variables.indexOf(item) !== index);
+    if(duplicated.length > 0){
+        throw new Error('Erro semântico | Variavel declarada mais de uma vez: ' + duplicated + '.');
     }
 }

@@ -12,6 +12,7 @@ function App() {
 
     const [terminalHeight, setTerminalHeight] = React.useState(0);
 
+    // Atualiza o tamanho da tela
     function updateSize() {
         setHeight(window.innerHeight);
         setWidth(window.innerWidth);
@@ -23,6 +24,7 @@ function App() {
 
     window.addEventListener("resize", updateSize);
 
+    // Abre ou fecha o terminal - adequando o tamanho da tela
     function handleTerminal(message){
         if(message !== undefined){
             setExecutedCode(message);

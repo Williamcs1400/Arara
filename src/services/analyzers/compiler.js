@@ -18,6 +18,9 @@ export function Compiler() {
 
     // retirando quebras de linha e fazendo a string resultante virar um array de tokens (separados por ';')
     const tokens = code.replaceAll('\n', '').split(';')
+
+    // array de declarações de variáveis
+    let variables = [];
     try {
 
         // analise léxica completa
@@ -30,12 +33,15 @@ export function Compiler() {
         // syntactic analyze
         tokens.forEach(token => {
             if (token !== '') {
-                syntacticAnalyze(token);
+                const response = syntacticAnalyze(token);
+                if (response !== null && response !== undefined) {
+                    variables.push(response);
+                }
             }
         });
 
         // semantic analyze
-        semanticAnalyzer(code);
+        semanticAnalyzer(code, variables);
         return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: exportExecutableCode(code)};
 
     } catch (error) {
