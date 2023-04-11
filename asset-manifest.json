@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Arara/static/css/main.43adcf19.css",
-    "main.js": "/Arara/static/js/main.6790fe0a.js",
+    "main.js": "/Arara/static/js/main.d31017ba.js",
     "static/media/logo512.png": "/Arara/static/media/logo512.ab457196c40c9f03f2fd.png",
     "static/media/playButton.png": "/Arara/static/media/playButton.566f38c25bc502d1e59a.png",
     "index.html": "/Arara/index.html",
     "main.43adcf19.css.map": "/Arara/static/css/main.43adcf19.css.map",
-    "main.6790fe0a.js.map": "/Arara/static/js/main.6790fe0a.js.map"
+    "main.d31017ba.js.map": "/Arara/static/js/main.d31017ba.js.map"
   },
   "entrypoints": [
     "static/css/main.43adcf19.css",
-    "static/js/main.6790fe0a.js"
+    "static/js/main.d31017ba.js"
   ]
 }
