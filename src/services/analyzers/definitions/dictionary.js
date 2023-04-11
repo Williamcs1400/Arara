@@ -3,8 +3,8 @@ import {removeCodeExpression} from '../../utils/codeFixer';
 // Descrição: Este arquivo contém o dicionário da linguagem
 const knownDefinitions = [
     '#VARIAVEIS',
-    '#INICIOPROGRAMA',
-    '#FIMPROGRAMA',
+    '#INICIO_PROGRAMA',
+    '#FIM_PROGRAMA',
 ];
 
 const knownCommands = [
@@ -21,6 +21,12 @@ const knownInstructions = {
         'example': 'escreva(\'Olá mundo!\')',
         'constructionInOrder': ['escreva', '(', '\'', '\'', ')'],
         'obs': ''
+    },
+    'leia': {
+        'description': 'Lê um valor do teclado e armazena na variável',
+        'syntax': "leia()",
+        'example': 'leia(x)',
+        'constructionInOrder': ['leia', '(', ')'],
     },
     'variavel': {
         'description': 'Declara uma variável',
@@ -50,5 +56,5 @@ export function getInstructionByToken(token) {
 }
 
 export function getNotAcceptedSpecialCharacters() {
-    return /[ `´!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return /[ `´!@#$%^&*()+\-=\]{};':"\\|,.<>?~]/;
 }

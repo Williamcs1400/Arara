@@ -20,7 +20,8 @@ export function Compiler() {
     const tokens = code.replaceAll('\n', '').split(';')
 
     // array de declarações de variáveis
-    let variables = [];
+    const declarationVariables = [];
+    const useVariables = [];
     try {
 
         // analise léxica completa
@@ -31,17 +32,25 @@ export function Compiler() {
         });
 
         // syntactic analyze
+        let order = 0;
         tokens.forEach(token => {
             if (token !== '') {
                 const response = syntacticAnalyze(token);
                 if (response !== null && response !== undefined) {
-                    variables.push(response);
+                    if(response.action === 'declaration'){
+                        const name = response.name;
+                        declarationVariables.push({name, order});
+                    }else if(response.action === 'read'){
+                        const name = response.name;
+                        useVariables.push({name, order});
+                    }
                 }
+                order++;
             }
         });
 
         // semantic analyze
-        semanticAnalyzer(code, variables);
+        semanticAnalyzer(code, declarationVariables, useVariables);
         return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: exportExecutableCode(code)};
 
     } catch (error) {
