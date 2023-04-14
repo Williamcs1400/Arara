@@ -16,7 +16,9 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     const [lastInput, setLastInput] = React.useState(''); // Armazena o último input lido
     const [pauseOrder, setPauseOrder] = React.useState(0); // Armazena a ordem de execução do código para retomar de onde parou
     const [att, setAtt] = React.useState(false); // feito para atualizar o componente e chamar o useEffect
-    const [finalized, setFinalized] = React.useState(false);
+    const [finalized, setFinalized] = React.useState(false); // feito para atualizar o componente e chamar o useEffect
+    const [focus, setFocus] = React.useState(false); // para dar foco no input quando uma leitura é solicitada
+
 
     function onChange(newValue) {
         setInput(newValue);
@@ -72,6 +74,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 // Leitura do terminal
                 if (response.actionType === ExecutableActionType.reading) {
                     setReadingEnabled(true);
+                    setFocus(true);
                     setPauseOrder(i);
                     setLastVariable(response.value);
 
@@ -119,7 +122,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
 
     useEffect(() => {
         if(finalized){
-            setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
+            setText(`${text}\n\nPROGRAMA FINALIZADO`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [finalized]);
@@ -142,8 +145,13 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 {text}
             </text>
             <input
+                ref={input => {
+                    if (input !== null && focus) {
+                        input.focus();
+                        setFocus(false);
+                    }
+                }}
                 className="textIn"
-                autoFocus={true}
                 type="text"
                 value={input}
                 onChange={(e) => onChange(e.target.value)}
