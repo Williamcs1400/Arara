@@ -15,6 +15,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     const [lastVariable, setLastVariable] = React.useState(''); // Armazena a última variável lida
     const [lastInput, setLastInput] = React.useState(''); // Armazena o último input lido
     const [pauseOrder, setPauseOrder] = React.useState(0); // Armazena a ordem de execução do código para retomar de onde parou
+    const [att, setAtt] = React.useState(false); // feito para atualizar o componente e chamar o useEffect
 
     function onChange(newValue) {
         setInput(newValue);
@@ -29,6 +30,11 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
         setValueVariables([]);
         setLastVariable('');
         setPauseOrder(0);
+        setAtt(!att);
+    }
+
+    function isClear(){
+        return text === '' && input === '' && lastInput === '' && readingEnabled === false && valueVariables.length === 0 && lastVariable === '' && pauseOrder === 0;
     }
 
     // Executa o código - para e retoma de onde parou quando encontra um comando de leitura
@@ -71,7 +77,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 }
 
                 if(i === executableCode.length - 1){
-                    setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
+                    // setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
                 }
             }
         } else {
@@ -80,10 +86,13 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     }
 
     useEffect(() => {
-        clear();
-        executeCode();
+        if(isClear()){
+            executeCode();
+        }else{
+            clear();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [executableCode]);
+    }, [executableCode, att]);
 
     useEffect(() => {
         if (lastInput !== '') {
