@@ -16,6 +16,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     const [lastInput, setLastInput] = React.useState(''); // Armazena o último input lido
     const [pauseOrder, setPauseOrder] = React.useState(0); // Armazena a ordem de execução do código para retomar de onde parou
     const [att, setAtt] = React.useState(false); // feito para atualizar o componente e chamar o useEffect
+    const [finalized, setFinalized] = React.useState(false);
 
     function onChange(newValue) {
         setInput(newValue);
@@ -30,6 +31,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
         setValueVariables([]);
         setLastVariable('');
         setPauseOrder(0);
+        setFinalized(false);
         setAtt(!att);
     }
 
@@ -77,6 +79,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 }
 
                 if(i === executableCode.length - 1){
+                    setFinalized(true);
                     // setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
                 }
             }
@@ -113,6 +116,13 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lastInput]);
+
+    useEffect(() => {
+        if(finalized){
+            setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [finalized]);
 
     return (
         <div style={{width: width - 64, height: height, background: '#2F2F2F'}}>
