@@ -4,7 +4,8 @@ import {ExecutableActionType} from "./definitions/actionTypes";
 //
 export function executor(token) {
     if (token.startsWith('escreva')) {
-        return {actionType: ExecutableActionType.writing, value: getValueOfWriting(token)};
+        const response = getValueOfWriting(token);
+        return {actionType: ExecutableActionType.writing, value: response.value, type: response.type};
 
     } else if(token.startsWith('leia')) {
         return {actionType: ExecutableActionType.reading, value: getValueOfReading(token)};
@@ -16,8 +17,13 @@ export function executor(token) {
 
 // retorna o valor entre (' e ') para escrever na tela
 function getValueOfWriting(token) {
-    // recuperar o valor entre (' e ')
-    return token.substring(token.indexOf("('") + 2, token.lastIndexOf("')"));
+    // recuperar o valor entre (' e ') ou entre ( e )
+    if(token.indexOf('\'') === -1){
+        return {value: token.substring(token.indexOf('(') + 1, token.lastIndexOf(')')), type: 'variable'};
+    }
+    else {
+        return {value: token.substring(token.indexOf('\'') + 1, token.lastIndexOf('\'')), type: 'string'};
+    }
 }
 
 // recupera o nome da variável para ler o valor do teclado

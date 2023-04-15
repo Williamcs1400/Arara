@@ -11,7 +11,7 @@ export function syntacticAnalyze(instruction) {
     }
     // verificação para instrução de escrita
     if (instruction.startsWith('escreva')) {
-        validateEscrevaInstruction(instruction);
+        return validateEscrevaInstruction(instruction);
     }
     // verificação para instrução de leitura
     if (instruction.startsWith('leia')) {
@@ -41,14 +41,20 @@ function validateVariavelInstruction(instruction) {
         throw new Error('Erro sintático | O nome da variável é inválido - deve ser da seguinte forma: ' + definition.obs);
     }
 
-    return {'name': name, 'action': 'declaration'};
+    return name === '' ? null : {'name': name, 'action': 'declaration'};
 }
 
 function validateEscrevaInstruction(instruction) {
     const definition = getInstructionByToken('escreva');
     const syntax = definition.syntax;
+    let name = '';
 
-    // remover trecho entre ' ' da instrução
+    // remover trecho entre ' ' da instrução ou o valor se não houver ' '
+    if(instruction.indexOf('\'') === -1){
+        // recupera o valor da variável para ser impresso
+        name = instruction.substring(instruction.indexOf('(') + 1, instruction.lastIndexOf(')'));
+        instruction = instruction.replace(instruction.substring(instruction.indexOf('(') + 1, instruction.lastIndexOf(')')), '');
+    }
     const aux = instruction.substring(instruction.indexOf('\'') + 1, instruction.lastIndexOf('\''));
     if(aux.indexOf('\'') !== -1){
         throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
@@ -58,16 +64,17 @@ function validateEscrevaInstruction(instruction) {
     // verifica se há a quantidade correta de cada componente da instrução
     if (instruction.split('escreva').length - 1 !== 1 ||
         instruction.split('(').length - 1 !== 1 ||
-        instruction.split(')').length - 1 !== 1 ||
-        instruction.split('\'').length - 1 !== 2
+        instruction.split(')').length - 1 !== 1
     ) {
         throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
     }
 
     // Verifica se a instrução está correta
-    if(instruction !== syntax){
+    if(instruction !== syntax[0] && instruction !== syntax[1]){
         throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
     }
+
+    return {name: name, action: 'write'};
 }
 
 function validateLeiaInstruction(instruction) {

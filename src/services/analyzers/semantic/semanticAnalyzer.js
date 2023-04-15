@@ -32,6 +32,21 @@ function findDuplicatedVariables(variables){
 
 // verifica se as variáveis foram declaradas antes de serem utilizadas
 function findOrderDeclarationAndUsage(variables, usages){
+    let flag = false;
+
+    // Verifica se a variável foi declarada
+    usages.forEach(usage => {
+        variables.forEach(variable => {
+            if(usage.name === variable.name){
+                flag = true;
+            }
+        });
+        if(!flag){
+            throw new Error('Erro semântico | Variavel utilizada antes de ser declarada: ' + usage.name + '.');
+        }
+    });
+
+    // Verifica se a variável foi declarada antes de ser utilizada
     variables.forEach(variable => {
         usages.forEach(usage => {
             if(usage.name === variable.name && usage.order < variable.order){

@@ -40,15 +40,19 @@ export function Compiler() {
                     if(response.action === 'declaration'){
                         const name = response.name;
                         declarationVariables.push({name, order});
-                    }else if(response.action === 'read'){
+                    }else if(response.action === 'read' || response.action === 'write'){
                         const name = response.name;
-                        useVariables.push({name, order});
+                        if(name !== undefined && name !== '') {
+                            useVariables.push({name, order});
+                        }
                     }
                 }
                 order++;
             }
         });
 
+        console.log('declarações: ', declarationVariables);
+        console.log('usos: ', useVariables);
         // semantic analyze
         semanticAnalyzer(code, declarationVariables, useVariables);
         return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: exportExecutableCode(code)};

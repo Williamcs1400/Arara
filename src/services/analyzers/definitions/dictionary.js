@@ -17,8 +17,8 @@ const knownCommands = [
 const knownInstructions = {
     'escreva': {
         'description': 'Escreve na tela o que está entre aspas simples',
-        'syntax': "escreva('')",
-        'example': 'escreva(\'Olá mundo!\')',
+        'syntax': ["escreva('')", "escreva()"],
+        'example': 'escreva(\'Olá mundo!\') ou escreva(x)',
         'constructionInOrder': ['escreva', '(', '\'', '\'', ')'],
         'obs': ''
     },

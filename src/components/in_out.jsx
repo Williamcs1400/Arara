@@ -56,17 +56,27 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
 
                 // Escrita no terminal
                 if (response.actionType === ExecutableActionType.writing) {
-                    if (response.value.indexOf('\\n') !== -1) {
-                        for (let i = 0; i < response.value.length; i++) {
-                            if (response.value[i] === '\\' && response.value[i + 1] === 'n') {
-                                aux += '\n';
-                                i++;
-                            } else {
-                                aux += response.value[i];
+                    // Verifica se o valor é uma string ou uma variável
+                    if(response.type === 'string') {
+                        if (response.value.indexOf('\\n') !== -1) {
+                            for (let i = 0; i < response.value.length; i++) {
+                                if (response.value[i] === '\\' && response.value[i + 1] === 'n') {
+                                    aux += '\n';
+                                    i++;
+                                } else {
+                                    aux += response.value[i];
+                                }
+                            }
+                        } else {
+                            aux += response.value;
+                        }
+                    // Verifica se o valor é uma variável
+                    }else if(response.type === 'variable'){
+                        for (let i = 0; i < valueVariables.length; i++) {
+                            if (valueVariables[i].name === response.value) {
+                                aux += valueVariables[i].value;
                             }
                         }
-                    } else {
-                        aux += response.value;
                     }
                     setText(text + aux);
                 }
@@ -122,7 +132,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
 
     useEffect(() => {
         if(finalized){
-            setText(`${text}\n\nPROGRAMA FINALIZADO`)
+            setText(`${text}\nPROGRAMA FINALIZADO`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [finalized]);
