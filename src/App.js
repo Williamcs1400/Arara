@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import EditorPage from "./components/editorPage";
+import DefaultEditor from "./components/defaultEditor";
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
 import InOut from "./components/in_out";
+import CodeEditor from "./components/codeEditor";
 
 function App() {
     const [openTerminal, setOpenTerminal] = React.useState(false);
@@ -52,7 +53,7 @@ function App() {
 
             <div style={{marginLeft: 64}}>
                 <Header />
-                <EditorPage height={height - terminalHeight} width={width}/>
+                <CodeEditor height={height - terminalHeight} width={width}/>
                 {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={handleTerminal} executableCode={executedCode}/> : null}
             </div>
 

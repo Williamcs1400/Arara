@@ -1,4 +1,4 @@
-import {lexicalAnalyze} from './lexing/lexicalAnalyzer.js';
+import {lexicalAnalyze} from './scanner/scanner.js';
 import {semanticAnalyzer} from './semantic/semanticAnalyzer.js';
 import {getKnownDefinitions} from './definitions/dictionary.js';
 import {syntacticAnalyze} from "./parsing/parser";
@@ -51,8 +51,6 @@ export function Compiler() {
             }
         });
 
-        console.log('declarações: ', declarationVariables);
-        console.log('usos: ', useVariables);
         // semantic analyze
         semanticAnalyzer(code, declarationVariables, useVariables);
         return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: exportExecutableCode(code)};

@@ -83,7 +83,7 @@ export default function Sidebar({openTerminal}) {
                 </SideNav.Nav>
             </SideNav>
             <Stack spacing={2} sx={{width: '100%'}}>
-                <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                     <Alert onClose={handleClose} severity={typeOfAlert} sx={{width: '100%'}}>
                         {message}
                     </Alert>
