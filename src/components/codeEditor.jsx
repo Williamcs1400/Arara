@@ -1,11 +1,7 @@
-import React, { Component } from 'react';
-import brace from 'brace';
+import React from 'react';
 import AceEditor from 'react-ace';
 import CustomAraraMode from '../services/utils/CustomAraraMode.js';
 import {defaultCode} from '../services/utils/definitions.js';
-
-
-import 'brace/theme/github';
 import {setCodeFromEditor} from "../services/analyzers/compiler";
 
 class App extends React.Component {

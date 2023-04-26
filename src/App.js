@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import DefaultEditor from "./components/defaultEditor";
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
 import InOut from "./components/in_out";

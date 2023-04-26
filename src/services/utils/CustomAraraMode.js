@@ -1,5 +1,8 @@
 import 'brace/mode/java';
-import AceEditor from 'react-ace';
+
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/ext-language_tools";
 import 'ace-builds/src-noconflict/mode-json';
 
 window.ace = require('ace-builds/src-noconflict/ace');
