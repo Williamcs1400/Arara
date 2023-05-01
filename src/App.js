@@ -24,8 +24,8 @@ function App() {
 
     window.addEventListener("resize", updateSize);
 
-    // Abre ou fecha o terminal - adequando o tamanho da tela
-    function handleTerminal(message){
+    // Abre ou fecha o terminal e executa o código - adequando o tamanho da tela
+    function executeCode(message){
         if(message !== undefined){
             setExecutedCode(message);
             setTerminalHeight((height / 3) + 150)
@@ -35,6 +35,12 @@ function App() {
             setTerminalHeight(0)
             setOpenTerminal(false);
         }
+    }
+
+    // Abre ou fecha o terminal sem executar o código - adequando o tamanho da tela
+    function handleTerminal(){
+        setTerminalHeight((height / 3) + 150)
+        setOpenTerminal(true);
     }
 
     return (
@@ -47,13 +53,13 @@ function App() {
             position: 'absolute'
         }}>
             <div>
-                <Sidebar openTerminal={handleTerminal}/>
+                <Sidebar executeCode={executeCode} openTerminal={handleTerminal}/>
             </div>
 
             <div style={{marginLeft: 64}}>
                 <Header />
                 <CodeEditor height={height - terminalHeight} width={width}/>
-                {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={handleTerminal} executableCode={executedCode}/> : null}
+                {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode} executableCode={executedCode}/> : null}
             </div>
 
         </div>

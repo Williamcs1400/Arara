@@ -68,6 +68,7 @@ function exportExecutableCode(code) {
 
     tokens.forEach(token => {
         if (token !== '' && !getKnownDefinitions().includes(token)) {
+            // se for concatenação, retorna um array de "escrevas" na tela
             if(token.startsWith('escreva') && token.indexOf(",") !== -1) {
                 const newObject = dismemberEscrevaConcat(token);
                 newObject.forEach(object => {
@@ -82,6 +83,7 @@ function exportExecutableCode(code) {
     return executableCode;
 }
 
+// retorna um array de tokens para escrever na tela quando for concatenação
 function dismemberEscrevaConcat(object){
     const name = object.substring(object.indexOf('(') + 1, object.lastIndexOf(')'));
     const parts = name.split(',');

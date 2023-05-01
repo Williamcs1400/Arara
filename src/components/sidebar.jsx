@@ -1,17 +1,19 @@
 import React, {useEffect} from 'react';
 import SideNav, {NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
 import '../styles/sidebar.css';
-import playButton from '../assets/playButton.png';
 import {Compiler} from '../services/analyzers/compiler.js'
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import playButton from '../assets/playButton.png';
+import terminalButton from '../assets/terminal.png';
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Sidebar({openTerminal}) {
+export default function Sidebar({executeCode, openTerminal}) {
     const [open, setOpen] = React.useState(false);
     const [result, setResult] = React.useState({});
     const [message, setMessage] = React.useState('');
@@ -25,7 +27,7 @@ export default function Sidebar({openTerminal}) {
         setMessage(result.message);
 
         if(result.sucess === true)
-            openTerminal(result.executableCode);
+            executeCode(result.executableCode);
 
         handleClick();
     }, [result]);
@@ -46,40 +48,35 @@ export default function Sidebar({openTerminal}) {
         <div>
             <SideNav
                 onSelect={(selected) => {
-                    if (selected === 'home') {
+                    if (selected === 'execute') {
                         setResult(Compiler());
-
+                    }
+                    if (selected === 'terminal') {
+                        openTerminal();
                     }
                 }}
             >
                 <SideNav.Toggle/>
                 <SideNav.Nav>
-                    <NavItem eventKey="home">
-                        <NavIcon>
+
+                    <NavItem eventKey="execute">
+                        <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                             <img src={playButton} width="20" height="20" alt="play button"/>
                         </NavIcon>
                         <NavText>
                             Executar
                         </NavText>
                     </NavItem>
-                    {/*<NavItem eventKey="charts">*/}
-                    {/*    <NavIcon>*/}
-                    {/*        <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em' }} />*/}
-                    {/*    </NavIcon>*/}
-                    {/*    <NavText>*/}
-                    {/*        TESTE*/}
-                    {/*    </NavText>*/}
-                    {/*    <NavItem eventKey="charts/linechart">*/}
-                    {/*        <NavText>*/}
-                    {/*            Line Chart*/}
-                    {/*        </NavText>*/}
-                    {/*    </NavItem>*/}
-                    {/*    <NavItem eventKey="charts/barchart">*/}
-                    {/*        <NavText>*/}
-                    {/*            Bar Chart*/}
-                    {/*        </NavText>*/}
-                    {/*    </NavItem>*/}
-                    {/*</NavItem>*/}
+
+                    <NavItem eventKey="terminal">
+                        <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <img src={terminalButton} width="28" height="28" alt="terminal button"/>
+                        </NavIcon>
+                        <NavText>
+                            Abrir terminal
+                        </NavText>
+                    </NavItem>
+
                 </SideNav.Nav>
             </SideNav>
             <Stack spacing={2} sx={{width: '100%'}}>
