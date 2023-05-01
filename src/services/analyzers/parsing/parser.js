@@ -5,16 +5,28 @@ import {getInstructionByToken, getNotAcceptedSpecialCharacters} from '../definit
     Verifica se a construção da instrução está correta
  */
 export function syntacticAnalyze(instruction) {
+
     // verificação para declaração de variáveis
     if (instruction.startsWith('variavel')) {
+        if(instruction.split('variavel').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
         return validateVariavelInstruction(instruction);
     }
+
     // verificação para instrução de escrita
     if (instruction.startsWith('escreva')) {
+        if(instruction.split('escreva').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
         return validateEscrevaInstruction(instruction);
     }
+
     // verificação para instrução de leitura
     if (instruction.startsWith('leia')) {
+        if(instruction.split('leia').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
         return validateLeiaInstruction(instruction);
     }
 }
@@ -50,7 +62,7 @@ function validateEscrevaInstruction(instruction) {
     let name = '';
 
     // remover trecho entre ' ' da instrução ou o valor se não houver ' '
-    if(instruction.indexOf('\'') === -1){
+    if(instruction.indexOf('\'') === -1 || instruction.indexOf(',') !== -1){
         // recupera o valor da variável para ser impresso
         name = instruction.substring(instruction.indexOf('(') + 1, instruction.lastIndexOf(')'));
         instruction = instruction.replace(instruction.substring(instruction.indexOf('(') + 1, instruction.lastIndexOf(')')), '');
@@ -70,8 +82,19 @@ function validateEscrevaInstruction(instruction) {
     }
 
     // Verifica se a instrução está correta
-    if(instruction !== syntax[0] && instruction !== syntax[1]){
-        throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+    if(name !== '' && name.indexOf(',') !== -1){
+        const values = name.split(',');
+        if(values.length < 2){
+            throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+        }
+        for(let i = 0; i < values.length; i++){
+            if(values[i].indexOf("'") !== -1 && values[i].split("'").length - 1 !== 2){
+                throw new Error('2Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+            }
+        }
+    }
+    else if(instruction !== syntax[0] && instruction !== syntax[1]){
+        throw new Error('3Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
     }
 
     return {name: name, action: 'write'};

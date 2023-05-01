@@ -68,9 +68,31 @@ function exportExecutableCode(code) {
 
     tokens.forEach(token => {
         if (token !== '' && !getKnownDefinitions().includes(token)) {
-            executableCode.push(token);
+            if(token.startsWith('escreva') && token.indexOf(",") !== -1) {
+                const newObject = dismemberEscrevaConcat(token);
+                newObject.forEach(object => {
+                    executableCode.push(object);
+                });
+            }else {
+                executableCode.push(token);
+            }
         }
     });
 
     return executableCode;
+}
+
+function dismemberEscrevaConcat(object){
+    const name = object.substring(object.indexOf('(') + 1, object.lastIndexOf(')'));
+    const parts = name.split(',');
+    const newObject = [];
+
+    parts.forEach(part => {
+        if(part !== ''){
+            part = part.indexOf("'") !== -1 ? part : part.trimStart().trimEnd();
+            newObject.push('escreva(' + part + ')');
+        }
+    });
+
+    return newObject;
 }

@@ -37,13 +37,14 @@ function findOrderDeclarationAndUsage(variables, usages){
     // Verifica se a variável foi declarada
     usages.forEach(usage => {
         variables.forEach(variable => {
-            if(usage.name === variable.name){
+            if(getVariableFromConcat(usage.name) === variable.name){
                 flag = true;
             }
         });
         if(!flag){
             throw new Error('Erro semântico | Variavel utilizada antes de ser declarada: ' + usage.name + '.');
         }
+        flag = false;
     });
 
     // Verifica se a variável foi declarada antes de ser utilizada
@@ -54,4 +55,17 @@ function findOrderDeclarationAndUsage(variables, usages){
             }
         });
     });
+}
+
+function getVariableFromConcat(object){
+    if(object.indexOf(',') !== -1) {
+        const aux = object.split(',');
+        aux.forEach(item => {
+            if(item.indexOf("'") === -1){
+                object = item.trimStart().trimEnd();
+            }
+        })
+    }
+
+    return object;
 }
