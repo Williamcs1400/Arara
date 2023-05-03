@@ -20,7 +20,7 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
                 token: "string",
                 regex : "'.*?'"
             }, {
-                token: "entity.name.function",
+                token: "keyword.operator",
                 regex: "variavel"
             }, {
                 token: "entity.name.function",
@@ -28,6 +28,30 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
             }, {
                 token: "entity.name.function",
                 regex: "escreva"
+            }, {
+                token: "keyword.operator",
+                regex: "inteiro"
+            }, {
+                token: "keyword.operator",
+                regex: "real"
+            }, {
+                token: "keyword.operator",
+                regex: "texto"
+            }, {
+                token: "keyword.operator",
+                regex: "logico"
+            },{
+                token: "keyword.operator",
+                regex: "caractere"
+            },{
+                token: "constant.numeric",
+                regex: "[0-9]+"
+            }, {
+                token: "constant.numeric",
+                regex: "verdadeiro"
+            }, {
+                token: "constant.numeric",
+                regex: "falso"
             }
             ]
         };

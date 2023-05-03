@@ -91,6 +91,21 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                     break;
                 }
 
+                // Atribuição de valor a variável
+                if (response.actionType === ExecutableActionType.assignment) {
+                    let exists = false;
+                    for (let i = 0; i < valueVariables.length; i++) {
+                        if (valueVariables[i].name === response.variable) {
+                            valueVariables[i].value = response.value;
+                            exists = true;
+                        }
+                    }
+
+                    if (!exists) {
+                        valueVariables.push({name: response.variable, value: response.value});
+                    }
+                }
+
                 if(i === executableCode.length - 1){
                     setFinalized(true);
                     // setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
@@ -132,7 +147,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
 
     useEffect(() => {
         if(finalized){
-            setText(`${text}\nPROGRAMA FINALIZADO`)
+            setText(`${text}\n\nPROGRAMA FINALIZADO`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [finalized]);

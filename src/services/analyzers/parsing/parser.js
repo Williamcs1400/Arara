@@ -7,11 +7,12 @@ import {getInstructionByToken, getNotAcceptedSpecialCharacters} from '../definit
 export function syntacticAnalyze(instruction) {
 
     // verificação para declaração de variáveis
-    if (instruction.startsWith('variavel')) {
-        if(instruction.split('variavel').length - 1 !== 1){
+    if (instruction.startsWith('variavel') || instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
+        const token = instruction.split(' ')[0];
+        if(instruction.split(token).length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
-        return validateVariavelInstruction(instruction);
+        return validateAssignmentInstruction(instruction, token);
     }
 
     // verificação para instrução de escrita
@@ -31,26 +32,66 @@ export function syntacticAnalyze(instruction) {
     }
 }
 
-function validateVariavelInstruction(instruction) {
-    const definition = getInstructionByToken('variavel');
+function validateAssignmentInstruction(instruction, token) {
+    const definition = getInstructionByToken(token);
 
     // verifica se há a quantidade correta de cada componente da instrução
-    if (instruction.split('variavel').length - 1 !== 1 ||
+    if (instruction.split(token).length - 1 !== 1 ||
         instruction.split(' ').length - 1 < 1
     ) {
-        throw new Error('Erro sintático | A instrução variavel está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorAssignmentExample(token);
     }
 
     // verifica se a definição do nome está correta
-    const name = instruction.substring(instruction.indexOf('variavel') + 8, instruction.length).trim();
-
+    let name = instruction.substring(instruction.indexOf(token) + token.length, instruction.length).trim();
     if(name === undefined || name === ''){
-        throw new Error('Erro sintático | A instrução variavel está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorAssignmentExample(token);
+    }
+
+    // verifica se há atribuição de valor e se o valor é válido
+    // TODO: melhorar a mensagens de erros
+    if(name.indexOf('=') !== -1){
+        if(token === 'logico'){
+            if(name.indexOf('verdadeiro') === -1 && name.indexOf('falso') === -1){
+                getErrorAssignmentExample(token);
+            }
+            name = name.split('=')[0].trim();
+        }
+
+        if(token === 'texto'){
+            if(name.split("'").length - 1 !== 2){
+                getErrorAssignmentExample(token);
+            }
+            name = name.split('=')[0].trim();
+        }
+
+        if(token === 'inteiro'){
+            const number = Number(name.split('=')[1].trim());
+            if(!Number.isInteger(number)){
+                getErrorAssignmentExample(token);
+            }
+            name = name.split('=')[0].trim();
+        }
+
+        if(token === 'real'){
+            const number = Number(name.split('=')[1].trim());
+            if(!(Number.isInteger(number) || (Number(number) === number && number % 1 !== 0))){
+                getErrorAssignmentExample(token);
+            }
+            name = name.split('=')[0].trim();
+        }
+
+        if(token === 'caractere'){
+            if(name.split("'").length - 1 !== 2){
+                getErrorAssignmentExample(token);
+            }
+            name = name.split('=')[0].trim();
+        }
     }
 
     // verifica se o nome da variável é válido
     if(getNotAcceptedSpecialCharacters().test(name) || name.indexOf(' ') !== -1){
-        throw new Error('Erro sintático | O nome da variável é inválido - deve ser da seguinte forma: ' + definition.obs);
+        getErrorAssignmentObs(token);
     }
 
     return name === '' ? null : {'name': name, 'action': 'declaration'};
@@ -69,7 +110,7 @@ function validateEscrevaInstruction(instruction) {
     }
     const aux = instruction.substring(instruction.indexOf('\'') + 1, instruction.lastIndexOf('\''));
     if(aux.indexOf('\'') !== -1){
-        throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorWriteExample();
     }
     instruction = instruction.replace(aux, '');
 
@@ -78,23 +119,23 @@ function validateEscrevaInstruction(instruction) {
         instruction.split('(').length - 1 !== 1 ||
         instruction.split(')').length - 1 !== 1
     ) {
-        throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorWriteExample();
     }
 
     // Verifica se a instrução está correta
     if(name !== '' && name.indexOf(',') !== -1){
         const values = name.split(',');
         if(values.length < 2){
-            throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+            getErrorWriteExample();
         }
         for(let i = 0; i < values.length; i++){
             if(values[i].indexOf("'") !== -1 && values[i].split("'").length - 1 !== 2){
-                throw new Error('2Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+                getErrorWriteExample();
             }
         }
     }
     else if(instruction !== syntax[0] && instruction !== syntax[1]){
-        throw new Error('3Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorWriteExample();
     }
 
     return {name: name, action: 'write'};
@@ -109,7 +150,7 @@ function validateLeiaInstruction(instruction) {
         instruction.split('(').length - 1 !== 1 ||
         instruction.split(')').length - 1 !== 1
     ) {
-        throw new Error('Erro sintático | A instrução leia está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorReadExample();
     }
 
     // recuperar o nome da variável e remover da instrução
@@ -118,9 +159,27 @@ function validateLeiaInstruction(instruction) {
 
     // Verifica se a instrução está correta
     if(instruction !== syntax){
-        throw new Error('Erro sintático | A instrução leia está incorreta - deve ser da seguinte forma: ' + definition.example);
+        getErrorReadExample();
     }
 
     return {'name': name, 'action': 'read'};
 }
 
+
+// Erros de atribuição
+function getErrorAssignmentExample(token){
+    throw new Error('Erro sintático | A instrução ' + token + ' está incorreta - deve ser da seguinte forma: ' + getInstructionByToken(token).example);
+}
+
+function getErrorAssignmentObs(token){
+    throw new Error('Erro sintático | O nome da ' + token + ' é inválido - deve ser da seguinte forma: ' + getInstructionByToken(token).obs);
+}
+
+// Erros de escrita
+function getErrorWriteExample(){
+    throw new Error('Erro sintático | A instrução escreva está incorreta - deve ser da seguinte forma: ' + getInstructionByToken('escreva').example);
+}
+// Erros de leitura
+function getErrorReadExample(){
+    throw new Error('Erro sintático | A instrução leia está incorreta - deve ser da seguinte forma: ' + getInstructionByToken('leia').example);
+}

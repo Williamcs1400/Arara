@@ -10,7 +10,12 @@ const knownDefinitions = [
 const knownCommands = [
     'escreva',
     'leia',
-    'variavel'
+    'variavel',
+    'inteiro',
+    'real',
+    'texto',
+    'logico',
+    'caractere'
 ];
 
 
@@ -36,6 +41,51 @@ const knownInstructions = {
         'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
             'A variável deve ser declarada apenas uma vez\n' +
             'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)',
+    },
+    'inteiro': {
+        'description': 'Declara uma variável do tipo inteiro',
+        'syntax': "inteiro",
+        'example': 'inteiro x',
+        'constructionInOrder': ['inteiro', 'name'],
+        'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
+            'A variável deve ser declarada apenas uma vez\n' +
+            'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)',
+    },
+    'real': {
+        'description': 'Declara uma variável do tipo real',
+        'syntax': "real",
+        'example': 'real x',
+        'constructionInOrder': ['real', 'name'],
+        'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
+            'A variável deve ser declarada apenas uma vez\n' +
+            'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)',
+    },
+    'texto': {
+        'description': 'Declara uma variável do tipo texto',
+        'syntax': "texto",
+        'example': 'texto x',
+        'constructionInOrder': ['texto', 'name'],
+        'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
+            'A variável deve ser declarada apenas uma vez\n' +
+            'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)',
+    },
+    'logico': {
+        'description': 'Declara uma variável do tipo lógico',
+        'syntax': "logico",
+        'example': 'logico x',
+        'constructionInOrder': ['logico', 'name'],
+        'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
+            'A variável deve ser declarada apenas uma vez\n' +
+            'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)',
+    },
+    'caractere': {
+        'description': 'Declara uma variável do tipo caractere',
+        'syntax': "caractere",
+        'example': 'caractere x',
+        'constructionInOrder': ['caractere', 'name'],
+        'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
+            'A variável deve ser declarada apenas uma vez\n' +
+            'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)'
     }
 }
 
