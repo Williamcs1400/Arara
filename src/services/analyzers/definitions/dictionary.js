@@ -110,3 +110,33 @@ export function getInstructionByToken(token) {
 export function getNotAcceptedSpecialCharacters() {
     return /[ `´!@#$%^&*()+\-=\]{};':"\\|,.<>?~]/;
 }
+
+export function isDeclaration(token) {
+    return token.startsWith('inteiro') || token.startsWith('real') || token.startsWith('texto') || token.startsWith('logico') || token.startsWith('caractere');
+}
+
+export function validateTyping(declaration, value) {
+    if (declaration.startsWith('inteiro')) {
+        const number = Number(value);
+        return Number.isInteger(number);
+    }
+
+    if (declaration.startsWith('real')) {
+        const number = Number(value);
+        return (Number.isInteger(number) || (Number(number) === number && number % 1 !== 0));
+    }
+
+    if (declaration.startsWith('texto')) {
+        return value.indexOf("'") !== -1;
+    }
+
+    if (declaration.startsWith('logico')) {
+        return value === 'verdadeiro' || value === 'falso';
+    }
+
+    if (declaration.startsWith('caractere')) {
+        return value.indexOf("'") !== -1 && value.replaceAll("'", '').length === 1;
+    }
+
+    return false;
+}

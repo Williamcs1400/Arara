@@ -1,12 +1,15 @@
 export const defaultCode =
     '#INICIO_PROGRAMA;' +
-    '\n\ntexto x;' +
+    '\n\n//Programa para testes' +
+    '\ntexto x; // teste comentário' +
     '\ninteiro num = 10;' +
     '\nreal num_rel = 10.5;' +
     '\ntexto txt = \'Texto de teste\';' +
     '\ncaractere char = \'A\';' +
     '\nlogico lgc = verdadeiro;' +
     '\n\nleia(x);' +
+    '\nx = \'novo valor de x\';' +
+    '\ntxt = \'Teste dois\';' +
     '\n\nescreva(\'Valor inteiro: \', num);' +
     '\nescreva(\'\\n\');' +
     '\n\nescreva(\'Valor real: \', num_rel);' +

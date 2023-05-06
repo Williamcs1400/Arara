@@ -8,7 +8,7 @@ export function executor(token) {
     } else if(token.startsWith('leia')) {
         // TODO: implementar a verificação de tipo de variável para leitura
         return {actionType: ExecutableActionType.reading, value: getValueOfReading(token)};
-    } else if(isAssignment(token) !== '' && token.indexOf('=') !== -1) {
+    } else if(token.indexOf('=') !== -1) {
         return {actionType: ExecutableActionType.assignment, value: getValueOfAssignment(token), type: isAssignment(token), variable: getVariableOfAssignment(token)};
     }
     else {

@@ -1,7 +1,10 @@
-export function semanticAnalyzer(code, variables, usages){
+import {validateTyping} from "../definitions/dictionary";
+
+export function semanticAnalyzer(code, variables, usages, defAndTypes){
     findBeginAndEnd(code);
     findDuplicatedVariables(variables);
     findOrderDeclarationAndUsage(variables, usages);
+    validateAssignmentAndTypes(defAndTypes, usages);
 }
 
 // verifica se há o comando #INICIO_PROGRAMA e #FIM_PROGRAMA e se estão na ordem correta
@@ -66,6 +69,21 @@ function getVariableFromConcat(object){
             }
         })
     }
-
     return object;
+}
+
+function validateAssignmentAndTypes(defAndTypes, usages){
+
+    // recuperar as variáveis que possuem valor - ou seja - que foram atribuídas
+    const usagesWithValue = usages.filter(usage => usage.value !== '' && usage.value !== undefined);
+
+    usagesWithValue.forEach(usage => {
+        defAndTypes.forEach(defAndType => {
+            if(usage.name === defAndType.line){
+                if(!validateTyping(defAndType.declaration, usage.value)){
+                    throw new Error('Erro semântico | O valor ' + usage.value + ' atribuído à variável ' + usage.name + ' não é compatível com o tipo ' + defAndType.declaration + '.');
+                }
+            }
+        });
+    });
 }

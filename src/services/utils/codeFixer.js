@@ -17,7 +17,7 @@ export function removeCodeExpression(token){
     }
 
     if(token.startsWith('caractere')) {
-        return 'logico';
+        return 'caractere';
     }
 
     return token.split('(')[0];

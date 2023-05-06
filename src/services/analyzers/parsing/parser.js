@@ -1,4 +1,9 @@
-import {getInstructionByToken, getNotAcceptedSpecialCharacters} from '../definitions/dictionary.js';
+import {
+    getInstructionByToken,
+    getNotAcceptedSpecialCharacters,
+    isDeclaration,
+    validateTyping
+} from '../definitions/dictionary.js';
 
 /*
     Analisador sintático
@@ -13,6 +18,10 @@ export function syntacticAnalyze(instruction) {
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
         return validateAssignmentInstruction(instruction, token);
+    }
+    // verificação para atribuição de valor fora da declaração
+    else if(instruction.indexOf('=') !== -1){
+        return validateAssignmentWithDeclarationInstruction(instruction);
     }
 
     // verificação para instrução de escrita
@@ -32,6 +41,15 @@ export function syntacticAnalyze(instruction) {
     }
 }
 
+// TODO: verificar o pq de tirar o ; do final da atribuição não gera erro
+function validateAssignmentWithDeclarationInstruction(instruction){
+    const split = instruction.split('='); // separa a instrução em duas partes, antes e depois do '='
+    const name = split[0].trim(); // nome da variável
+    const value = split[1].trim(); // valor da variável
+    return {'name': name, 'value': value, 'action': 'assignment'};
+}
+
+
 function validateAssignmentInstruction(instruction, token) {
     const definition = getInstructionByToken(token);
 
@@ -49,43 +67,11 @@ function validateAssignmentInstruction(instruction, token) {
     }
 
     // verifica se há atribuição de valor e se o valor é válido
-    // TODO: melhorar a mensagens de erros
     if(name.indexOf('=') !== -1){
-        if(token === 'logico'){
-            if(name.indexOf('verdadeiro') === -1 && name.indexOf('falso') === -1){
-                getErrorAssignmentExample(token);
-            }
+        if(validateTyping(token, name.split('=')[1].trim())){
             name = name.split('=')[0].trim();
-        }
-
-        if(token === 'texto'){
-            if(name.split("'").length - 1 !== 2){
-                getErrorAssignmentExample(token);
-            }
-            name = name.split('=')[0].trim();
-        }
-
-        if(token === 'inteiro'){
-            const number = Number(name.split('=')[1].trim());
-            if(!Number.isInteger(number)){
-                getErrorAssignmentExample(token);
-            }
-            name = name.split('=')[0].trim();
-        }
-
-        if(token === 'real'){
-            const number = Number(name.split('=')[1].trim());
-            if(!(Number.isInteger(number) || (Number(number) === number && number % 1 !== 0))){
-                getErrorAssignmentExample(token);
-            }
-            name = name.split('=')[0].trim();
-        }
-
-        if(token === 'caractere'){
-            if(name.split("'").length - 1 !== 2){
-                getErrorAssignmentExample(token);
-            }
-            name = name.split('=')[0].trim();
+        }else{
+            getErrorTypingExample(name.split('=')[0].trim(), name.split('=')[1].trim(),  token);
         }
     }
 
@@ -165,9 +151,12 @@ function validateLeiaInstruction(instruction) {
     return {'name': name, 'action': 'read'};
 }
 
-
 // Erros de atribuição
-function getErrorAssignmentExample(token){
+function getErrorTypingExample(name, value, type){
+    throw new Error('Erro semântico | O valor ' + value + ' atribuído à variável ' + name + ' não é compatível com o tipo ' + type + '.');
+}
+
+function getErrorAssignmentExample(token) {
     throw new Error('Erro sintático | A instrução ' + token + ' está incorreta - deve ser da seguinte forma: ' + getInstructionByToken(token).example);
 }
 
