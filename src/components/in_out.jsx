@@ -147,7 +147,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
 
     useEffect(() => {
         if(finalized){
-            setText(`${text}\n\nPROGRAMA FINALIZADO`)
+            setText(`${text}\nPROGRAMA FINALIZADO`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [finalized]);

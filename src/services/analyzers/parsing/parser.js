@@ -7,7 +7,7 @@ import {getInstructionByToken, getNotAcceptedSpecialCharacters} from '../definit
 export function syntacticAnalyze(instruction) {
 
     // verificação para declaração de variáveis
-    if (instruction.startsWith('variavel') || instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
+    if (instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
         const token = instruction.split(' ')[0];
         if(instruction.split(token).length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);

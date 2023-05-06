@@ -20,9 +20,6 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
                 token: "string",
                 regex : "'.*?'"
             }, {
-                token: "keyword.operator",
-                regex: "variavel"
-            }, {
                 token: "entity.name.function",
                 regex: "leia"
             }, {
@@ -52,6 +49,9 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
             }, {
                 token: "constant.numeric",
                 regex: "falso"
+            }, {
+                token: "comment",
+                regex: "//.*$"
             }
             ]
         };

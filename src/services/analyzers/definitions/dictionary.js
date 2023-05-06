@@ -10,13 +10,20 @@ const knownDefinitions = [
 const knownCommands = [
     'escreva',
     'leia',
-    'variavel',
     'inteiro',
     'real',
     'texto',
     'logico',
     'caractere'
 ];
+
+const knownOperators = [
+    '=',
+    '+',
+    '-',
+    '*',
+    '/',
+]
 
 
 const knownInstructions = {
@@ -32,15 +39,6 @@ const knownInstructions = {
         'syntax': "leia()",
         'example': 'leia(x)',
         'constructionInOrder': ['leia', '(', ')'],
-    },
-    'variavel': {
-        'description': 'Declara uma variável',
-        'syntax': "variavel",
-        'example': 'variavel x',
-        'constructionInOrder': ['variavel', 'name'],
-        'obs': 'As variáveis têm que ser declaradas antes de serem utilizadas\n' +
-            'A variável deve ser declarada apenas uma vez\n' +
-            'A variável deve ser declarada com um nome válido (não pode conter espaços, acentos, caracteres especiais, começar com números, etc.)',
     },
     'inteiro': {
         'description': 'Declara uma variável do tipo inteiro',
@@ -95,6 +93,10 @@ export function isDefinition(word) {
 
 export function isCommand(word) {
     return knownCommands.includes(removeCodeExpression(word));
+}
+
+export function isOperator(word) {
+    return knownOperators.includes(word);
 }
 
 export function getKnownDefinitions() {

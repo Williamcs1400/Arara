@@ -47,9 +47,7 @@ function getVariableOfAssignment(token) {
 }
 
 function isAssignment(token){
-    if(token.startsWith('variavel'))
-        return 'variavel'
-    else if(token.startsWith('inteiro'))
+    if(token.startsWith('inteiro'))
         return 'inteiro'
     else if(token.startsWith('real'))
         return 'real'
