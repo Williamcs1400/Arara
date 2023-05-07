@@ -18,7 +18,6 @@ const knownCommands = [
 ];
 
 const knownOperators = [
-    '=',
     '+',
     '-',
     '*',
@@ -97,6 +96,14 @@ export function isCommand(word) {
 
 export function isOperator(word) {
     return knownOperators.includes(word);
+}
+
+export function getOperator(instruction) {
+    return knownOperators.find(operator => instruction.includes(operator));
+}
+
+export function containsOperator(instruction) {
+    return knownOperators.some(operator => instruction.includes(operator));
 }
 
 export function getKnownDefinitions() {

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import IconButton from '@mui/material/IconButton';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import '../styles/in_out.css';
-import {executor} from '../services/analyzers/executor.js'
+import {executeOperation, executor} from '../services/analyzers/executor.js'
 import {ExecutableActionType} from "../services/analyzers/definitions/actionTypes";
 
 
@@ -106,9 +106,31 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                     }
                 }
 
+                // Operações matemáticas
+                if (response.actionType === ExecutableActionType.operation) {
+                    const operations = response.value;
+                    operations.forEach((operation, index) => {
+                        valueVariables.forEach((variable) => {
+                            if(operation === variable.name){
+                                if(variable.value === undefined || variable.value === '') {
+                                    operations[index] = 0;
+                                }else{
+                                    operations[index] = variable.value;
+                                }
+                            }
+                        });
+                    });
+                    const value = executeOperation(operations, response.order);
+                    for (let i = 0; i < valueVariables.length; i++) {
+                        if (valueVariables[i].name === response.variable) {
+                            valueVariables[i].value = value;
+                        }
+                    }
+                    console.log('reposnse', JSON.stringify(response));
+                }
+
                 if(i === executableCode.length - 1){
                     setFinalized(true);
-                    // setText(text + '\n\n' + 'PROGRAMA FINALIZADO');
                 }
             }
         } else {

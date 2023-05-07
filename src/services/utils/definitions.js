@@ -10,6 +10,8 @@ export const defaultCode =
     '\n\nleia(x);' +
     '\nx = \'novo valor de x\';' +
     '\ntxt = \'Teste dois\';' +
+    '\nnum = 10 * 5;' +
+    '\nnum_rel = 10.5 + num_rel;' +
     '\n\nescreva(\'Valor inteiro: \', num);' +
     '\nescreva(\'\\n\');' +
     '\n\nescreva(\'Valor real: \', num_rel);' +

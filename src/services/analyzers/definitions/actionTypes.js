@@ -2,5 +2,6 @@
 export const ExecutableActionType = {
     writing: 'WRITING',
     reading: 'READING',
-    assignment: 'ASSIGNMENT'
+    assignment: 'ASSIGNMENT',
+    operation: 'OPERATION'
 }

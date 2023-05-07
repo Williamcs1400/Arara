@@ -1,4 +1,10 @@
-import {validateTyping} from "../definitions/dictionary";
+import {
+    containsOperator,
+    getNotAcceptedSpecialCharacters,
+    getOperator,
+    isOperator,
+    validateTyping
+} from "../definitions/dictionary";
 
 export function semanticAnalyzer(code, variables, usages, defAndTypes){
     findBeginAndEnd(code);
@@ -80,8 +86,25 @@ function validateAssignmentAndTypes(defAndTypes, usages){
     usagesWithValue.forEach(usage => {
         defAndTypes.forEach(defAndType => {
             if(usage.name === defAndType.line){
-                if(!validateTyping(defAndType.declaration, usage.value)){
-                    throw new Error('Erro semântico | O valor ' + usage.value + ' atribuído à variável ' + usage.name + ' não é compatível com o tipo ' + defAndType.declaration + '.');
+
+                // se é feito um cálculo matemático com operadores
+                if(containsOperator(usage.value)){
+                    // cria um array com os operandos
+                    const operands = usage.value.replaceAll(' ', '').split(/[\+\-\*\/]/);
+
+                    // TODO: verificar se o operando é válido
+                    operands.forEach(item => {
+                        // se o operando é uma variável declarada
+                        if(!getNotAcceptedSpecialCharacters(item.trim()) && !validateTyping(defAndType.declaration, item.trim())){
+                            throw new Error('Erro semântico | O valor ' + item + ' atribuído à variável ' + usage.name + ' não é compatível com o tipo ' + defAndType.declaration + '.');
+                        }
+                    });
+                }
+                // se é feita uma atribuição simples
+                else {
+                    if (!validateTyping(defAndType.declaration, usage.value)) {
+                        throw new Error('Erro semântico | O valor ' + usage.value + ' atribuído à variável ' + usage.name + ' não é compatível com o tipo ' + defAndType.declaration + '.');
+                    }
                 }
             }
         });
