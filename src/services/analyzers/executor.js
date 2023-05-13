@@ -1,5 +1,5 @@
 import {ExecutableActionType} from "./definitions/actionTypes";
-import {containsOperator, isOperator} from "./definitions/dictionary";
+import {containsOperator, isDeclaration, isOperator} from "./definitions/dictionary";
 
 // executa o código gerado pelo compilador linha a linha
 export function executor(token) {
@@ -15,6 +15,9 @@ export function executor(token) {
         }else{
             return {actionType: ExecutableActionType.assignment, value: getValueOfAssignment(token), type: isAssignment(token), variable: getVariableOfAssignment(token)};
         }
+    } else if(isDeclaration(token)) {
+        return {actionType: null, value: null};
+
     }
     else {
         return {actionType: null, value: null};
