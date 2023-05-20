@@ -1,12 +1,13 @@
 import React, {useEffect} from 'react';
 import SideNav, {NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
-import '../styles/sidebar.css';
-import {Compiler} from '../services/analyzers/compiler.js'
+import '../../styles/sidebar.css';
+import {Compiler} from '../../services/analyzers/compiler.js'
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import playButton from '../assets/playButton.png';
-import terminalButton from '../assets/terminal.png';
+import playButton from '../../assets/playButton.png';
+import terminalButton from '../../assets/terminal.png';
+import {startTest} from "../../services/utils/teste";
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -52,7 +53,7 @@ export default function Sidebar({executeCode, openTerminal}) {
                         setResult(Compiler());
                     }
                     if (selected === 'terminal') {
-                        openTerminal();
+                        startTest();
                     }
                 }}
             >

@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import IconButton from '@mui/material/IconButton';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import '../styles/in_out.css';
-import {executeOperation, executor} from '../services/analyzers/executor.js'
-import {ExecutableActionType} from "../services/analyzers/definitions/actionTypes";
+import '../../styles/in_out.css';
+import {executeOperation, executor} from '../../services/analyzers/executor.js'
+import {ExecutableActionType} from "../../services/analyzers/definitions/actionTypes";
 
 
 export default function InOut({height, width, closeTerminal, executableCode}) {
@@ -37,7 +37,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
         setAtt(!att);
     }
 
-    function isClear(){
+    function isClear() {
         return text === '' && input === '' && lastInput === '' && readingEnabled === false && valueVariables.length === 0 && lastVariable === '' && pauseOrder === 0;
     }
 
@@ -57,7 +57,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 // Escrita no terminal
                 if (response.actionType === ExecutableActionType.writing) {
                     // Verifica se o valor é uma string ou uma variável
-                    if(response.type === 'string') {
+                    if (response.type === 'string') {
                         if (response.value.indexOf('\\n') !== -1) {
                             for (let i = 0; i < response.value.length; i++) {
                                 if (response.value[i] === '\\' && response.value[i + 1] === 'n') {
@@ -70,8 +70,8 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                         } else {
                             aux += response.value;
                         }
-                    // Verifica se o valor é uma variável
-                    }else if(response.type === 'variable'){
+                        // Verifica se o valor é uma variável
+                    } else if (response.type === 'variable') {
                         for (let i = 0; i < valueVariables.length; i++) {
                             if (valueVariables[i].name === response.value) {
                                 aux += valueVariables[i].value;
@@ -111,10 +111,10 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                     const operations = response.value;
                     operations.forEach((operation, index) => {
                         valueVariables.forEach((variable) => {
-                            if(operation === variable.name){
-                                if(variable.value === undefined || variable.value === '') {
+                            if (operation === variable.name) {
+                                if (variable.value === undefined || variable.value === '') {
                                     operations[index] = 0;
-                                }else{
+                                } else {
                                     operations[index] = variable.value;
                                 }
                             }
@@ -126,10 +126,9 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                             valueVariables[i].value = value;
                         }
                     }
-                    console.log('reposnse', JSON.stringify(response));
                 }
 
-                if(i === executableCode.length - 1){
+                if (i === executableCode.length - 1) {
                     setFinalized(true);
                 }
             }
@@ -139,9 +138,9 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     }
 
     useEffect(() => {
-        if(isClear()){
+        if (isClear()) {
             executeCode();
-        }else{
+        } else {
             clear();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,7 +167,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     }, [lastInput]);
 
     useEffect(() => {
-        if(finalized){
+        if (finalized) {
             setText(`${text}\nPROGRAMA FINALIZADO`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,36 +180,38 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 height: 40,
                 background: '#272727',
                 display: 'flex',
-                justifyContent: "flex-end"
+                justifyContent: "flex-end",
             }}>
                 <IconButton aria-label="delete" style={{marginLeft: 'auto', marginRight: 0}}
                             onClick={() => closeTerminal()}>
                     <CloseOutlinedIcon color='error'/>
                 </IconButton>
             </div>
-            <text className="textOut">
-                {text}
-            </text>
-            <input
-                ref={input => {
-                    if (input !== null && focus) {
-                        input.focus();
-                        setFocus(false);
-                    }
-                }}
-                className="textIn"
-                type="text"
-                value={input}
-                onChange={(e) => onChange(e.target.value)}
-                onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                        setText(text + e.target.value + '\n');
-                        setLastInput(e.target.value + '\n');
-                        setInput('');
-                    }
-                }}
-                style={{visibility: readingEnabled ? 'visible' : 'hidden'}}
-            />
+            <div style={{border: '2px solid #008F11', height: height - 43}}>
+                <text className="textOut">
+                    {text}
+                </text>
+                <input
+                    ref={input => {
+                        if (input !== null && focus) {
+                            input.focus();
+                            setFocus(false);
+                        }
+                    }}
+                    className="textIn"
+                    type="text"
+                    value={input}
+                    onChange={(e) => onChange(e.target.value)}
+                    onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                            setText(text + e.target.value + '\n');
+                            setLastInput(e.target.value + '\n');
+                            setInput('');
+                        }
+                    }}
+                    style={{visibility: readingEnabled ? 'visible' : 'hidden'}}
+                />
+            </div>
         </div>
     );
 }

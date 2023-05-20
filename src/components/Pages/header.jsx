@@ -1,6 +1,6 @@
 import React from 'react';
-import '../styles/header.css';
-import logo512 from '../assets/logo512.png';
+import '../../styles/header.css';
+import logo512 from '../../assets/logo512.png';
 
 export default function Header() {
     return (

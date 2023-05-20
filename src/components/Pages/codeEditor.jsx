@@ -1,8 +1,8 @@
 import React from 'react';
 import AceEditor from 'react-ace';
-import CustomAraraMode from '../services/utils/CustomAraraMode.js';
-import {defaultCode} from '../services/utils/definitions.js';
-import {setCodeFromEditor} from "../services/analyzers/compiler";
+import CustomAraraMode from '../../services/utils/CustomAraraMode.js';
+import {defaultCode} from '../../services/utils/definitions.js';
+import {setCodeFromEditor} from "../../services/analyzers/compiler";
 
 class App extends React.Component {
 

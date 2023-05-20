@@ -25,3 +25,15 @@ export const defaultCode =
     '\n\nescreva(\'Valor x: \', x);' +
     '\nescreva(\'\\n\');' +
     '\n\n#FIM_PROGRAMA;';
+
+export const examaple =
+    '#INICIO_PROGRAMA;' +
+    '\n\n//Programa para teste.js do juiz online - calcula área de um triângulo' +
+    '\ninteiro base;' +
+    '\ninteiro altura;' +
+    '\nreal area = 0;' +
+    '\n\nleia(base);' +
+    '\nleia(altura);' +
+    '\n\narea = base * altura / 2;' +
+    '\n\nescreva(area);' +
+    '\n\n#FIM_PROGRAMA;';
