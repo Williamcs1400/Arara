@@ -4,7 +4,7 @@ import Header from "./Pages/header";
 import CodeEditor from "./Pages/codeEditor";
 import InOut from "./Pages/in_out";
 
-function Home(){
+function Ide(){
     const [openTerminal, setOpenTerminal] = React.useState(false);
     const [executedCode, setExecutedCode] = React.useState([]);
     const [height, setHeight] = React.useState(document.querySelector("#height"));
@@ -57,7 +57,7 @@ function Home(){
             </div>
 
             <div style={{marginLeft: 64}}>
-                <Header/>
+                <Header showIcon={true} showButtonLogin={true} redirectUrl={'/ide'} barColor={'#2F2F2F'}/>
                 <CodeEditor height={height - terminalHeight} width={width}/>
                 {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
                                        executableCode={executedCode}/> : null}
@@ -68,4 +68,4 @@ function Home(){
 
 }
 
-export default Home;
+export default Ide;
