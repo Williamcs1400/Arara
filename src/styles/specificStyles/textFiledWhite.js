@@ -34,5 +34,23 @@ export const style = {
     },
     "& .MuiSelect-icon.Mui-focused": {
         color: "white"
+    },
+    "& .MuiSelect-select": {
+        color: "white"
+    },
+    "&:hover .MuiSelect-select": {
+        color: "white"
+    },
+    "& .MuiSelect-select.Mui-focused": {
+        color: "white"
+    },
+    "& .MuiSelect-selectMenu": {
+        color: "white"
+    },
+    "&:hover .MuiSelect-selectMenu": {
+        color: "white"
+    },
+    "& .MuiSelect-selectMenu.Mui-focused": {
+        color: "white"
     }
 }

@@ -18,6 +18,7 @@ function Main(height, width) {
     }
 
     function openTaskMode() {
+        navigate('/registerTask');
     }
 
     function openDocumentation() {
@@ -26,7 +27,7 @@ function Main(height, width) {
     return (
         <div>
             <Header showIcon={false} showButtonLogin={true} redirectUrl={'/'}/>
-            <div style={{height: height.height - 71, width: width, background: '#263238'}}>
+            <div style={{height: height.height - 70, width: width, background: '#263238'}}>
                 <div style={{display: 'flex', flexDirection: 'column', marginRight: 20, marginLeft: 20}}>
                     <img src={logo512} alt="logo" width='175' height='175'
                          style={{alignSelf: 'center', marginLeft: 15, marginTop: 25}}/>

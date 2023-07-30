@@ -11,6 +11,7 @@ export default function Header(props) {
     const [showLogo, setShowLogo] = React.useState(true);
     const [showLogin, setShowLogin] = React.useState(true);
     const [textButton, setTextButton] = React.useState('Entrar/Registrar');
+    const [redirectUrl, setRedirectUrl] = React.useState('/');
     const [barColor, setBarColor] = React.useState('#17202A');
     const navigate = useNavigate();
 
@@ -18,6 +19,7 @@ export default function Header(props) {
         if(props) {
             setShowLogo(props.showIcon)
             setShowLogin(props.showButtonLogin)
+            setRedirectUrl(props.redirectUrl)
             if(props.barColor){
                 setBarColor(props.barColor)
             }
