@@ -6,7 +6,6 @@ import task from "../assets/task.png";
 import documentation from "../assets/documentation.png";
 import Typewriter from 'typewriter-effect';
 import Box from '@mui/material/Box';
-import {auth} from "../services/firebase/firabaseConfig";
 import {useNavigate} from "react-router-dom";
 // import firebase from "firebase";
 

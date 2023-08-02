@@ -5,22 +5,119 @@ import {Button} from "@mui/material";
 import Card from '@mui/material/Card';
 import {
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword
 } from "firebase/auth";
 import {auth} from "../../services/firebase/firabaseConfig";
 import Header from "./header";
-
 import {useLocation, useNavigate} from 'react-router-dom';
 import {GoogleLoginButton} from "react-social-login-buttons";
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Typography from "@mui/material/Typography";
+import Swal from 'sweetalert2';
+import {db} from "../../services/firebase/firabaseConfig";
+import {browserSessionPersistence, browserLocalPersistence, setPersistence} from "firebase/auth";
+import {collection, addDoc, setDoc, doc, getDoc} from "firebase/firestore";
 
 export default function Login(height, width, redirectUrl) {
     const [email, setEmail] = React.useState('');
+    const [emailLogin, setEmailLogin] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [passwordLogin, setPasswordLogin] = React.useState('');
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
     const [name, setName] = React.useState('');
+    const [isTeacher, setIsTeacher] = React.useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
+
+    async function register() {
+        Swal.fire({
+            title: 'Cadastrando usuário...',
+        });
+        Swal.showLoading();
+
+        // verificar se possui registro com o email
+        const docRef = doc(db, "users", "SF");
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+                const user = userCredential.user;
+                addDoc(collection(db, "users"), {
+                    name: name,
+                    email: email,
+                    isTeacher: isTeacher,
+                    uid: user.uid
+                }).then(async (docRef) => {
+                    console.log("Document written with ID: ", docRef.id);
+                    await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+                        const user = userCredential.user;
+                        persistLogin();
+                        Swal.close()
+                        navigate(location.state.redirectUrl ? location.state.redirectUrl : '/');
+                    }).catch((error) => {
+                        const errorMessage = error.message;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Erro ao entrar: ' + errorMessage,
+                        });
+                    });
+                }).catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Erro ao cadastrar: ' + error,
+                    });
+                });
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Erro ao cadastrar: ' + errorMessage,
+                });
+            });
+        } else {
+            // docSnap.data() will be undefined in this case
+            console.log("já existe");
+        }
+    }
+
+    async function loginEmailPassword() {
+        Swal.fire({
+            title: 'Entrando...',
+        });
+        Swal.showLoading();
+        await signInWithEmailAndPassword(auth, emailLogin, passwordLogin).then((userCredential) => {
+            const user = userCredential.user;
+            Swal.close();
+            persistLogin();
+            navigate(location.state.redirectUrl ? location.state.redirectUrl : '/');
+        }).catch((error) => {
+            const errorMessage = error.message;
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Erro ao entrar: ' + errorMessage,
+            });
+        });
+    }
+
+    function persistLogin() {
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                return signInWithEmailAndPassword(auth, email, password);
+            })
+            .catch((error) => {
+            });
+    }
 
     function doLogin(email, password) {
         const provider = new GoogleAuthProvider();
@@ -109,12 +206,33 @@ export default function Login(height, width, redirectUrl) {
                                 id="confirmPasswordArara"
                                 label="Confirme sua senha"
                                 variant="outlined"
+                                error={(password !== passwordConfirm) && passwordConfirm !== ''}
                                 sx={style}
-                                style={{marginBottom: 20, width: 300}}
-                                value={password}
+                                style={{marginBottom: 10, width: 300}}
+                                value={passwordConfirm}
                                 type={'password'}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => setPasswordConfirm(e.target.value)}
                             />
+
+                            <FormGroup>
+                                <FormControlLabel
+                                    style={{marginBottom: 10}}
+                                    control={<Checkbox value={isTeacher}
+                                                       onChange={(e) => setIsTeacher(e.target.checked)}/>}
+                                    label={
+                                        <Typography sx={{
+                                            fontWeight: 'bold',
+                                            fontFamily: 'Poppins',
+                                            color: '#fff',
+                                            fontSize: 16
+                                        }}>
+                                            Sou professor?
+                                        </Typography>
+                                    }
+                                />
+
+                            </FormGroup>
+
                             <Button
                                 variant="contained"
                                 style={{
@@ -128,10 +246,10 @@ export default function Login(height, width, redirectUrl) {
                                     borderRadius: 5,
                                     textTransform: 'none'
                                 }}
-                                onClick={doLogin}
+                                onClick={register}
                                 type={'submit'}
                             >
-                                Entrar
+                                Cadastrar
                             </Button>
 
                             <hr style={{width: '75%', marginTop: 15}}/>
@@ -176,23 +294,23 @@ export default function Login(height, width, redirectUrl) {
                                 Já tem cadastro? Entre no Arara!
                             </h7>
                             <TextField
-                                id="emailArara"
+                                id="emailAraraLogin"
                                 label="E-mail"
                                 variant="outlined"
                                 sx={style}
                                 style={{marginBottom: 20, marginTop: 20, width: 300}}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={emailLogin}
+                                onChange={(e) => setEmailLogin(e.target.value)}
                             />
                             <TextField
-                                id="passwordArara"
+                                id="passwordAraraLogin"
                                 label="Senha"
                                 variant="outlined"
                                 sx={style}
                                 style={{marginBottom: 20, width: 300}}
-                                value={password}
+                                value={passwordLogin}
                                 type={'password'}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => setPasswordLogin(e.target.value)}
                             />
                             <Button
                                 variant="contained"
@@ -207,7 +325,7 @@ export default function Login(height, width, redirectUrl) {
                                     borderRadius: 5,
                                     textTransform: 'none'
                                 }}
-                                onClick={doLogin}
+                                onClick={loginEmailPassword}
                                 type={'submit'}
                             >
                                 Entrar
