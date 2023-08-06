@@ -144,7 +144,7 @@ export default function Login(height, width, redirectUrl) {
         <div>
             <Header showIcon={true}/>
 
-            <div style={{height: height.height - 71, width: width, backgroundColor: '#263238'}}>
+            <div style={{height: height.height - 70, width: width, backgroundColor: '#263238'}}>
                 <div style={{display: 'table', clear: 'both', content: '', alignItems: 'center'}}>
                     <div style={{float: 'left', width: 'fit-content', marginLeft: 150}}>
                         <Card style={{

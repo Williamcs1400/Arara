@@ -16,71 +16,98 @@ function Task(props) {
     const [showTask, setShowTask] = useState(false);
     const [dataTask, setDataTask] = useState({});
     const [tests, setTests] = useState([]);
+
     const location = useLocation();
     const navigate = useNavigate();
     const {id} = useParams();
 
-    async function findTask(id) {
-        Swal.fire({
-            title: 'Buscando tarefa...',
-            allowOutsideClick: false,
-        });
-        Swal.showLoading();
-
-        const code = id.replaceAll(' ', '');
-        const docRef = doc(db, 'tasks', code);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            Swal.close();
-            navigate('/atividade/' + code)
-        } else {
+    function isLogged(code){
+        if(getCurrentUser() === null){
             Swal.fire({
                 title: 'Ops',
-                text: 'Tarefa não encontrada! Verifique o código digitado e tente novamente.',
+                text: 'Você precisa estar logado para acessar essa página!',
                 icon: 'warning',
+            }).then((result) => {
+                if(result.isConfirmed){
+                    id === undefined ?
+                        navigate('/entrar', {state: {redirectUrl: '/atividade/' + code.replaceAll(' ', '')}})
+                        :
+                        navigate('/entrar', {state: {redirectUrl: '/atividade/' + id.replaceAll(' ', '')}});
+                }
             });
+        }else{
+            return true;
+        }
+    }
+
+    async function findTask(id) {
+        const ok = isLogged(id);
+        if(ok) {
+            Swal.fire({
+                title: 'Buscando tarefa...',
+                allowOutsideClick: false,
+            });
+            Swal.showLoading();
+
+            const code = id.replaceAll(' ', '');
+            const docRef = doc(db, 'tasks', code);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                Swal.close();
+                navigate('/atividade/' + code)
+            } else {
+                Swal.fire({
+                    title: 'Ops',
+                    text: 'Tarefa não encontrada! Verifique o código digitado e tente novamente.',
+                    icon: 'warning',
+                });
+            }
         }
     }
 
     async function loadTaskInfo(code) {
-        Swal.fire({
-            title: 'Carregando tarefa...',
-            allowOutsideClick: false,
-        });
-        Swal.showLoading();
+        const ok = isLogged(code);
 
-        const docRef = doc(db, 'tasks', code);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            Swal.close();
-            const docRef2 = query(collection(db, 'tasks', code, 'tests'));
-            const docSnap2 = await getDocs(docRef2);
-            if (docSnap2.docs.length > 0) {
-                setShowTask(true);
-                let auxData = docSnap.data();
-                auxData.code = code;
+        if(ok) {
+            Swal.fire({
+                title: 'Carregando tarefa...',
+                allowOutsideClick: false,
+            });
+            Swal.showLoading();
 
-                let aux = {}
-                let array = [];
-                for(let i = 0; i < docSnap2.docs.length; i++) {
-                    aux = docSnap2.docs[i].data();
-                    array.push(aux);
+            const docRef = doc(db, 'tasks', code);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                Swal.close();
+                const docRef2 = query(collection(db, 'tasks', code, 'tests'));
+                const docSnap2 = await getDocs(docRef2);
+                if (docSnap2.docs.length > 0) {
+                    setShowTask(true);
+                    let auxData = docSnap.data();
+                    auxData.code = code;
+
+                    let aux = {}
+                    let array = [];
+                    for (let i = 0; i < docSnap2.docs.length; i++) {
+                        aux = docSnap2.docs[i].data();
+                        array.push(aux);
+                    }
+                    setDataTask(auxData);
+                    setTests(array);
+                } else {
+                    Swal.fire({
+                        title: 'Ops',
+                        text: 'Tarefa com erro no cadastro dos testes! Entre em contato com o professor responsável.',
+                        icon: 'warning',
+                    });
                 }
-                setDataTask(auxData);
-                setTests(array);
             } else {
                 Swal.fire({
                     title: 'Ops',
-                    text: 'Tarefa com erro no cadastro dos testes! Entre em contato com o professor responsável.',
+                    text: 'Tarefa não encontrada! Verifique o código digitado e tente novamente.',
                     icon: 'warning',
                 });
             }
-        } else {
-            Swal.fire({
-                title: 'Ops',
-                text: 'Tarefa não encontrada! Verifique o código digitado e tente novamente.',
-                icon: 'warning',
-            });
         }
     }
 

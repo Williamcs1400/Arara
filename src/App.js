@@ -28,7 +28,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<Main height={height} width={width}/>}/>
-                <Route path="entrar" element={<Login height={height} width={width}/>}/>
+                <Route path="/entrar" element={<Login height={height} width={width}/>}/>
                 <Route path="/livre" element={<Ide height={height} width={width}/>}/>
                 <Route path="/cadastrarAtividade" element={<RegisterTask height={height} width={width}/>}/>
                 <Route path="/cadastroAtividadeFeito" element={<RegisterFinish />}/>
