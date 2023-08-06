@@ -8,7 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {db} from "../services/firebase/firabaseConfig";
 import {collection, addDoc, setDoc, doc} from "firebase/firestore";
 import Tooltip from '@mui/material/Tooltip';
-import {style} from "../styles/specificStyles/textFiledWhite";
+import {styleWhite} from "../styles/specificStyles/textFieldStyles";
 import TextField from "@mui/material/TextField";
 import {Button} from "@mui/material";
 import InputLabel from '@mui/material/InputLabel';
@@ -22,15 +22,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Swal from "sweetalert2";
+import {getCurrentUser} from "../services/firebase/firebaseAux";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function RegisterTask(height, width) {
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [inputFormat, setInputFormat] = React.useState('');
     const [outputFormat, setOutputFormat] = React.useState('');
+    const [outputExample, setOutputExample] = React.useState('');
     const [qtdInput, setQtdInput] = React.useState(1);
     const [inputsAux, setInputsAux] = React.useState([]);
-    const [teste, setTeste] = React.useState([]);
 
     // for accordions
     const [expandedFirst, setExpandedFirst] = React.useState(true);
@@ -49,50 +52,63 @@ function RegisterTask(height, width) {
     const [inRows, setInRows] = React.useState([]);
     const [outRows, setOutRows] = React.useState([4]);
 
-    let teste2 = [];
+    const location = useLocation();
+    const navigate = useNavigate();
 
     async function save() {
-        let teste = [];
-        for (let i = 0; i < inRows.length; i++) {
-            let aux = [];
-            for (let j = 0; j < qtdInput; j++) {
-                aux.push(inRows[i][j])
-            }
-            teste.push(aux)
-        }
 
-        if (name === '') {
-            setTypeOfAlert('error');
-            setMessage('O campo de nome não pode estar vazio!');
-            setOpen(true);
-            return;
-        }
+        let entradas = [];
+        let saidas = [];
+        const copy = JSON.parse(JSON.stringify(inRows));
+        copy.forEach((row) => {
+            saidas.push(row.aux.pop());
+            entradas.push(row.aux);
+        });
 
-        if (description === '') {
-            setTypeOfAlert('error');
-            setMessage('O campo de descrição não pode estar vazio!');
-            setOpen(true);
-            return;
-        }
+        Swal.fire({
+            title: 'Salvando tarefa...',
+        });
+        Swal.showLoading();
 
         try {
-
-            const docRef = await addDoc(collection(db, "tasks"), {
+            const docRef = await addDoc(collection(db, 'tasks'), {
                 name: name,
                 description: description,
+                inputFormat: inputFormat,
+                outputFormat: outputFormat,
+                outputExample: outputExample,
+                qtdInput: qtdInput,
+                teacher: getCurrentUser().uuid
             });
 
             const id = docRef.id;
 
+            Swal.fire({
+                title: 'Salvando entradas e saídas...',
+            });
+            Swal.showLoading();
+
             for (let i = 0; i < inRows.length; i++) {
-                const docRef = await addDoc(collection(db, "tasks", id, "inputs"), {
-                    inputs: teste[i],
-                    output: outRows[i]
+                await addDoc(collection(db, 'tasks', id, 'tests'), {
+                    inputs: entradas[i],
+                    output: saidas[i]
+                }).then((r) => {
+                }).catch((e) => {
                 });
             }
-        } catch (e) {
-        }
 
+            if(id !== undefined){
+                Swal.close();
+                navigate('/cadastroAtividadeFeito', {state: {height, width, taskId: id}});
+            }
+
+        } catch (e) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Erro ao salvar tarefa: ' + e,
+            });
+        }
     }
 
     function sleep(ms) {
@@ -105,7 +121,7 @@ function RegisterTask(height, width) {
             setEditFirst(false);
             setEditSecond(true);
             setExpandedSecond(true);
-            await sleep(3000);
+            await sleep(500);
             setExpandedFirst(false);
         } else {
             setEditFirst(true);
@@ -117,7 +133,7 @@ function RegisterTask(height, width) {
             setEditSecond(false);
             setEditThird(true);
             setExpandedThird(true);
-            await sleep(3000);
+            await sleep(500);
             setExpandedSecond(false);
         } else {
             setEditSecond(true);
@@ -148,43 +164,32 @@ function RegisterTask(height, width) {
         return (inputFormat !== '' && outputFormat !== '' && qtdInput !== '');
     }
 
-    function validateThirdInput() {
-        return (inputsAux.length === qtdInput);
-    }
-
     // *------------------------------------------------*
 
-
     function addNewIO() {
-        console.log('inputsAux: ' + JSON.stringify(inputsAux));
-        if (inputsAux.length === 0 || inputsAux.length !== qtdInput) {
-            console.log('erro 1')
-            setTypeOfAlert('error');
-            setMessage('O campo de entradas não pode estar vazio!');
-            setOpen(true);
+        if (inputsAux.length !== qtdInput) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Preencha todos os campos!',
+                timer: 2000
+            });
             return;
         }
 
-        console.log('deu certo')
         let aux = [];
         for (let i = 0; i < inputsAux.length; i++) {
             aux.push(inputsAux[i])
         }
-        // [] to {}
+
         setInRows([...inRows, {aux}]);
-        // setOutRows([...outRows, outAux]);
-        // setOutAux('');
-        for(let i = 0; i < inputsAux.length; i++){
-            teste2[i] = '';
-            inputsAux[i] = '';
-        }
+        setInputsAux([])
     }
 
     const handleChangeInput = (value, index) => {
         let aux = inputsAux;
         aux[index] = value;
         setInputsAux(aux);
-        teste2 = aux;
     }
 
     const multipliesInputs = (index) => {
@@ -194,17 +199,12 @@ function RegisterTask(height, width) {
                 label={'Entrada ' + (index + 1)}
                 variant='outlined'
                 multiline
-                sx={style}
-                value={teste2[index]}
+                sx={styleWhite}
+                value={inputsAux[index]}
                 style={{width: '100%', marginBottom: 15, marginRight: 10}}
                 onChange={(e) => handleChangeInput(e.target.value, index)}
-                />
+            />
         )
-    }
-
-    const getInputValue = (index) => {
-        console.log('index: ' + index);
-        return inputsAux.at(index);
     }
 
     return (
@@ -239,7 +239,7 @@ function RegisterTask(height, width) {
                                 label='Nome da tarefa'
                                 variant='outlined'
                                 multiline
-                                sx={style}
+                                sx={styleWhite}
                                 style={{width: '100%', marginBottom: 15}}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -267,7 +267,7 @@ function RegisterTask(height, width) {
                                 label='Descrição da tarefa'
                                 variant='outlined'
                                 multiline
-                                sx={style}
+                                sx={styleWhite}
                                 style={{width: '100%', marginBottom: 25}}
                                 value={description}
                                 enabled={!validateFirstInput()}
@@ -348,16 +348,16 @@ function RegisterTask(height, width) {
                         {editSecond ?
                             <div style={{display: 'flex'}}>
                                 <TextField
-                                    id='nameTaskArara'
+                                    id='inputFormatTaskArara'
                                     label='Formato da entrada'
                                     variant='outlined'
                                     multiline
-                                    sx={style}
+                                    sx={styleWhite}
                                     style={{width: '100%', marginBottom: 15, marginRight: 10}}
                                     value={inputFormat}
                                     onChange={(e) => setInputFormat(e.target.value)}
                                 />
-                                <FormControl sx={style} style={{width: '40%'}}>
+                                <FormControl sx={styleWhite} style={{width: '40%'}}>
                                     <InputLabel id="arara-qtdinput">Quantidade de entrdas</InputLabel>
                                     <Select
                                         labelId="arara-qtdinput-select-id"
@@ -413,12 +413,12 @@ function RegisterTask(height, width) {
                         }
 
                         {editSecond ? <TextField
-                                id='descriptionTaskArara'
-                                label='Descrição da tarefa'
+                                id='outputFormatTaskArara'
+                                label='Formato da saída'
                                 variant='outlined'
                                 multiline
-                                sx={style}
-                                style={{width: '100%', marginBottom: 25}}
+                                sx={styleWhite}
+                                style={{width: '100%', marginBottom: 15}}
                                 value={outputFormat}
                                 enabled={!validateSecondInput()}
                                 onChange={(e) => setOutputFormat(e.target.value)}
@@ -437,6 +437,35 @@ function RegisterTask(height, width) {
                                     fontSize: 16
                                 }} noWrap>
                                     {outputFormat}
+                                </Typography>
+                            </div>
+                        }
+
+                        {editSecond ? <TextField
+                                id='outputExampleTaskArara'
+                                label='Exemplo de saída'
+                                variant='outlined'
+                                multiline
+                                sx={styleWhite}
+                                style={{width: '100%', marginBottom: 25}}
+                                value={outputExample}
+                                enabled={!validateSecondInput()}
+                                onChange={(e) => setOutputExample(e.target.value)}
+                            /> :
+                            <div style={{display: 'flex', marginBottom: 25}}>
+                                <Typography variant='title' sx={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    Exemplo de saída: &nbsp;
+                                </Typography>
+                                <Typography variant='subheading' sx={{
+                                    fontWeight: 'Light',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    {outputExample}
                                 </Typography>
                             </div>
                         }
@@ -509,8 +538,8 @@ function RegisterTask(height, width) {
                                         label='Saída esperada'
                                         variant='outlined'
                                         multiline
-                                        sx={style}
-                                        value={teste2.at(qtdInput - 1)}
+                                        sx={styleWhite}
+                                        value={inputsAux[qtdInput - 1]}
                                         style={{width: '100%', marginBottom: 15}}
                                         onChange={(e) => handleChangeInput(e.target.value, qtdInput - 1)}
                                     />
@@ -536,8 +565,8 @@ function RegisterTask(height, width) {
                                     Adicionar
                                 </Button>
                             </div>
-
-                            : <div></div>
+                            :
+                            <div/>
                         }
 
                         <TableContainer component={Paper}>
@@ -563,7 +592,7 @@ function RegisterTask(height, width) {
                                         >
                                             {row.aux.map((cell) => (
                                                 <TableCell align="right">{cell}</TableCell>
-                                    ))}
+                                            ))}
                                             <TableCell align="right">{row.out}</TableCell>
                                         </TableRow>
                                     ))}
@@ -572,6 +601,26 @@ function RegisterTask(height, width) {
                         </TableContainer>
                     </AccordionDetails>
                 </Accordion>
+
+                <Button
+                    variant="contained"
+                    style={{
+                        backgroundColor: '#17202A',
+                        color: '#ffffff',
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: 'bolder',
+                        width: 300,
+                        height: 50,
+                        borderRadius: 5,
+                        marginTop: 20,
+                        textTransform: 'none',
+                        alignSelf: 'center'
+                    }}
+                    onClick={save}
+                >
+                    Salvar tarefa
+                </Button>
             </div>
         </div>
     );

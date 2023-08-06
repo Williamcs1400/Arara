@@ -13,14 +13,15 @@ function Main(height, width) {
     const navigate = useNavigate();
 
     function openFreeMode() {
-        navigate('/ide');
+        navigate('/livre');
     }
 
     function openTaskMode() {
-        navigate('/registerTask');
+        navigate('/atividade');
     }
 
     function openDocumentation() {
+
     }
 
     return (

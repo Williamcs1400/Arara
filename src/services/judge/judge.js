@@ -1,57 +1,48 @@
-import {Compiler, setCodeFromEditor} from "../analyzers/compiler";
-import {examaple} from "./definitions";
 import {executeOperation, executor} from "../analyzers/executor";
 import {ExecutableActionType} from "../analyzers/definitions/actionTypes";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase/firabaseConfig";
+import {Compiler} from "../analyzers/compiler";
 
-// TODO:
-// Apenas para salvar o mock da funcionalidade de correção
-// Deve ser apagado depois da total implementação
-export async function startTest() {
-    // números inteiros positivos - isso vai ser definido pelo usuário
-    let name = 'testeTriangulo';
-    let scope = [1, 1000]
-    let qtdCases = 100;
-    let qtdVariables = 2;
-    let testCases = [];
-
-    for (let i = 0; i < qtdCases; i++) {
-        let testCase = [];
-        for (let j = 0; j < qtdVariables; j++) {
-            testCase.push(Math.floor(Math.random() * (scope[1] - scope[0] + 1)) + scope[0]);
-        }
-        testCases.push(testCase);
-    }
-
-    setCodeFromEditor(examaple);
-
+/*
+ * Este método é o resposnável por iniciar o teste de uma solução de um aluno
+ * com base nos casos de teste cadastrados pelo professor.
+ * @param testCases: Casos de teste cadastrados pelo professor
+ * @param studentCode: Código fonte da solução do aluno
+ */
+export async function startTest(testCases) {
     const compilerResult = Compiler();
-    const save = JSON.parse(JSON.stringify(testCases));
+
+    let qtdHits = 0;
+    let flagHit = false;
+    const qtdTests = testCases.length;
     const results = [];
+
     testCases.forEach((testCase, index) => {
-        const result = executeCode(testCase, compilerResult.executableCode)
-        console.log(JSON.stringify(save[index]) + ' -> ' + result);
-        results.push(result);
+        flagHit = false;
+        let testCaseInputs = [...testCase.inputs]
+        let result = executeCode(testCaseInputs, compilerResult.executableCode)
+
+        if (result === testCase.output) {
+            qtdHits++;
+            flagHit = true;
+        }
+        results.push(buildResults(testCase.inputs, testCase.output, result, flagHit));
     });
 
-    const result = executeCode([5, 5], compilerResult.executableCode)
-    console.log('result', result);
-
-    for(let i = 0; i < results.length; i++){
-        try {
-            const docRef = await addDoc(collection(db, name), {
-                inputs: Array.from(save[i]),
-                output: results[i]
-            });
-            console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-            console.error("Error adding document: ", e);
-        }
+    if(qtdHits === qtdTests) {
+        return {success: true, detail: 100}
+    }else{
+        const percent = (qtdHits * 100) / qtdTests;
+        return {success: false, detail: Number(percent.toFixed(2)), results: results}
     }
 
 }
 
+/*
+    * Este método é o resposnável por executar o código fonte de uma solução de um aluno
+    * com base nos casos de teste cadastrados pelo professor.
+    * @param inputArray: Entrada do caso de teste
+    * @param executableCode: Código fonte da solução do aluno
+ */
 function executeCode(inputArray, executableCode) {
     let aux = '';
     let valueVariables = [];
@@ -144,4 +135,13 @@ function executeCode(inputArray, executableCode) {
         });
     }
     return result;
+}
+
+function buildResults(inputs, expectedOutput, output, hit) {
+    return {
+        input: inputs,
+        expectedOutput: expectedOutput,
+        output: output,
+        ok: hit
+    }
 }

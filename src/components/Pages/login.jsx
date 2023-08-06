@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import {style} from "../../styles/specificStyles/textFiledWhite";
+import {styleWhite} from "../../styles/specificStyles/textFieldStyles";
 import {Button} from "@mui/material";
 import Card from '@mui/material/Card';
 import {
@@ -45,7 +45,6 @@ export default function Login(height, width, redirectUrl) {
         const docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
             await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
                 const user = userCredential.user;
                 addDoc(collection(db, "users"), {
@@ -54,7 +53,6 @@ export default function Login(height, width, redirectUrl) {
                     isTeacher: isTeacher,
                     uid: user.uid
                 }).then(async (docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
                     await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
                         const user = userCredential.user;
                         persistLogin();
@@ -84,9 +82,6 @@ export default function Login(height, width, redirectUrl) {
                     text: 'Erro ao cadastrar: ' + errorMessage,
                 });
             });
-        } else {
-            // docSnap.data() will be undefined in this case
-            console.log("já existe");
         }
     }
 
@@ -178,7 +173,7 @@ export default function Login(height, width, redirectUrl) {
                                 id="nameArara"
                                 label="Nome completo"
                                 variant="outlined"
-                                sx={style}
+                                sx={styleWhite}
                                 style={{marginBottom: 20, marginTop: 20, width: 300}}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -187,7 +182,7 @@ export default function Login(height, width, redirectUrl) {
                                 id="emailArara"
                                 label="E-mail"
                                 variant="outlined"
-                                sx={style}
+                                sx={styleWhite}
                                 style={{marginBottom: 20, width: 300}}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -196,7 +191,7 @@ export default function Login(height, width, redirectUrl) {
                                 id="passwordArara"
                                 label="Senha"
                                 variant="outlined"
-                                sx={style}
+                                sx={styleWhite}
                                 style={{marginBottom: 20, width: 300}}
                                 value={password}
                                 type={'password'}
@@ -207,7 +202,7 @@ export default function Login(height, width, redirectUrl) {
                                 label="Confirme sua senha"
                                 variant="outlined"
                                 error={(password !== passwordConfirm) && passwordConfirm !== ''}
-                                sx={style}
+                                sx={styleWhite}
                                 style={{marginBottom: 10, width: 300}}
                                 value={passwordConfirm}
                                 type={'password'}
@@ -297,7 +292,7 @@ export default function Login(height, width, redirectUrl) {
                                 id="emailAraraLogin"
                                 label="E-mail"
                                 variant="outlined"
-                                sx={style}
+                                sx={styleWhite}
                                 style={{marginBottom: 20, marginTop: 20, width: 300}}
                                 value={emailLogin}
                                 onChange={(e) => setEmailLogin(e.target.value)}
@@ -306,7 +301,7 @@ export default function Login(height, width, redirectUrl) {
                                 id="passwordAraraLogin"
                                 label="Senha"
                                 variant="outlined"
-                                sx={style}
+                                sx={styleWhite}
                                 style={{marginBottom: 20, width: 300}}
                                 value={passwordLogin}
                                 type={'password'}

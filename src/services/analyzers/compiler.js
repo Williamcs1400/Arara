@@ -10,6 +10,10 @@ export function setCodeFromEditor(c) {
     code = c;
 }
 
+export function getCodeFromEditor() {
+    return code;
+}
+
 export function Compiler() {
 
     // analise léxica para saber se o código está vazio

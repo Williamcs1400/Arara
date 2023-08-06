@@ -7,27 +7,27 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import playButton from '../../assets/playButton.png';
 import terminalButton from '../../assets/terminal.png';
-import {startTest} from "../../services/utils/teste";
-
+import judge from '../../assets/judge.png';
+import infoTask from '../../assets/infoTask.png';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Sidebar({executeCode, openTerminal}) {
+export default function Sidebar({executeCode, openTerminal, isTask, openTaskInfo, startTestSolution}) {
     const [open, setOpen] = React.useState(false);
     const [result, setResult] = React.useState({});
     const [message, setMessage] = React.useState('');
     const [typeOfAlert, setTypeOfAlert] = React.useState('');
 
     useEffect(() => {
-        if(result.sucess === undefined && result.message === undefined)
+        if (result.sucess === undefined && result.message === undefined)
             return;
 
         result.sucess === true ? setTypeOfAlert('success') : setTypeOfAlert('error');
         setMessage(result.message);
 
-        if(result.sucess === true)
+        if (result.sucess === true)
             executeCode(result.executableCode);
 
         handleClick();
@@ -53,7 +53,13 @@ export default function Sidebar({executeCode, openTerminal}) {
                         setResult(Compiler());
                     }
                     if (selected === 'terminal') {
-                        startTest();
+                    }
+                    if (selected === 'judge') {
+                        startTestSolution();
+                    }
+
+                    if (selected === 'infoTask') {
+                        openTaskInfo();
                     }
                 }}
             >
@@ -65,7 +71,7 @@ export default function Sidebar({executeCode, openTerminal}) {
                             <img src={playButton} width="20" height="20" alt="play button"/>
                         </NavIcon>
                         <NavText>
-                            Executar
+                            {isTask ? 'Testar' : 'Executar'}
                         </NavText>
                     </NavItem>
 
@@ -78,15 +84,40 @@ export default function Sidebar({executeCode, openTerminal}) {
                         </NavText>
                     </NavItem>
 
+                    {isTask &&
+                        <NavItem eventKey="judge">
+                            <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src={judge} width="28" height="28" alt="terminal button"/>
+                            </NavIcon>
+                            <NavText>
+                                Submter para avaliação
+                            </NavText>
+                        </NavItem>
+                    }
+
+                    {isTask &&
+                        <NavItem eventKey="infoTask">
+                            <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src={infoTask} width="28" height="28" alt="terminal button"/>
+                            </NavIcon>
+                            <NavText>
+                                Descrição da tarefa
+                            </NavText>
+                        </NavItem>
+                    }
+
+
                 </SideNav.Nav>
             </SideNav>
             <Stack spacing={2} sx={{width: '100%'}}>
-                <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}
+                          anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                     <Alert onClose={handleClose} severity={typeOfAlert} sx={{width: '100%'}}>
                         {message}
                     </Alert>
                 </Snackbar>
             </Stack>
         </div>
-    );
+    )
+        ;
 }
