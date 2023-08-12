@@ -78,7 +78,8 @@ function RegisterTask(height, width) {
                 outputFormat: outputFormat,
                 outputExample: outputExample,
                 qtdInput: qtdInput,
-                teacher: getCurrentUser().uuid
+                teacher: getCurrentUser().uuid,
+                date: new Date()
             });
 
             const id = docRef.id;
@@ -97,7 +98,7 @@ function RegisterTask(height, width) {
                 });
             }
 
-            if(id !== undefined){
+            if (id !== undefined) {
                 Swal.close();
                 navigate('/cadastroAtividadeFeito', {state: {height, width, taskId: id}});
             }

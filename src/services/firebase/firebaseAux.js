@@ -4,16 +4,27 @@ const userLogged = {
     name: '',
     email: '',
     photoUrl: '',
-    uuid: ''
+    uuid: '',
+    isTeacher: false
 }
 export function getCurrentUser(){
     const user = auth.currentUser
     if(user !== null) {
-        userLogged.name = user.displayName
         userLogged.email = user.email
         userLogged.photoUrl = user.photoURL
-        userLogged.uuid = user.uid
         return userLogged
     }
     return null;
+}
+
+export function persistUuid(uuid){
+    userLogged.uuid = uuid
+}
+
+export function persistName(name){
+    userLogged.name = name
+}
+
+export function persistIsTeacher(isTeacher){
+    userLogged.isTeacher = isTeacher
 }

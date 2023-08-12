@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import IconButton from '@mui/material/IconButton';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import '../../styles/in_out.css';
-import {executeOperation, executor} from '../../services/analyzers/executor.js'
-import {ExecutableActionType} from "../../services/analyzers/definitions/actionTypes";
+import '../../../styles/in_out.css';
+import {executeOperation, executor} from '../../../services/analyzers/executor.js'
+import {ExecutableActionType} from "../../../services/analyzers/definitions/actionTypes";
 
 
 export default function InOut({height, width, closeTerminal, executableCode}) {

@@ -20,7 +20,7 @@ import Typography from "@mui/material/Typography";
 import Swal from 'sweetalert2';
 import {db} from "../../services/firebase/firabaseConfig";
 import {browserSessionPersistence, browserLocalPersistence, setPersistence} from "firebase/auth";
-import {collection, addDoc, setDoc, doc, getDoc} from "firebase/firestore";
+import {collection, addDoc, updateDoc, doc, getDoc} from "firebase/firestore";
 
 export default function Login(height, width, redirectUrl) {
     const [email, setEmail] = React.useState('');
@@ -51,8 +51,11 @@ export default function Login(height, width, redirectUrl) {
                     name: name,
                     email: email,
                     isTeacher: isTeacher,
-                    uid: user.uid
+                    uid: ''
                 }).then(async (docRef) => {
+                    await updateDoc(doc(db, "users", docRef.id), {
+                        uid: docRef.id
+                    });
                     await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
                         const user = userCredential.user;
                         persistLogin();

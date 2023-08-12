@@ -4,12 +4,13 @@ import logo512 from '../../assets/logo512.png';
 import person from '../../assets/person.png';
 import exit from '../../assets/exit.png';
 import tasks from '../../assets/tasks.png';
+import myFolder from '../../assets/myFolder.png';
 import question from '../../assets/question.png';
 import github from '../../assets/github.png';
 import {Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {auth, db, isLogged} from "../../services/firebase/firabaseConfig";
-import {getCurrentUser} from "../../services/firebase/firebaseAux";
+import {getCurrentUser, persistIsTeacher, persistName, persistUuid} from "../../services/firebase/firebaseAux";
 import {getDocs, getDoc, collection, query, where} from "firebase/firestore";
 import Drawer from '@mui/material/Drawer';
 import {onAuthStateChanged} from "firebase/auth";
@@ -46,8 +47,8 @@ export default function Header(props) {
     async function getUserData() {
         if (getCurrentUser() && !flag) {
             setFlag(true);
-            const uuid = getCurrentUser().uuid;
-            const q = query(collection(db, 'users'), where('uid', "==", uuid));
+            const email = getCurrentUser().email;
+            const q = query(collection(db, 'users'), where('email', "==", email));
             const querySnapshot = await getDocs(q);
 
             if (querySnapshot.docs.length > 0) {
@@ -55,6 +56,9 @@ export default function Header(props) {
                 setTextButton(doc.data().name);
                 setName(doc.data().name);
                 setIsTeacher(doc.data().isTeacher);
+                persistIsTeacher(doc.data().isTeacher);
+                persistUuid(doc.data().uid);
+                persistName(doc.data().name);
             }
         }
     }
@@ -78,8 +82,12 @@ export default function Header(props) {
         navigate('/');
     }
 
-    function openTaskMode() {
+    function openRegisterTask() {
         navigate('/cadastrarAtividade');
+    }
+
+    function openMyTasks() {
+        navigate('/minhasAtividades');
     }
 
     return (
@@ -98,7 +106,7 @@ export default function Header(props) {
                 <div>
                     <div style={{display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'right'}}>
 
-                        <div style={{visibility: isTeacher ? 'visible' : 'hidden'}}>
+                        <div style={{visibility: isTeacher ? 'visible' : 'collapse'}}>
                             <Button
                                 style={{
                                     color: '#fff', fontSize: 22, fontWeight: 'lighter',
@@ -106,15 +114,34 @@ export default function Header(props) {
                                     textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
                                 }}
                                 sx={{':hover': {backgroundColor: '#85d249'}}}
-                                onClick={openTaskMode}
+                                onClick={openRegisterTask}
                             >
                                 <img src={tasks} alt="logo" width='25' height='25'
                                      style={{alignSelf: 'center', marginRight: 5}}/>
                                 Cadastar Tarefa
                             </Button>
 
+                        </div>
+
+                        <div>
+                            <Button
+                                style={{
+                                    color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                    alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                    textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                }}
+                                sx={{':hover': {backgroundColor: '#85d249'}}}
+                                onClick={openMyTasks}
+                            >
+                                <img src={myFolder} alt="logo" width='25' height='25'
+                                     style={{alignSelf: 'center', marginRight: 5}}/>
+                                Minhas Tarefas
+                            </Button>
+
                             <hr style={{width: '90%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
                         </div>
+
+
                         <Button
                             style={{
                                 color: '#fff', fontSize: 22, fontWeight: 'lighter',

@@ -1,8 +1,8 @@
 import React, {useEffect} from "react";
-import Sidebar from "./Pages/sidebar";
+import Sidebar from "./Pages/subComponents/sidebar";
 import Header from "./Pages/header";
-import CodeEditor from "./Pages/codeEditor";
-import InOut from "./Pages/in_out";
+import CodeEditor from "./Pages/subComponents/codeEditor";
+import InOut from "./Pages/subComponents/in_out";
 import Box from '@mui/material/Box';
 import Swal from "sweetalert2";
 import {startTest} from "../services/judge/judge";

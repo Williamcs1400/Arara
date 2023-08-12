@@ -5,7 +5,7 @@ import search from "../../assets/search.png";
 import {Button} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {stylePrimary} from "../../styles/specificStyles/textFieldStyles";
-import {collection, getDocs, query, doc, getDoc, addDoc} from "firebase/firestore";
+import {collection, getDocs, query, doc, getDoc, addDoc, where, collectionGroup} from "firebase/firestore";
 import {db} from "../../services/firebase/firabaseConfig";
 import Swal from "sweetalert2";
 import Ide from "../ide";
@@ -17,7 +17,6 @@ function Task(props) {
     const [dataTask, setDataTask] = useState({});
     const [tests, setTests] = useState([]);
 
-    const location = useLocation();
     const navigate = useNavigate();
     const {id} = useParams();
 
@@ -112,10 +111,20 @@ function Task(props) {
     }
 
     async function saveTaskAttempt(response) {
+        const date = new Date();
         await addDoc(collection(db, 'tasks', id, 'attempt'), {
             response: response,
             uid: getCurrentUser().uuid,
-            date: new Date(),
+            date: date
+        }).then(async ( res) => {
+            await addDoc(collection(db, 'users', getCurrentUser().uuid, 'myAttempts'), {
+                taskCode: id,
+                attemptCode: res.id,
+                name: dataTask.name,
+                date: date,
+                success: response.success,
+                detail: response.detail
+            });
         });
     }
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import AceEditor from 'react-ace';
-import CustomAraraMode from '../../services/utils/CustomAraraMode.js';
-import {defaultCode} from '../../services/utils/definitions.js';
-import {setCodeFromEditor} from "../../services/analyzers/compiler";
+import CustomAraraMode from '../../../services/utils/CustomAraraMode.js';
+import {defaultCode} from '../../../services/utils/definitions.js';
+import {setCodeFromEditor} from "../../../services/analyzers/compiler";
 
 class App extends React.Component {
 
@@ -47,7 +47,7 @@ class App extends React.Component {
                     onChange={this.onChange.bind(this)}
                     name="UNIQUE_ID_OF_DIV"
                     editorProps={{ $blockScrolling: true }}
-                    height={this.state.height ? this.state.height - 71 : 500}
+                    height={this.state.height ? this.state.height - 70 : 500}
                     width={this.state.width ? this.state.width - 64 : 500}
                     fontSize={21}
                 />
