@@ -25,6 +25,8 @@ function App() {
 
     window.addEventListener("resize", updateSize);
 
+    console.log('estou app.js')
+
     return (
         <div>
             {/* TODO: colocar o header aqui e usar um objeto para alterar os dados passados a ele*/}

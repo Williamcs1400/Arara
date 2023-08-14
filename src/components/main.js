@@ -42,6 +42,9 @@ function Main(height, width) {
         handleClickOpen();
     }
 
+    console.log('estou main.js')
+
+
     const boxOptions = (image, text, call) => {
         return (
             <Box
