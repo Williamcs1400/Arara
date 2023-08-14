@@ -1,7 +1,6 @@
 import React from 'react';
 import AceEditor from 'react-ace';
 import CustomAraraMode from '../../../services/utils/CustomAraraMode.js';
-import {defaultCode} from '../../../services/utils/definitions.js';
 import {setCodeFromEditor} from "../../../services/analyzers/compiler";
 
 class App extends React.Component {
@@ -9,12 +8,13 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: defaultCode,
+            value: props.value,
             height: props.height,
             width: props.width
         }
-        setCodeFromEditor(defaultCode);
+        setCodeFromEditor(props.value);
     }
+
     componentDidMount() {
         const customMode = new CustomAraraMode();
         this.refs.aceEditor.editor.getSession().setMode(customMode);

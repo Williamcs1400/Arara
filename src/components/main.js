@@ -1,16 +1,34 @@
-import Header from "./Pages/header";
-import React from "react";
-import logo512 from "../assets/logo512.png";
-import lighBulb from "../assets/lightBulb.png";
-import task from "../assets/task.png";
-import documentation from "../assets/documentation.png";
+import Header from './Pages/header';
+import React from 'react';
+import logo512 from '../assets/logo512.png';
+import lighBulb from '../assets/lightBulb.png';
+import task from '../assets/task.png';
+import documentation from '../assets/documentation.png';
 import Typewriter from 'typewriter-effect';
 import Box from '@mui/material/Box';
-import {useNavigate} from "react-router-dom";
-// import firebase from "firebase";
+import {useNavigate} from 'react-router-dom';
+import Documentation from "./Pages/documentation";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import Typography from '@mui/joy/Typography';
+import Sheet from '@mui/joy/Sheet';
 
 function Main(height, width) {
+    const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     function openFreeMode() {
         navigate('/livre');
@@ -21,6 +39,7 @@ function Main(height, width) {
     }
 
     function openDocumentation() {
+        handleClickOpen();
     }
 
     const boxOptions = (image, text, call) => {
@@ -39,7 +58,7 @@ function Main(height, width) {
             >
                 <div
                     style={{flexDirection: 'column', marginRight: 20, marginLeft: 20, textAlign: 'center'}}>
-                    <img src={image} alt="logo" width='50' height='50' style={{marginTop: 10}}/>
+                    <img src={image} alt='logo' width='50' height='50' style={{marginTop: 10}}/>
                     <br/>
                     <h7 style={{
                         color: '#ffffff', fontSize: 18, marginTop: 10, textAlign: 'center',
@@ -57,7 +76,7 @@ function Main(height, width) {
             <Header showIcon={false} showButtonLogin={true} redirectUrl={'/'}/>
             <div style={{height: height.height - 70, width: width, background: '#263238'}}>
                 <div style={{display: 'flex', flexDirection: 'column', marginRight: 20, marginLeft: 20}}>
-                    <img src={logo512} alt="logo" width='175' height='175'
+                    <img src={logo512} alt='logo' width='175' height='175'
                          style={{alignSelf: 'center', marginLeft: 15, marginTop: 25}}/>
                     <h7 style={{
                         color: '#ff4155', fontSize: 32, marginTop: 10, textAlign: 'center', fontWeight: 'bold',
@@ -79,6 +98,39 @@ function Main(height, width) {
                         {boxOptions(lighBulb, 'Modo livre', openFreeMode)}
                         {boxOptions(task, 'Modo tarefa', openTaskMode)}
                         {boxOptions(documentation, 'Documentação', openDocumentation)}
+
+                        <Modal
+                            aria-labelledby="modal-doc"
+                            aria-describedby="modal-desc"
+                            open={open}
+                            onClose={() => setOpen(false)}
+                            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%',}}
+                        >
+                            <Sheet
+                                variant="solid"
+                                sx={{
+                                    width: '80%',
+                                    height: '80%',
+                                    borderRadius: 'md',
+                                    p: 3,
+                                    boxShadow: 'md',
+                                    bgcolor: '#17202A',
+
+                                }}
+                            >
+                                <ModalClose
+                                    variant="outlined"
+                                    sx={{
+                                        top: 'calc(-1/4 * var(--IconButton-size))',
+                                        right: 'calc(-1/4 * var(--IconButton-size))',
+                                        boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+                                        borderRadius: '50%',
+                                        bgcolor: 'background.surface',
+                                    }}
+                                />
+                                <Documentation/>
+                            </Sheet>
+                        </Modal>
 
                     </div>
                 </div>

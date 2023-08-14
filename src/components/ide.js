@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Swal from "sweetalert2";
 import {startTest} from "../services/judge/judge";
 import {getCodeFromEditor} from "../services/analyzers/compiler";
+import {defaultCode} from "../services/utils/definitions";
 
 function Ide(props) {
     const [openTerminal, setOpenTerminal] = React.useState(false);
@@ -148,7 +149,7 @@ function Ide(props) {
 
             <div style={{marginLeft: 64}}>
                 <Header showIcon={true} showButtonLogin={true} redirectUrl={'/livre'} barColor={'#2F2F2F'} nameTask={props.dataTask ? props.dataTask.name : ''}/>
-                <CodeEditor height={height - terminalHeight} width={width}/>
+                <CodeEditor height={height - terminalHeight} width={width} value={defaultCode}/>
                 {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
                                        executableCode={executedCode}/> : null}
             </div>

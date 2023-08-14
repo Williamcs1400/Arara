@@ -6,6 +6,8 @@ import {removeCodeExpression} from "../utils/codeFixer";
 
 let code;
 
+let codeExample;
+
 export function setCodeFromEditor(c) {
     code = c;
 }
@@ -13,6 +15,15 @@ export function setCodeFromEditor(c) {
 export function getCodeFromEditor() {
     return code;
 }
+
+export function setCodeExample(c) {
+    codeExample = c;
+}
+
+export function getCodeExample() {
+    return codeExample;
+}
+
 
 export function Compiler() {
 
