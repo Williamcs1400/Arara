@@ -1,7 +1,7 @@
 {
   "name": "arara",
   "version": "1.0.0",
-  "homepage": "https://williamcs1400.github.io/",
+  "homepage": "https://williamcs1400.github.io/Arara",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
