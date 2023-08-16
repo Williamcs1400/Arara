@@ -74,9 +74,8 @@ function MyTasks(props) {
 
     return (
         <div style={{minHeight: props.height - 1, height: 'fit-content', width: props.width, background: '#DCDCDC'}}>
-            <Header showIcon={true} showButtonLogin={true} redirectUrl={'/minhasAtividades'}/>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 25}}>
-                <Box>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Box style={{marginTop: 25}}>
                     <TabContext value={value}>
                         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                             <TabList onChange={handleChange} sx={tabSx}>

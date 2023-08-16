@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import '../../styles/header.css';
 import logo512 from '../../assets/logo512.png';
 import person from '../../assets/person.png';
@@ -8,66 +8,48 @@ import myFolder from '../../assets/myFolder.png';
 import question from '../../assets/question.png';
 import github from '../../assets/github.png';
 import {Button} from "@mui/material";
-import {useNavigate} from "react-router-dom";
-import {auth, db, isLogged} from "../../services/firebase/firabaseConfig";
+import {useLocation, useNavigate} from "react-router-dom";
+import {auth, db} from "../../services/firebase/firabaseConfig";
 import {getCurrentUser, persistIsTeacher, persistName, persistUuid} from "../../services/firebase/firebaseAux";
-import {getDocs, getDoc, collection, query, where} from "firebase/firestore";
+import {getDocs, collection, query, where} from "firebase/firestore";
 import Drawer from '@mui/material/Drawer';
-import {onAuthStateChanged} from "firebase/auth";
+import getHeaderStyleByPath from "../../styles/header/headerStyleByPath";
 
-export default function Header(props) {
+export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, nameT, nameUser, teacher}) {
     const [showLogo, setShowLogo] = React.useState(true);
     const [showLogin, setShowLogin] = React.useState(true);
     const [textButton, setTextButton] = React.useState('Entrar/Registrar');
-    const [redirectUrl, setRedirectUrl] = React.useState('/');
+    const [defRedirectUrl, setdefRedirectUrl] = React.useState('/');
     const [barColor, setBarColor] = React.useState('#17202A');
     const [name, setName] = React.useState('');
     const [openDrawer, setOpenDrawer] = React.useState(false);
-    const [flag, setFlag] = React.useState(false);
     const [nameTask, setNameTask] = React.useState('');
     const [isTeacher, setIsTeacher] = React.useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     React.useEffect(() => {
-        if (props) {
-            setShowLogo(props.showIcon)
-            setShowLogin(props.showButtonLogin)
-            setRedirectUrl(props.redirectUrl)
-            if (props.barColor) {
-                setBarColor(props.barColor)
-            }
-            if(props.nameTask) {
-                setNameTask(props.nameTask)
-            }
-        }
-        getUserData();
-    }, [props]);
+        const headerStyle = getHeaderStyleByPath(location.pathname);
+        setShowLogo(headerStyle.showIcon);
+        setShowLogin(headerStyle.showButtonLogin);
+        setBarColor(headerStyle.barColor);
+        setdefRedirectUrl(headerStyle.redirectUrl);
 
-    async function getUserData() {
-        if (getCurrentUser() && !flag) {
-            setFlag(true);
-            const email = getCurrentUser().email;
-            const q = query(collection(db, 'users'), where('email', "==", email));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.docs.length > 0) {
-                const doc = querySnapshot.docs[0];
-                setTextButton(doc.data().name);
-                setName(doc.data().name);
-                setIsTeacher(doc.data().isTeacher);
-                persistIsTeacher(doc.data().isTeacher);
-                persistUuid(doc.data().uid);
-                persistName(doc.data().name);
-            }
+        setNameTask(nameT);
+        setName(nameUser);
+        setIsTeacher(teacher);
+        if(nameUser !== ''){
+            setTextButton(nameUser);
         }
-    }
+    }, [location.pathname]);
+
 
     const handleClickOpen = () => {
         if (getCurrentUser()) {
             setOpenDrawer(true);
         } else {
-            navigate('entrar', {state: {redirectUrl: '/'}});
+            navigate('entrar', {state: {redirectUrl: defRedirectUrl}});
         }
     };
 

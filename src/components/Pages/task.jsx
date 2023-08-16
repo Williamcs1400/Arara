@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from "react"
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import Header from "./header";
+import {useNavigate, useParams} from "react-router-dom";
 import search from "../../assets/search.png";
 import {Button} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {stylePrimary} from "../../styles/specificStyles/textFieldStyles";
-import {collection, getDocs, query, doc, getDoc, addDoc, where, collectionGroup} from "firebase/firestore";
+import {collection, getDocs, query, doc, getDoc, addDoc} from "firebase/firestore";
 import {db} from "../../services/firebase/firabaseConfig";
 import Swal from "sweetalert2";
 import Ide from "../ide";
@@ -13,7 +12,6 @@ import {getCurrentUser} from "../../services/firebase/firebaseAux";
 
 function Task(props) {
     const [codeTask, setCodeTask] = useState('');
-    const [showTask, setShowTask] = useState(false);
     const [dataTask, setDataTask] = useState({});
     const [tests, setTests] = useState([]);
 
@@ -81,7 +79,6 @@ function Task(props) {
                 const docRef2 = query(collection(db, 'tasks', code, 'tests'));
                 const docSnap2 = await getDocs(docRef2);
                 if (docSnap2.docs.length > 0) {
-                    setShowTask(true);
                     let auxData = docSnap.data();
                     auxData.code = code;
 
@@ -140,14 +137,13 @@ function Task(props) {
 
     return (
         <div style={{
-            minHeight: props.height,
+            minHeight: props.height - 70,
             height: 'fit-content',
             width: props.width,
             background: '#DCDCDC',
         }}>
             {id === undefined ?
                 <div>
-                    <Header showIcon={true} showButtonLogin={true} redirectUrl={'/'}/>
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',

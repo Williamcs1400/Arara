@@ -1,7 +1,6 @@
 import {
     getInstructionByToken,
     getNotAcceptedSpecialCharacters,
-    isDeclaration,
     validateTyping
 } from '../definitions/dictionary.js';
 
@@ -51,8 +50,6 @@ function validateAssignmentWithDeclarationInstruction(instruction){
 
 
 function validateAssignmentInstruction(instruction, token) {
-    const definition = getInstructionByToken(token);
-
     // verifica se há a quantidade correta de cada componente da instrução
     if (instruction.split(token).length - 1 !== 1 ||
         instruction.split(' ').length - 1 < 1

@@ -1,5 +1,4 @@
-import Header from './Pages/header';
-import React from 'react';
+import React, {useEffect} from 'react';
 import logo512 from '../assets/logo512.png';
 import lighBulb from '../assets/lightBulb.png';
 import task from '../assets/task.png';
@@ -8,17 +7,11 @@ import Typewriter from 'typewriter-effect';
 import Box from '@mui/material/Box';
 import {useNavigate} from 'react-router-dom';
 import Documentation from "./Pages/documentation";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
-import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 
-function Main(height, width) {
+function Main({height, width}) {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
 
@@ -41,9 +34,6 @@ function Main(height, width) {
     function openDocumentation() {
         handleClickOpen();
     }
-
-    console.log('estou main.js')
-
 
     const boxOptions = (image, text, call) => {
         return (
@@ -76,8 +66,8 @@ function Main(height, width) {
 
     return (
         <div>
-            <Header showIcon={false} showButtonLogin={true} redirectUrl={'/'}/>
-            <div style={{height: height.height - 70, width: width, background: '#263238'}}>
+            {/*<Header showIcon={false} showButtonLogin={true} redirectUrl={'/'}/>*/}
+            <div style={{height: height - 70, width: width, background: '#263238'}}>
                 <div style={{display: 'flex', flexDirection: 'column', marginRight: 20, marginLeft: 20}}>
                     <img src={logo512} alt='logo' width='175' height='175'
                          style={{alignSelf: 'center', marginLeft: 15, marginTop: 25}}/>

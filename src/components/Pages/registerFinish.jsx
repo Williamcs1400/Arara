@@ -34,7 +34,6 @@ function RegisterFinish(props) {
 
     return (
         <div>
-            <Header showIcon={true} showButtonLogin={true} redirectUrl={'/'}/>
             <div
                 style={{
                     minHeight: location.state.height.height - 70,

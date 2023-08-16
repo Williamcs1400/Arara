@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import Header from "./header";
 import {collection, query, getDocs, where} from "firebase/firestore";
 import {db} from "../../services/firebase/firabaseConfig";
 import Swal from "sweetalert2";
@@ -112,7 +111,7 @@ function TaskDetails(props) {
     const infoBlock = (text1, text2) => {
         return (
             <div style={{
-                backgroundColor: '#17202a', borderRadius: 15, height: 120, textAlign: 'center',
+                backgroundColor: '#17202a', borderRadius: 15, height: 120, textAlign: 'center', marginTop: 15,
                 alignItems: 'center', justifyContent: 'center', marginInline: 50, minWidth: 180, justifyItems: 'center'
             }}>
                 <br/>
@@ -207,16 +206,14 @@ function TaskDetails(props) {
 
     return (
         <div style={{
-            minHeight: props.height,
+            minHeight: props.height - 70,
             height: 'fit-content',
             width: props.width,
             background: '#DCDCDC',
         }}>
-            <Header showIcon={true} showButtonLogin={true} redirectUrl={'/'}/>
-
             <div style={{
                 display: 'flex', flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'center', marginTop: 15, width: '100%'
+                justifyContent: 'center', width: '100%'
             }}>
                 {infoBlock(qtdAttempts === 0 ? '-' : qtdAttempts, textAttemps())}
                 {infoBlock(qtdCorrect === 0 ? '-' : qtdCorrect, textCorrect())}

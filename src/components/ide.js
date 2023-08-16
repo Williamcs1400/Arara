@@ -1,12 +1,9 @@
 import React, {useEffect} from "react";
 import Sidebar from "./Pages/subComponents/sidebar";
-import Header from "./Pages/header";
 import CodeEditor from "./Pages/subComponents/codeEditor";
 import InOut from "./Pages/subComponents/in_out";
-import Box from '@mui/material/Box';
 import Swal from "sweetalert2";
 import {startTest} from "../services/judge/judge";
-import {getCodeFromEditor} from "../services/analyzers/compiler";
 import {defaultCode} from "../services/utils/definitions";
 
 function Ide(props) {
@@ -16,7 +13,6 @@ function Ide(props) {
     const [width, setWidth] = React.useState(document.querySelector("#width"));
     const [isTask, setIsTask] = React.useState(false);
     const [flagTaskInfo, setFlagTaskInfo] = React.useState(false);
-    const [showTaskInfo, setShowTaskInfo] = React.useState(false);
 
     const [terminalHeight, setTerminalHeight] = React.useState(0);
 
@@ -148,7 +144,6 @@ function Ide(props) {
             </div>
 
             <div style={{marginLeft: 64}}>
-                <Header showIcon={true} showButtonLogin={true} redirectUrl={'/livre'} barColor={'#2F2F2F'} nameTask={props.dataTask ? props.dataTask.name : ''}/>
                 <CodeEditor height={height - terminalHeight} width={width} value={defaultCode}/>
                 {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
                                        executableCode={executedCode}/> : null}

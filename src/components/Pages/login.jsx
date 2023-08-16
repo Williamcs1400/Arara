@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import TextField from '@mui/material/TextField';
 import {styleWhite} from "../../styles/specificStyles/textFieldStyles";
 import {Button} from "@mui/material";
@@ -22,7 +22,7 @@ import {db} from "../../services/firebase/firabaseConfig";
 import {browserSessionPersistence, browserLocalPersistence, setPersistence} from "firebase/auth";
 import {collection, addDoc, updateDoc, doc, getDoc} from "firebase/firestore";
 
-export default function Login(height, width, redirectUrl) {
+export default function Login({height, width, redirectUrl, alterHeader, getUserData}){
     const [email, setEmail] = React.useState('');
     const [emailLogin, setEmailLogin] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -30,7 +30,6 @@ export default function Login(height, width, redirectUrl) {
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
     const [name, setName] = React.useState('');
     const [isTeacher, setIsTeacher] = React.useState(false);
-
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -59,6 +58,7 @@ export default function Login(height, width, redirectUrl) {
                     await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
                         const user = userCredential.user;
                         persistLogin();
+                        getUserData();
                         Swal.close()
                         navigate(location.state.redirectUrl ? location.state.redirectUrl : '/');
                     }).catch((error) => {
@@ -97,6 +97,7 @@ export default function Login(height, width, redirectUrl) {
             const user = userCredential.user;
             Swal.close();
             persistLogin();
+            getUserData();
             navigate(location.state.redirectUrl ? location.state.redirectUrl : '/');
         }).catch((error) => {
             const errorMessage = error.message;
@@ -129,6 +130,8 @@ export default function Login(height, width, redirectUrl) {
                 const user = result.user;
                 // IdP data available using getAdditionalUserInfo(result)
                 // ...
+                getUserData();
+
                 navigate(location.state.redirectUrl ? location.state.redirectUrl : '/');
 
             }).catch((error) => {
@@ -145,9 +148,7 @@ export default function Login(height, width, redirectUrl) {
 
     return (
         <div>
-            <Header showIcon={true}/>
-
-            <div style={{height: height.height - 70, width: width, backgroundColor: '#263238'}}>
+            <div style={{height: height - 70, width: width, backgroundColor: '#263238'}}>
                 <div style={{display: 'table', clear: 'both', content: '', alignItems: 'center'}}>
                     <div style={{float: 'left', width: 'fit-content', marginLeft: 150}}>
                         <Card style={{

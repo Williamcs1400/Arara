@@ -1,8 +1,6 @@
 import {
     containsOperator,
     getNotAcceptedSpecialCharacters,
-    getOperator,
-    isOperator,
     validateTyping
 } from "../definitions/dictionary";
 
