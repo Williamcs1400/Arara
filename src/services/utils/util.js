@@ -2,3 +2,24 @@
 export function convertDateHour(seconds) {
     return new Date(seconds * 1000).toTimeString().split(' ')[0] + ' ' + new Date(seconds * 1000).toLocaleDateString('pt-BR');
 }
+
+/*
+ * Remove os espaços em branco de um string com múltiplas linhas, mas não remove os espaços em branco entre as palavras
+ * de uma string entre aspas simples
+ * @param {string} code
+ */
+export function cleanWhiteSpacesAllowed(code){
+    const newCode = code.split('\n');
+    const newCodeWithoutSpaces = [];
+
+    newCode.forEach(line => {
+        if(line.indexOf('//') !== -1){
+            line = line.substring(0, line.indexOf('//'));
+            newCodeWithoutSpaces.push(line.trimStart().trimEnd());
+        }else {
+            newCodeWithoutSpaces.push(line.trimStart().trimEnd());
+        }
+    });
+
+    return newCodeWithoutSpaces.join('\n');
+}

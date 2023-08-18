@@ -1,8 +1,8 @@
 import {Routes, Route, HashRouter, createHashRouter, useLocation} from "react-router-dom";
 import React, {useEffect} from 'react';
 import Main from "./components/main";
-import Ide from "./components/ide";
-import RegisterTask from "./components/registerTask";
+import Ide from "./components/Pages/codeComponents/ide";
+import RegisterTask from "./components/Pages/registerTask";
 import Login from "./components/Pages/login";
 import RegisterFinish from "./components/Pages/registerFinish";
 import MyTasks from "./components/Pages/myTasks";
@@ -35,6 +35,8 @@ function App() {
         setWidth(window.innerWidth);
     }
 
+    // TODO: Verificar se o usuário está logado logo de primeira
+    // QUANDO ELE ENTRA NA TELA INICIAL APARECE QUE ELE NÃO ESTÁ LOGADO
     async function getUserData() {
         if (getCurrentUser() || nameUser === '') {
             setFlag(true);

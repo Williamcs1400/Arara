@@ -14,7 +14,10 @@ const knownCommands = [
     'real',
     'texto',
     'logico',
-    'caractere'
+    'caractere',
+    'se',
+    'senao_se',
+    'senao',
 ];
 
 const knownOperators = [
@@ -24,6 +27,14 @@ const knownOperators = [
     '/',
 ]
 
+const knownComparisons = [
+    '<',
+    '>',
+    '==',
+    '!=',
+    '>=',
+    '<=',
+]
 
 const knownInstructions = {
     'escreva': {
@@ -38,6 +49,24 @@ const knownInstructions = {
         'syntax': "leia()",
         'example': 'leia(x)',
         'constructionInOrder': ['leia', '(', ')'],
+    },
+    'se': {
+        'description': 'Executa um bloco de código se a condição for verdadeira',
+        'syntax': "se(){}",
+        'example': 'se(x > 0)',
+        'constructionInOrder': ['se', '(', ')'],
+    },
+    'senao_se': {
+        'description': 'Executa um bloco de código se a condição for verdadeira, desde que a condição do se anterior seja falsa',
+        'syntax': "senao_se()",
+        'example': 'senao_se(x > 0)',
+        'constructionInOrder': ['senao_se', '(', ')'],
+    },
+    'senao': {
+        'description': 'Executa um bloco de código se a condição do se e do senao_se anterior forem falsas',
+        'syntax': "senao",
+        'example': 'senao',
+        'constructionInOrder': ['senao'],
     },
     'inteiro': {
         'description': 'Declara uma variável do tipo inteiro',
@@ -116,6 +145,30 @@ export function getInstructionByToken(token) {
 
 export function getNotAcceptedSpecialCharacters() {
     return /[ `´!@#$%^&*()+\-=\]{};':"\\|,.<>?~]/;
+}
+
+/*
+ * Função que verifica se a palavra começa com um número ou é apenas um número
+ * @param word: palavra a ser verificada
+ * @return booleano que indica se a palavra é válida ou não
+ */
+export function startsWithOrOnlyNumber(word) {
+    return word.match(/^[0-9]+$/) !== null;
+}
+
+/*
+ * Função que verifica se o nome da variável é válido para uma possível declaração
+ * @param word: palavra a ser verificada
+ * @return booleano que indica se a palavra é válida ou não
+ */
+export function isPossibleNameOfVariable(word) {
+    return (
+        !knownCommands.includes(word) &&
+        !knownDefinitions.includes(word) &&
+        !knownOperators.includes(word) &&
+        !knownComparisons.includes(word) &&
+        !getNotAcceptedSpecialCharacters().test(word) &&
+        !startsWithOrOnlyNumber(word));
 }
 
 export function isDeclaration(token) {

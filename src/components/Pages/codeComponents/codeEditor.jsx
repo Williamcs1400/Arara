@@ -2,13 +2,14 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import CustomAraraMode from '../../../services/utils/CustomAraraMode.js';
 import {setCodeFromEditor} from "../../../services/analyzers/compiler";
+import {defaultCode} from "../../../services/utils/definitions";
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            value: props.value,
+            value: props.value === '' ? defaultCode : props.value,
             height: props.height,
             width: props.width
         }

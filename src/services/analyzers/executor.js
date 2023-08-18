@@ -2,8 +2,11 @@ import {ExecutableActionType} from "./definitions/actionTypes";
 import {containsOperator, isDeclaration, isOperator} from "./definitions/dictionary";
 
 // executa o código gerado pelo compilador linha a linha
-export function executor(token) {
+export function executor(token, valueVariables) {
+    return execute(token.token, token.content, valueVariables);
+}
 
+function execute(token, content, valueVariables) {
     if (token.startsWith('escreva')) {
         const response = getValueOfWriting(token);
         return {actionType: ExecutableActionType.writing, value: response.value, type: response.type};
@@ -14,7 +17,7 @@ export function executor(token) {
         return {actionType: ExecutableActionType.reading, value: getValueOfReading(token)};
     }
 
-    else if (token.indexOf('=') !== -1) {
+    else if (token.indexOf('=') !== -1 && token.indexOf('se(') === -1) {
 
         if (containsOperator(token)) {
             return {
@@ -34,6 +37,9 @@ export function executor(token) {
 
     } else if (isDeclaration(token)) {
         return {actionType: ExecutableActionType.assignment, value: getDefaultValueOfTyping(token), type: isAssignment(token), variable: getVariableOfDeclarationWithoutAssignment(token)};
+    }
+    else if (token.startsWith('se')) {
+        return {actionType: ExecutableActionType.comparison, value: executeComparison(token, valueVariables), subCode: content};
     }
 
     else {
@@ -145,4 +151,44 @@ export function executeOperation(operands, operators) {
     }
 
     return operands[operands.length - 1];
+}
+
+export function executeComparison(instruction, valueVariables) {
+    // get comparison symbol regex == != > < >= <=
+    const symbol = instruction.match(/==|!=|>|<|>=|<=/)[0];
+
+    const comparison = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')')).replaceAll(' ', '').split(symbol);
+    let value1 = comparison[0];
+    let value2 = comparison[1];
+
+
+    valueVariables.map(variable => {
+        if (value1 === variable.name) {
+            value1 = variable.value;
+        }
+        if (value2 === variable.name) {
+            value2 = variable.value;
+        }
+    });
+
+    value1 = parseFloat(value1);
+    value2 = parseFloat(value2);
+
+    return comparisonAux(value1, value2, symbol);
+}
+
+function comparisonAux(value1, value2, operator) {
+    if (operator === '==') {
+        return value1 === value2;
+    } else if (operator === '!=') {
+        return value1 !== value2;
+    } else if (operator === '>') {
+        return value1 > value2;
+    } else if (operator === '<') {
+        return value1 < value2;
+    } else if (operator === '>=') {
+        return value1 >= value2;
+    } else if (operator === '<=') {
+        return value1 <= value2;
+    }
 }

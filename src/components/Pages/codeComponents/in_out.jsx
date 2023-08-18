@@ -52,7 +52,8 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 if (readingEnabled) {
                     setReadingEnabled(false);
                 }
-                const response = executor(executableCode[i]);
+
+                const response = executor(executableCode[i], valueVariables);
 
                 // Escrita no terminal
                 if (response.actionType === ExecutableActionType.writing) {
@@ -128,6 +129,31 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                     }
                 }
 
+                // Condicional
+                if (response.actionType === ExecutableActionType.comparison) {
+                    if(response.value){
+                        // Se a condição for verdadeira, executa o código dentro do if
+
+                        const executableCodeAux = []
+                        // monta o código que será executado
+                        response.subCode.forEach((code) => {
+                            executableCodeAux.push({token: code, content: null});
+                        });
+
+                        // remove a instrução se já processada
+                        const part1 = executableCode.slice(0, i);
+                        const part2 = executableCode.slice(i + 1, executableCode.length);
+
+                        // insere o código que será executado no ponto onde o se estava
+                        const exeAux = [{token: null, content: null}];
+                        part1.push(...exeAux);
+                        part1.push(...executableCodeAux);
+                        part1.push(...part2);
+                        executableCode = part1;
+                    }
+                }
+
+                // Verifica se o código chegou ao fim
                 if (i === executableCode.length - 1) {
                     setFinalized(true);
                 }

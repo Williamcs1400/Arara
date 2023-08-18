@@ -3,17 +3,18 @@ import {semanticAnalyzer} from './semantic/semanticAnalyzer.js';
 import {getKnownDefinitions, isDeclaration} from './definitions/dictionary.js';
 import {syntacticAnalyze} from "./parsing/parser";
 import {removeCodeExpression} from "../utils/codeFixer";
+import {cleanWhiteSpacesAllowed} from "../utils/util";
 
-let code;
+let codeEditor;
 
 let codeExample;
 
 export function setCodeFromEditor(c) {
-    code = c;
+    codeEditor = c;
 }
 
 export function getCodeFromEditor() {
-    return code;
+    return codeEditor;
 }
 
 export function setCodeExample(c) {
@@ -24,19 +25,38 @@ export function getCodeExample() {
     return codeExample;
 }
 
+/*
+ * função que compila o código do editor
+ */
+export function compilerFromCodeEditor() {
+    return compiler(codeEditor, false)
+}
 
-export function Compiler() {
+/*
+ * função que compila subtrecho de código (escopo)
+ * @param code: código a ser compilado (subtrecho)
+ */
+export function compilerFromScope(code) {
+    return compiler(code, true)
+}
 
+/*
+ * Função que compila o código
+ * Retorna um objeto com a mensagem de sucesso ou erro
+ * @param code: código a ser compilado
+ * @param isScope: booleano que indica se é um subtrecho de código (escopo) ou não - usado para ignorar algumas verificações
+*/
+export function compiler(code, isScope) {
     // analise léxica para saber se o código está vazio
     if(code === undefined){
         return {sucess: false, message: 'Erro | O código não foi definido'};
     }
 
     // pre processa o código para retirar comentários e salvar as definições
-    const preProcessingResult = preProcessing();
+    const preProcessingResult = preProcessing(code);
 
-    // retirando quebras de linha e fazendo a string resultante virar um array de tokens (separados por ';')
-    const tokens = preProcessingResult.preProcessingCode.replaceAll('\n', '').split(';')
+    // retirando quebras de linha
+    const tokens = generateTokens(preProcessingResult.preProcessingCode);
 
     // array de declarações de variáveis
     const declarationVariables = [];
@@ -55,20 +75,35 @@ export function Compiler() {
         tokens.forEach(token => {
             if (token !== '') {
                 const response = syntacticAnalyze(token);
+
                 if (response !== null && response !== undefined) {
+                    // se for declaração, adiciona no array de declarações
                     if(response.action === 'declaration'){
                         const name = response.name;
                         declarationVariables.push({name, order});
-                    }else if(response.action === 'read' || response.action === 'write'){
+                    }
+
+                    // se for leitura ou escrita, adiciona no array de uso
+                    else if(response.action === 'read' || response.action === 'write'){
                         const name = response.name;
                         if(name !== undefined && name !== '') {
                             useVariables.push({name, order});
                         }
-                    }else if(response.action === 'assignment'){
+                    }
+
+                    // se for atribuição, adiciona no array de uso com o novo valor
+                    else if(response.action === 'assignment'){
                         const name = response.name;
                         if(name !== undefined && name !== '') {
                             useVariables.push({name, order, value: response.value});
                         }
+                    }
+
+                    // se for if, adiciona no array de uso com a condição
+                    else if(response.action === 'if'){
+                        response.variables.forEach(variable => {
+                            useVariables.push({name: variable, order});
+                        });
                     }
                 }
                 order++;
@@ -76,7 +111,7 @@ export function Compiler() {
         });
 
         // semantic analyze
-        semanticAnalyzer(preProcessingResult.preProcessingCode, declarationVariables, useVariables, preProcessingResult.defAndTypes);
+        semanticAnalyzer(preProcessingResult.preProcessingCode, declarationVariables, useVariables, preProcessingResult.defAndTypes, isScope);
         return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: exportExecutableCode(preProcessingResult.preProcessingCode)};
 
     } catch (error) {
@@ -88,7 +123,7 @@ function exportExecutableCode(code) {
     const executableCode = [];
 
     // retirando quebras de linha e fazendo a string resultante virar um array de tokens (separados por ';')
-    const tokens = code.replaceAll('\n', '').split(';')
+    const tokens = generateTokens(code);
 
     tokens.forEach(token => {
         if (token !== '' && !getKnownDefinitions().includes(token)) {
@@ -96,10 +131,15 @@ function exportExecutableCode(code) {
             if(token.startsWith('escreva') && token.indexOf(",") !== -1) {
                 const newObject = dismemberEscrevaConcat(token);
                 newObject.forEach(object => {
-                    executableCode.push(object);
+                    executableCode.push({token: object, content: null});
                 });
-            }else {
-                executableCode.push(token);
+            }
+            else if(token.indexOf('{') !== -1 && token.indexOf('}') !== -1){
+                const content = token.substring(token.indexOf('{') + 1, token.lastIndexOf('}'));
+                executableCode.push({token: token.substring(0, token.indexOf('{') + 1), content: generateTokens(content)});
+            }
+            else {
+                executableCode.push({token: token, content: null});
             }
         }
     });
@@ -107,7 +147,14 @@ function exportExecutableCode(code) {
     return executableCode;
 }
 
-function preProcessing(){
+/*
+ * Função que pre processa o código
+ * Retorna um objeto com o código sem comentários e um array de definições
+ * Remove espaços em branco desnecessários
+ * @param code: código a ser compilado
+ */
+function preProcessing(code){
+    code = cleanWhiteSpacesAllowed(code);
     const newCode = code.split('\n');
     const definitions = [];
     const defAndTypes = [];
@@ -147,4 +194,38 @@ function dismemberEscrevaConcat(object){
     });
 
     return newObject;
+}
+
+/*
+ * Função que gera um array de tokens a partir do código
+ * Cada token é uma instrução
+ * Instruções simples terminam com ';' (não vai ter ';' dentro do token)
+ * Instruções com escopo terminam com '}' (vai ter '}' dentro do token)
+*/
+function generateTokens(code) {
+    const preTokens = code.replaceAll('\n', '');
+
+    const aux = preTokens.split('');
+    const tokens = [];
+    let token = '';
+    let flagBracesOpen = false;
+    aux.forEach((char) => {
+        if(char === '{'){
+            flagBracesOpen = true;
+        }
+        if(char === ';' && !flagBracesOpen){
+            tokens.push(token);
+            token = '';
+        }
+        else if(char === '}'){
+            tokens.push(token + char);
+            token = '';
+            flagBracesOpen = false;
+        }
+        else{
+            token += char;
+        }
+    });
+
+    return tokens;
 }

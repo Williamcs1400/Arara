@@ -1,8 +1,5 @@
-import {
-    getInstructionByToken,
-    getNotAcceptedSpecialCharacters,
-    validateTyping
-} from '../definitions/dictionary.js';
+import {getInstructionByToken, getNotAcceptedSpecialCharacters, validateTyping} from '../definitions/dictionary.js';
+import {validateSeInstruction} from "./validateConditional";
 
 /*
     Analisador sintático
@@ -18,8 +15,10 @@ export function syntacticAnalyze(instruction) {
         }
         return validateAssignmentInstruction(instruction, token);
     }
+
+    // TODO: comparação do se de uma forma melhor
     // verificação para atribuição de valor fora da declaração
-    else if(instruction.indexOf('=') !== -1){
+    else if(instruction.indexOf('=') !== -1 && instruction.indexOf('se(') === -1){
         return validateAssignmentWithDeclarationInstruction(instruction);
     }
 
@@ -38,6 +37,14 @@ export function syntacticAnalyze(instruction) {
         }
         return validateLeiaInstruction(instruction);
     }
+
+    // verificação para instrução **se**
+    if (instruction.startsWith('se')) {
+        if(instruction.split('se').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
+        return validateSeInstruction(instruction);
+    }
 }
 
 // TODO: verificar o pq de tirar o ; do final da atribuição não gera erro
@@ -48,7 +55,7 @@ function validateAssignmentWithDeclarationInstruction(instruction){
     return {'name': name, 'value': value, 'action': 'assignment'};
 }
 
-
+// Validação da instrução de atribuição
 function validateAssignmentInstruction(instruction, token) {
     // verifica se há a quantidade correta de cada componente da instrução
     if (instruction.split(token).length - 1 !== 1 ||
@@ -80,6 +87,7 @@ function validateAssignmentInstruction(instruction, token) {
     return name === '' ? null : {'name': name, 'action': 'declaration'};
 }
 
+// Validação da instrução de escrita
 function validateEscrevaInstruction(instruction) {
     const definition = getInstructionByToken('escreva');
     const syntax = definition.syntax;
@@ -124,6 +132,7 @@ function validateEscrevaInstruction(instruction) {
     return {name: name, action: 'write'};
 }
 
+// Validação da instrução de leitura
 function validateLeiaInstruction(instruction) {
     const definition = getInstructionByToken('leia');
     const syntax = definition.syntax;
@@ -149,6 +158,7 @@ function validateLeiaInstruction(instruction) {
 }
 
 // Erros de atribuição
+// TODO: fazer erros aparecerem no terminal em vemelho
 function getErrorTypingExample(name, value, type){
     throw new Error('Erro semântico | O valor ' + value + ' atribuído à variável ' + name + ' não é compatível com o tipo ' + type + '.');
 }

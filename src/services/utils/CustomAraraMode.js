@@ -52,6 +52,9 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
             }, {
                 token: "comment",
                 regex: "//.*$"
+            }, {
+                token: "keyword.operator",
+                regex: "se"
             }
             ]
         };

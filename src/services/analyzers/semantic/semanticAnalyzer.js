@@ -4,8 +4,10 @@ import {
     validateTyping
 } from "../definitions/dictionary";
 
-export function semanticAnalyzer(code, variables, usages, defAndTypes){
-    findBeginAndEnd(code);
+export function semanticAnalyzer(code, variables, usages, defAndTypes, isScope){
+    if(!isScope) {
+        findBeginAndEnd(code);
+    }
     findDuplicatedVariables(variables);
     findOrderDeclarationAndUsage(variables, usages);
     validateAssignmentAndTypes(defAndTypes, usages);

@@ -7,7 +7,7 @@ import {stylePrimary} from "../../styles/specificStyles/textFieldStyles";
 import {collection, getDocs, query, doc, getDoc, addDoc} from "firebase/firestore";
 import {db} from "../../services/firebase/firabaseConfig";
 import Swal from "sweetalert2";
-import Ide from "../ide";
+import Ide from "./codeComponents/ide";
 import {getCurrentUser} from "../../services/firebase/firebaseAux";
 
 function Task(props) {

@@ -1,6 +1,6 @@
 import {executeOperation, executor} from "../analyzers/executor";
 import {ExecutableActionType} from "../analyzers/definitions/actionTypes";
-import {Compiler} from "../analyzers/compiler";
+import {compilerFromCodeEditor} from "../analyzers/compiler";
 
 /*
  * Este método é o resposnável por iniciar o teste de uma solução de um aluno
@@ -9,7 +9,7 @@ import {Compiler} from "../analyzers/compiler";
  * @param studentCode: Código fonte da solução do aluno
  */
 export async function startTest(testCases) {
-    const compilerResult = Compiler();
+    const compilerResult = compilerFromCodeEditor();
 
     let qtdHits = 0;
     let flagHit = false;

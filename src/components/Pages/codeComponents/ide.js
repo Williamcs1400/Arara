@@ -1,10 +1,11 @@
 import React, {useEffect} from "react";
-import Sidebar from "./Pages/subComponents/sidebar";
-import CodeEditor from "./Pages/subComponents/codeEditor";
-import InOut from "./Pages/subComponents/in_out";
+import Sidebar from "./sidebar";
+import CodeEditor from "./codeEditor";
+import InOut from "./in_out";
 import Swal from "sweetalert2";
-import {startTest} from "../services/judge/judge";
-import {defaultCode} from "../services/utils/definitions";
+import {startTest} from "../../../services/judge/judge";
+import {defaultCode} from "../../../services/utils/definitions";
+import {getCodeFromEditor} from "../../../services/analyzers/compiler";
 
 function Ide(props) {
     const [openTerminal, setOpenTerminal] = React.useState(false);
@@ -13,7 +14,7 @@ function Ide(props) {
     const [width, setWidth] = React.useState(document.querySelector("#width"));
     const [isTask, setIsTask] = React.useState(false);
     const [flagTaskInfo, setFlagTaskInfo] = React.useState(false);
-
+    const [code, setCode] = React.useState('');
     const [terminalHeight, setTerminalHeight] = React.useState(0);
 
     // Atualiza o tamanho da tela
@@ -144,7 +145,7 @@ function Ide(props) {
             </div>
 
             <div style={{marginLeft: 64}}>
-                <CodeEditor height={height - terminalHeight} width={width} value={defaultCode}/>
+                <CodeEditor height={height - terminalHeight} width={width} value={code}/>
                 {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
                                        executableCode={executedCode}/> : null}
             </div>

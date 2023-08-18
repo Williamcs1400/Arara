@@ -1,14 +1,14 @@
 import React from "react";
-import Header from "./Pages/header";
+import Header from "./header";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {db} from "../services/firebase/firabaseConfig";
+import {db} from "../../services/firebase/firabaseConfig";
 import {collection, addDoc} from "firebase/firestore";
 import Tooltip from '@mui/material/Tooltip';
-import {styleWhite} from "../styles/specificStyles/textFieldStyles";
+import {styleWhite} from "../../styles/specificStyles/textFieldStyles";
 import TextField from "@mui/material/TextField";
 import {Button} from "@mui/material";
 import InputLabel from '@mui/material/InputLabel';
@@ -23,7 +23,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Swal from "sweetalert2";
-import {getCurrentUser} from "../services/firebase/firebaseAux";
+import {getCurrentUser} from "../../services/firebase/firebaseAux";
 import {useNavigate} from "react-router-dom";
 
 function RegisterTask(height, width) {
