@@ -22,7 +22,8 @@ import {db} from "../../services/firebase/firabaseConfig";
 import {browserSessionPersistence, browserLocalPersistence, setPersistence} from "firebase/auth";
 import {collection, addDoc, updateDoc, doc, getDoc} from "firebase/firestore";
 
-export default function Login({height, width, redirectUrl, alterHeader, getUserData}){
+export default function Login({height, width, redirectUrl, alterHeader, getUserData}) {
+    const [option, setOption] = React.useState('initial');
     const [email, setEmail] = React.useState('');
     const [emailLogin, setEmailLogin] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -146,208 +147,364 @@ export default function Login({height, width, redirectUrl, alterHeader, getUserD
         });
     }
 
-    return (
-        <div>
-            <div style={{height: height - 70, width: width, backgroundColor: '#263238'}}>
-                <div style={{display: 'table', clear: 'both', content: '', alignItems: 'center'}}>
-                    <div style={{float: 'left', width: 'fit-content', marginLeft: 150}}>
-                        <Card style={{
-                            backgroundColor: '#17202A',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            marginTop: 50,
-                            marginRight: 150,
-                            width: 'fit-content',
-                            alignItems: 'center',
-                            paddingTop: 15,
-                            paddingLeft: 35,
-                            paddingRight: 35,
-                        }}>
-                            <h7 style={{
-                                color: '#ffffff',
-                                fontSize: 22,
-                                marginTop: 10,
-                                textAlign: 'center',
-                                fontFamily: 'Poppins',
-                                textShadow: '0px 4px 4px rgba(0, 0, 0, 0.50)'
-                            }}>
-                                Não tem cadastro? Registre-se no Arara!
-                            </h7>
-                            <TextField
-                                id="nameArara"
-                                label="Nome completo"
-                                variant="outlined"
-                                sx={styleWhite}
-                                style={{marginBottom: 20, marginTop: 20, width: 300}}
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <TextField
-                                id="emailArara"
-                                label="E-mail"
-                                variant="outlined"
-                                sx={styleWhite}
-                                style={{marginBottom: 20, width: 300}}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <TextField
-                                id="passwordArara"
-                                label="Senha"
-                                variant="outlined"
-                                sx={styleWhite}
-                                style={{marginBottom: 20, width: 300}}
-                                value={password}
-                                type={'password'}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <TextField
-                                id="confirmPasswordArara"
-                                label="Confirme sua senha"
-                                variant="outlined"
-                                error={(password !== passwordConfirm) && passwordConfirm !== ''}
-                                sx={styleWhite}
-                                style={{marginBottom: 10, width: 300}}
-                                value={passwordConfirm}
-                                type={'password'}
-                                onChange={(e) => setPasswordConfirm(e.target.value)}
-                            />
 
-                            <FormGroup>
-                                <FormControlLabel
-                                    style={{marginBottom: 10}}
-                                    control={<Checkbox value={isTeacher}
-                                                       onChange={(e) => setIsTeacher(e.target.checked)}/>}
-                                    label={
-                                        <Typography sx={{
-                                            fontWeight: 'bold',
-                                            fontFamily: 'Poppins',
-                                            color: '#fff',
-                                            fontSize: 16
-                                        }}>
-                                            Sou professor?
-                                        </Typography>
-                                    }
-                                />
+    const loginComponent = () => {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', height: '100%', width: '100'}}>
+                <Card style={{
+                    backgroundColor: '#17202A',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginTop: 15,
+                    width: 'fit-content',
+                    height: 'fit-content',
+                    alignItems: 'center',
+                    paddingTop: 15,
+                    paddingLeft: 35,
+                    paddingRight: 35,
+                    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.50)'
+                }}>
+                    <h7 style={{
+                        color: '#ffffff',
+                        fontSize: 22,
+                        marginTop: 10,
+                        textAlign: 'center',
+                        fontFamily: 'Poppins',
+                        textShadow: '0px 4px 4px rgba(0, 0, 0, 0.50)'
+                    }}>
+                        Entrar no Arara!
+                    </h7>
+                    <TextField
+                        id="emailAraraLogin"
+                        label="E-mail"
+                        variant="outlined"
+                        sx={styleWhite}
+                        style={{marginBottom: 20, marginTop: 20, width: 300}}
+                        value={emailLogin}
+                        onChange={(e) => setEmailLogin(e.target.value)}
+                    />
+                    <TextField
+                        id="passwordAraraLogin"
+                        label="Senha"
+                        variant="outlined"
+                        sx={styleWhite}
+                        style={{marginBottom: 20, width: 300}}
+                        value={passwordLogin}
+                        type={'password'}
+                        onChange={(e) => setPasswordLogin(e.target.value)}
+                    />
+                    <Button
+                        variant="contained"
+                        style={{
+                            backgroundColor: '#ffffff',
+                            color: '#17202a',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            width: 300,
+                            height: 50,
+                            borderRadius: 5,
+                            textTransform: 'none'
+                        }}
+                        onClick={loginEmailPassword}
+                        type={'submit'}
+                    >
+                        Entrar
+                    </Button>
 
-                            </FormGroup>
+                    <hr style={{width: '100%', marginTop: 15}}/>
 
-                            <Button
-                                variant="contained"
-                                style={{
-                                    backgroundColor: '#ffffff',
-                                    color: '#17202a',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 18,
+                    <Typography
+                        sx={{
+                            fontWeight: 'bold',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            color: '#fff',
+                            marginBottom: 2,
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => setOption('register')}
+                    >
+                        Ainda não possui cadastro?
+                    </Typography>
+
+                    {/*TODO: fazer funcionar depois*/}
+                    {/*<GoogleLoginButton*/}
+                    {/*    text={'Entrar com o Google'}*/}
+                    {/*    style={{*/}
+                    {/*        width: 300,*/}
+                    {/*        height: 50,*/}
+                    {/*        borderRadius: 5,*/}
+                    {/*        marginBottom: 20,*/}
+                    {/*        textTransform: 'none',*/}
+                    {/*        fontFamily: 'Poppins',*/}
+                    {/*        fontSize: 18,*/}
+                    {/*        fontWeight: 'bold'*/}
+                    {/*    }}*/}
+                    {/*    onClick={doLogin}/>*/}
+                </Card>
+            </div>
+        );
+    }
+
+    const registerComponent = () => {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', height: '100%', width: '100'}}>
+                <Card style={{
+                    backgroundColor: '#17202A',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: 'fit-content',
+                    height: 'fit-content',
+                    marginTop: 15,
+                    alignItems: 'center',
+                    paddingTop: 15,
+                    paddingLeft: 35,
+                    paddingRight: 35,
+                    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.50)'
+                }}>
+                    <h7 style={{
+                        color: '#ffffff',
+                        fontSize: 22,
+                        marginTop: 10,
+                        textAlign: 'center',
+                        fontFamily: 'Poppins',
+                        textShadow: '0px 4px 4px rgba(0, 0, 0, 0.50)'
+                    }}>
+                        Não tem cadastro? Registre-se no Arara!
+                    </h7>
+                    <TextField
+                        id="nameArara"
+                        label="Nome completo"
+                        variant="outlined"
+                        sx={styleWhite}
+                        style={{marginBottom: 20, marginTop: 20, width: 300}}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <TextField
+                        id="emailArara"
+                        label="E-mail"
+                        variant="outlined"
+                        sx={styleWhite}
+                        style={{marginBottom: 20, width: 300}}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        id="passwordArara"
+                        label="Senha"
+                        variant="outlined"
+                        sx={styleWhite}
+                        style={{marginBottom: 20, width: 300}}
+                        value={password}
+                        type={'password'}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <TextField
+                        id="confirmPasswordArara"
+                        label="Confirme sua senha"
+                        variant="outlined"
+                        error={(password !== passwordConfirm) && passwordConfirm !== ''}
+                        sx={styleWhite}
+                        style={{marginBottom: 10, width: 300}}
+                        value={passwordConfirm}
+                        type={'password'}
+                        onChange={(e) => setPasswordConfirm(e.target.value)}
+                    />
+
+                    <FormGroup>
+                        <FormControlLabel
+                            style={{marginBottom: 10}}
+                            control={
+                                <Checkbox
+                                    value={isTeacher}
+                                    sx={{
+                                        color: "white",
+                                        '&.Mui-checked': {
+                                            color: "primary",
+                                        },
+                                    }}
+                                    onChange={(e) => setIsTeacher(e.target.checked)}
+
+                                />}
+
+                            label={
+                                <Typography sx={{
                                     fontWeight: 'bold',
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    textTransform: 'none'
-                                }}
-                                onClick={register}
-                                type={'submit'}
-                            >
-                                Cadastrar
-                            </Button>
-
-                            <hr style={{width: '75%', marginTop: 15}}/>
-
-                            <GoogleLoginButton
-                                text={'Entrar com o Google'}
-                                style={{
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    marginBottom: 20,
-                                    textTransform: 'none',
                                     fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    fontWeight: 'bold'
-                                }}
-                                onClick={() => alert("Hello")}/>
+                                    color: '#fff',
+                                    fontSize: 16
+                                }}>
+                                    Sou professor?
+                                </Typography>
+                            }
+                        />
 
-                        </Card>
-                    </div>
-                    <div style={{float: 'left', width: 'fit-content', marginLeft: 100}}>
-                        <Card style={{
-                            backgroundColor: '#17202A',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            marginTop: 50,
-                            marginRight: 150,
-                            width: 'fit-content',
-                            alignItems: 'center',
-                            paddingTop: 15,
-                            paddingLeft: 35,
-                            paddingRight: 35,
-                        }}>
-                            <h7 style={{
-                                color: '#ffffff',
-                                fontSize: 22,
-                                marginTop: 10,
-                                textAlign: 'center',
+                    </FormGroup>
+
+                    <Button
+                        variant="contained"
+                        style={{
+                            backgroundColor: '#ffffff',
+                            color: '#17202a',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            width: 300,
+                            height: 50,
+                            borderRadius: 5,
+                            textTransform: 'none'
+                        }}
+                        onClick={register}
+                    >
+                        Cadastrar
+                    </Button>
+
+                    <hr style={{width: '75%', marginTop: 15}}/>
+
+                    <Typography
+                        sx={{
+                            fontWeight: 'bold',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            color: '#fff',
+                            marginBottom: 2,
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => setOption('login')}
+                    >
+                        Já possui cadastro?
+                    </Typography>
+
+                    {/*TODO: fazer funcionar depois*/}
+                    {/*<GoogleLoginButton*/}
+                    {/*    text={'Entrar com o Google'}*/}
+                    {/*    style={{*/}
+                    {/*        width: 300,*/}
+                    {/*        height: 50,*/}
+                    {/*        borderRadius: 5,*/}
+                    {/*        marginBottom: 20,*/}
+                    {/*        textTransform: 'none',*/}
+                    {/*        fontFamily: 'Poppins',*/}
+                    {/*        fontSize: 18,*/}
+                    {/*        fontWeight: 'bold'*/}
+                    {/*    }}*/}
+                    {/*    onClick={() => alert("Hello")}/>*/}
+                </Card>
+            </div>
+        );
+    }
+
+    const initialComponent = () => {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    width: '100%',
+                }}>
+                    <Typography
+                        sx={{
+                            fontWeight: 'bold',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            color: '#fff'
+                        }}
+                    >
+                        Não possui cadastro?
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        style={{
+                            backgroundColor: '#ffffff',
+                            color: '#17202a',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            width: 200,
+                            height: 50,
+                            borderRadius: 5,
+                            textTransform: 'none',
+                            marginTop: 5
+                        }}
+                        onClick={() => setOption('register')}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 'bold',
                                 fontFamily: 'Poppins',
-                                textShadow: '0px 4px 4px rgba(0, 0, 0, 0.50)'
-                            }}>
-                                Já tem cadastro? Entre no Arara!
-                            </h7>
-                            <TextField
-                                id="emailAraraLogin"
-                                label="E-mail"
-                                variant="outlined"
-                                sx={styleWhite}
-                                style={{marginBottom: 20, marginTop: 20, width: 300}}
-                                value={emailLogin}
-                                onChange={(e) => setEmailLogin(e.target.value)}
-                            />
-                            <TextField
-                                id="passwordAraraLogin"
-                                label="Senha"
-                                variant="outlined"
-                                sx={styleWhite}
-                                style={{marginBottom: 20, width: 300}}
-                                value={passwordLogin}
-                                type={'password'}
-                                onChange={(e) => setPasswordLogin(e.target.value)}
-                            />
-                            <Button
-                                variant="contained"
-                                style={{
-                                    backgroundColor: '#ffffff',
-                                    color: '#17202a',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    fontWeight: 'bold',
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    textTransform: 'none'
-                                }}
-                                onClick={loginEmailPassword}
-                                type={'submit'}
-                            >
-                                Entrar
-                            </Button>
-
-                            <hr style={{width: '100%', marginTop: 15}}/>
-
-                            <GoogleLoginButton
-                                text={'Entrar com o Google'}
-                                style={{
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    marginBottom: 20,
-                                    textTransform: 'none',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    fontWeight: 'bold'
-                                }}
-                                onClick={doLogin}/>
-                        </Card>
-                    </div>
+                                fontSize: 18
+                            }}
+                        >
+                            Registre-se
+                        </Typography>
+                    </Button>
                 </div>
+
+                <div style={{borderLeft: '1px solid #fff', height: '70%', marginLeft: 20, marginRight: 20}}/>
+
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    width: '100%'
+                }}>
+                    <Typography
+                        sx={{
+                            fontWeight: 'bold',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            color: '#fff'
+                        }}
+                    >
+                        Já se cadastrou no Arara?
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        style={{
+                            backgroundColor: '#ffffff',
+                            color: '#17202a',
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            width: 200,
+                            height: 50,
+                            borderRadius: 5,
+                            textTransform: 'none'
+                        }}
+                        onClick={() => setOption('login')}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 'bold',
+                                fontFamily: 'Poppins',
+                                fontSize: 18
+                            }}
+                        >
+                            Entre
+                        </Typography>
+                    </Button>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div style={{height: height - 70, width: width, backgroundColor: '#263238'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+                {option === 'initial' ? initialComponent() : option === 'login' ? loginComponent() : registerComponent()}
             </div>
         </div>
     );
