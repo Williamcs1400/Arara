@@ -132,7 +132,6 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 if (response.actionType === ExecutableActionType.comparison) {
                     if(response.value){
                         // Se a condição for verdadeira, executa o código dentro do if
-
                         const executableCodeAux = []
                         // monta o código que será executado
                         response.subCode.forEach((code) => {

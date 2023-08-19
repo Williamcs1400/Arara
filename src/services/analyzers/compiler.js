@@ -140,7 +140,12 @@ function exportExecutableCode(code) {
             }
             else if(token.indexOf('{') !== -1 && token.indexOf('}') !== -1){
                 const content = token.substring(token.indexOf('{') + 1, token.lastIndexOf('}'));
-                executableCode.push({token: token.substring(0, token.indexOf('{') + 1), content: generateTokens(content)});
+                const resp = exportExecutableCode(content);
+                const final = [];
+                resp.forEach(r => {
+                    final.push(r.token);
+                });
+                executableCode.push({token: token.substring(0, token.indexOf('{') + 1), content: final});
             }
             else {
                 executableCode.push({token: token, content: null});
