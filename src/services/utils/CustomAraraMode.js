@@ -1,63 +1,64 @@
 import 'brace/mode/java';
 
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/theme-monokai";
-import "ace-builds/src-noconflict/ext-language_tools";
+import 'ace-builds/src-noconflict/mode-java';
+import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-json';
 
 window.ace = require('ace-builds/src-noconflict/ace');
-export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_highlight_rules").TextHighlightRules {
+export class CustomHighlightRules extends window.ace.acequire('ace/mode/text_highlight_rules').TextHighlightRules {
     constructor() {
         super();
         this.$rules = {
-            "start": [{
-                token: "constant.numeric",
-                regex: "#INICIO_PROGRAMA;"
+            'start': [{
+                token: 'constant.numeric',
+                regex: '#INICIO_PROGRAMA;'
             }, {
-                token: "constant.numeric",
-                regex : "#FIM_PROGRAMA;"
+                token: 'constant.numeric',
+                regex : '#FIM_PROGRAMA;'
             }, {
-                token: "string",
+                token: 'string',
                 regex : "'.*?'"
             }, {
-                token: "entity.name.function",
-                regex: "leia"
+                token: 'entity.name.function',
+                regex: '\\bleia\\b'
             }, {
-                token: "entity.name.function",
-                regex: "escreva"
+                token: 'entity.name.function',
+                regex: '\\bescreva\\b'
             }, {
-                token: "keyword.operator",
-                regex: "inteiro"
+                token: 'keyword.operator',
+                regex: '\\binteiro\\b'
             }, {
-                token: "keyword.operator",
-                regex: "real"
+                token: 'keyword.operator',
+                regex: '\\breal\\b'
             }, {
-                token: "keyword.operator",
-                regex: "texto"
+                token: 'keyword.operator',
+                regex: '\\btexto\\b'
             }, {
-                token: "keyword.operator",
-                regex: "logico"
+                token: 'keyword.operator',
+                regex: '\\blogico\\b'
             },{
-                token: "keyword.operator",
-                regex: "caractere"
+                token: 'keyword.operator',
+                regex: '\\bse\\b'
             },{
-                token: "constant.numeric",
-                regex: "[0-9]+"
+                token: 'constant.numeric',
+                regex: '\\b[0-9]\\b'
             }, {
-                token: "keyword.operator",
+                token: 'keyword.operator',
                 regex: /!|==|!=|>|<|>=|<=|&&|\|\|/
             }, {
-                token: "constant.numeric",
-                regex: "verdadeiro"
+                token: 'constant.numeric',
+                regex: '\\bverdadeiro\\b'
             }, {
-                token: "constant.numeric",
-                regex: "falso"
+                token: 'constant.numeric',
+                regex: '\\bfalso\\b'
             }, {
-                token: "comment",
-                regex: "//.*$"
+                token: 'comment',
+                regex: '//.*$'
             }, {
-                token: "keyword.operator",
-                regex: "se"
+                // aceitar exatamente a palavra 'se' e não palavras que contenham 'se'
+                token: 'keyword.operator',
+                regex: '\\bse\\b'
             }
             ]
         };
