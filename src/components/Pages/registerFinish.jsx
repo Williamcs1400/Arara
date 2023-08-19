@@ -51,6 +51,7 @@ function RegisterFinish(props) {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
+                    textAlign: 'center'
                 }}
             >
                 <div style={{marginTop: 120}}>

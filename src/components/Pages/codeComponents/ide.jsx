@@ -80,9 +80,9 @@ function Ide(props) {
                 });
                 Swal.showLoading();
                 const save = JSON.parse(JSON.stringify(props.tests));
-                startTest(save).then((response) => {
+                startTest(save).then(async (response) => {
                     if (response.success) {
-                        props.saveAttempt(response).then((response) => {
+                        await props.saveAttempt(response).then((response) => {
                             Swal.fire({
                                 title: '<label style="color: #FFFFFF; font-family: Poppins; font-size: 32px; text-align: center">Resposta aceita!</label>',
                                 html: '<div style="color: #FFFFFF; font-family: Poppins; font-size: 24px; text-align: justify; text-align: center">' +

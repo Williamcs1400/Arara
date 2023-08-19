@@ -19,6 +19,7 @@ export async function startTest(testCases) {
     testCases.forEach((testCase, index) => {
         flagHit = false;
         let testCaseInputs = [...testCase.inputs]
+
         let result = executeCode(testCaseInputs, compilerResult.executableCode)
 
         if (result === testCase.output) {
@@ -47,10 +48,22 @@ function executeCode(inputArray, executableCode) {
     let aux = '';
     let valueVariables = [];
     let result = '';
+    let response;
+    let lastResponse = null;
 
     if (executableCode !== undefined && executableCode.length > 0) {
-        executableCode.forEach((executable, index) => {
-            const response = executor(executable);
+        for (let i = 0; i < executableCode.length; i++) {
+
+            if (i > 0) {
+                response = executor(executableCode[i], valueVariables, lastResponse);
+            } else {
+                response = executor(executableCode[i], valueVariables, null);
+            }
+
+            if (response.actionType !== ExecutableActionType.comparison && executableCode[i].subContent === undefined) {
+                lastResponse = null;
+            }
+
 
             // Escrita no terminal
             if (response.actionType === ExecutableActionType.writing) {
@@ -132,7 +145,34 @@ function executeCode(inputArray, executableCode) {
                     }
                 }
             }
-        });
+
+            // Condicional
+            if (response.actionType === ExecutableActionType.comparison) {
+
+                lastResponse = response;
+                if (response.value) {
+                    // Se a condição for verdadeira, executa o código dentro do if
+                    const executableCodeAux = []
+                    // monta o código que será executado
+                    response.subCode.forEach((code) => {
+                        executableCodeAux.push({token: code, content: null, subContent: true});
+                    });
+
+                    // remove a instrução se já processada
+                    const part1 = executableCode.slice(0, i);
+                    const part2 = executableCode.slice(i + 1, executableCode.length);
+
+                    // insere o código que será executado no ponto onde o se estava
+                    const exeAux = [{token: null, content: null}];
+                    part1.push(...exeAux);
+                    part1.push(...executableCodeAux);
+                    part1.push(...part2);
+
+                    executableCode = part1;
+                }
+            }
+
+        }
     }
     return result;
 }
