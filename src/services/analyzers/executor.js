@@ -154,36 +154,78 @@ export function executeOperation(operands, operators) {
 }
 
 export function executeComparison(instruction, valueVariables) {
-    // recupera o símbolo de comparação: == != > < >= <=
-    const symbol = instruction.match(/==|!=|>|<|>=|<=/)[0];
+    // regex para os simbolos de comparação: == != > < >= <= && ||
+    let regex = /==|!=|>|<|>=|<=|&&|\|\|/;
 
-    // recupera os nomes das variáveis para comparação
-    const comparison = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')')).replaceAll(' ', '').split(symbol);
-    let value1 = comparison[0];
-    let value2 = comparison[1];
-
-    // verifica se o valor é uma variável e substitui pelo valor da variável
-    // se for um número, transforma a string em número
-    valueVariables.map(variable => {
-        if (value1 === variable.name) {
-            if(variable.type === 'inteiro' || variable.type === 'real'){
-                value1 = parseFloat(variable.value);
-            }else {
-                value1 = variable.value;
+    // verifica se a instrução possui algum símbolo de comparação
+    if (instruction.match(regex) === null) {
+        const comparison = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')')).replaceAll(' ', '');
+        for (let i = 0; i < valueVariables.length; i++) {
+            if (valueVariables[i].name === comparison && valueVariables[i].type === 'logico') {
+                return valueVariables[i].value !== 'falso';
+            } else if ('!' + valueVariables[i].name === comparison && valueVariables[i].type === 'logico') {
+                return valueVariables[i].value === 'falso';
             }
         }
-        if (value2 === variable.name) {
-            if(variable.type === 'inteiro' || variable.type === 'real'){
-                value2 = parseFloat(variable.value);
-            }else {
-                value2 = variable.value;
-            }
-        }
-    });
+        return false;
+    } else {
+        // recupera o símbolo de comparação: == != > < >= <= && ||
+        const symbol = instruction.match(regex)[0];
 
-    return comparisonAux(value1, value2, symbol);
+        // recupera os nomes das variáveis para comparação
+        const comparison = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')')).replaceAll(' ', '').split(symbol);
+        let value1 = comparison[0];
+        let value2 = comparison[1];
+
+        // verifica se o valor é uma variável e substitui pelo valor da variável
+        // se for um número, transforma a string em número
+        valueVariables.map(variable => {
+            // comparações para inteiro e real
+            if (value1 === variable.name && variable.type !== 'logico') {
+                if (variable.type === 'inteiro' || variable.type === 'real') {
+                    value1 = parseFloat(variable.value);
+                }
+                else {
+                    value1 = variable.value;
+                }
+            }
+            if (value2 === variable.name && variable.type !== 'logico') {
+                if (variable.type === 'inteiro' || variable.type === 'real') {
+                    value2 = parseFloat(variable.value);
+                } else {
+                    value2 = variable.value;
+                }
+            }
+
+            // comparações para lógico com negação ou não
+            if(value1 === variable.name && variable.type === 'logico'){
+                value1 = variable.value !== 'falso';
+            }
+
+            if(value2 === variable.name && variable.type === 'logico'){
+                value2 = variable.value !== 'falso';
+            }
+
+            if('!' + value1 === variable.name && variable.type === 'logico'){
+                value1 = variable.value === 'falso';
+            }
+
+            if('!' + value2 === variable.name && variable.type === 'logico'){
+                value2 = variable.value === 'falso';
+            }
+        });
+
+        return comparisonAux(value1, value2, symbol);
+    }
 }
 
+/*
+ * Função auxiliar para comparação de valores
+ * @param value1: primeiro operando
+ * @param value2: segundo operando
+ * @param operator: operador de comparação
+ * @return: true ou false
+ */
 function comparisonAux(value1, value2, operator) {
     if (operator === '==') {
         return value1 === value2;
@@ -197,5 +239,9 @@ function comparisonAux(value1, value2, operator) {
         return value1 >= value2;
     } else if (operator === '<=') {
         return value1 <= value2;
+    }else if (operator === '&&') {
+        return value1 && value2;
+    }else if (operator === '||') {
+        return value1 || value2;
     }
 }

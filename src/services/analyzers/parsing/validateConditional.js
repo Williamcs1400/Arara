@@ -48,22 +48,21 @@ export function validateSeInstruction(instruction) {
  */
 function validateComparison(condition) {
     condition = condition.replaceAll(' ', '');
-    const operators = ['<', '>', '==', '!=', '>=', '<='];
+    const operators = ['<', '>', '==', '!=', '>=', '<=', '&&', '||'];
     let operator = '';
     let parts = [];
+    let flagContaisOperator = false;
 
     operators.forEach(op => {
         if(condition.indexOf(op) !== -1){
             operator = op;
             parts = condition.split(op);
+            flagContaisOperator = true;
         }
     });
 
-    if(operator === ''){
-        throw new Error('Erro sintático | Condição inválida: ' + condition);
-    }
-
-    if(parts.length !== 2){
+    // verifica se a condição possui um operador e se a quantidade de partes é par
+    if(!flagContaisOperator && parts.length % 2 !== 0){
         throw new Error('Erro sintático | Condição inválida: ' + condition);
     }
 

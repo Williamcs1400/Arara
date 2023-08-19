@@ -44,6 +44,9 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
                 token: "constant.numeric",
                 regex: "[0-9]+"
             }, {
+                token: "keyword.operator",
+                regex: /!|==|!=|>|<|>=|<=|&&|\|\|/
+            }, {
                 token: "constant.numeric",
                 regex: "verdadeiro"
             }, {
