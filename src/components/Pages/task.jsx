@@ -152,16 +152,16 @@ function Task(props) {
                 background: '#DCDCDC',
             }}>
                 {id === undefined ?
-                    <div>
                         <div style={{
+                            height: '100%',
+                            width: '100%',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            marginTop: 100
                         }}>
                             <TextField id='outputTaskArara' label='Código da tarefa, ex: abcxyz123' variant='outlined'
-                                       sx={stylePrimary} value={codeTask} style={{width: '40%', marginBottom: 15}}
+                                       sx={stylePrimary} value={codeTask} style={{width: '40%', marginBottom: 15, marginTop: 100}}
                                        onChange={(e) => setCodeTask(e.target.value)}/>
                             <Button
                                 style={{
@@ -176,7 +176,6 @@ function Task(props) {
                                 Buscar
                             </Button>
                         </div>
-                    </div>
                     :
                     <Ide isTask={true} dataTask={dataTask} tests={tests} saveAttempt={saveTaskAttempt}/>
                 }
