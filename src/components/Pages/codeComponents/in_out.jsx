@@ -19,7 +19,6 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     const [finalized, setFinalized] = React.useState(false); // feito para atualizar o componente e chamar o useEffect
     const [focus, setFocus] = React.useState(false); // para dar foco no input quando uma leitura é solicitada
 
-
     function onChange(newValue) {
         setInput(newValue);
     }
@@ -103,7 +102,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                     }
 
                     if (!exists) {
-                        valueVariables.push({name: response.variable, value: response.value});
+                        valueVariables.push({name: response.variable, value: response.value, type: response.type});
                     }
                 }
 

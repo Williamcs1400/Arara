@@ -154,25 +154,32 @@ export function executeOperation(operands, operators) {
 }
 
 export function executeComparison(instruction, valueVariables) {
-    // get comparison symbol regex == != > < >= <=
+    // recupera o símbolo de comparação: == != > < >= <=
     const symbol = instruction.match(/==|!=|>|<|>=|<=/)[0];
 
+    // recupera os nomes das variáveis para comparação
     const comparison = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')')).replaceAll(' ', '').split(symbol);
     let value1 = comparison[0];
     let value2 = comparison[1];
 
-
+    // verifica se o valor é uma variável e substitui pelo valor da variável
+    // se for um número, transforma a string em número
     valueVariables.map(variable => {
         if (value1 === variable.name) {
-            value1 = variable.value;
+            if(variable.type === 'inteiro' || variable.type === 'real'){
+                value1 = parseFloat(variable.value);
+            }else {
+                value1 = variable.value;
+            }
         }
         if (value2 === variable.name) {
-            value2 = variable.value;
+            if(variable.type === 'inteiro' || variable.type === 'real'){
+                value2 = parseFloat(variable.value);
+            }else {
+                value2 = variable.value;
+            }
         }
     });
-
-    value1 = parseFloat(value1);
-    value2 = parseFloat(value2);
 
     return comparisonAux(value1, value2, symbol);
 }
