@@ -4,8 +4,9 @@ import {getKnownDefinitions, isDeclaration} from './definitions/dictionary.js';
 import {syntacticAnalyze} from "./parsing/parser";
 import {removeCodeExpression} from "../utils/codeFixer";
 import {cleanWhiteSpacesAllowed} from "../utils/util";
+import {defaultCode} from "../utils/definitions";
 
-let codeEditor;
+let codeEditor = '';
 
 let codeExample;
 
@@ -14,6 +15,9 @@ export function setCodeFromEditor(c) {
 }
 
 export function getCodeFromEditor() {
+    if(codeEditor === undefined || codeEditor === ''){
+        return defaultCode;
+    }
     return codeEditor;
 }
 

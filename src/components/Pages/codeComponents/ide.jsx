@@ -4,30 +4,21 @@ import CodeEditor from "./codeEditor";
 import InOut from "./in_out";
 import Swal from "sweetalert2";
 import {startTest} from "../../../services/judge/judge";
-import {defaultCode} from "../../../services/utils/definitions";
-import {getCodeFromEditor} from "../../../services/analyzers/compiler";
 
 function Ide(props) {
     const [openTerminal, setOpenTerminal] = React.useState(false);
     const [executedCode, setExecutedCode] = React.useState([]);
-    const [height, setHeight] = React.useState(document.querySelector("#height"));
-    const [width, setWidth] = React.useState(document.querySelector("#width"));
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
     const [isTask, setIsTask] = React.useState(false);
     const [flagTaskInfo, setFlagTaskInfo] = React.useState(false);
-    const [code, setCode] = React.useState('');
     const [terminalHeight, setTerminalHeight] = React.useState(0);
 
     // Atualiza o tamanho da tela
-    function updateSize() {
+    useEffect(() => {
         setHeight(window.innerHeight);
         setWidth(window.innerWidth);
-    }
-
-    useEffect(() => {
-        updateSize();
     }, []);
-
-    window.addEventListener("resize", updateSize);
 
     // Abre ou fecha o terminal e executa o código - adequando o tamanho da tela
     function executeCode(message) {
@@ -123,7 +114,7 @@ function Ide(props) {
     useEffect(() => {
         if (props.isTask !== undefined) {
             setIsTask(props.isTask);
-            if(props.isTask && props.dataTask.name !== undefined && !flagTaskInfo) {
+            if (props.isTask && props.dataTask.name !== undefined && !flagTaskInfo) {
                 openTaskInfo();
                 setFlagTaskInfo(true);
             }
@@ -131,26 +122,28 @@ function Ide(props) {
     }, [props]);
 
     return (
-        <div style={{
-            display: 'flex',
-            flex: 1,
-            justifyItems: 'start',
-            alignItems: 'start',
-            flexDirection: 'column',
-            position: 'absolute'
-        }}>
-            <div>
-                <Sidebar executeCode={executeCode} openTerminal={handleTerminal} isTask={isTask}
-                         openTaskInfo={openTaskInfo} startTestSolution={startTestSolution}/>
-            </div>
+        <React.Fragment id='ide'>
+            <div style={{
+                display: 'flex',
+                flex: 1,
+                justifyItems: 'start',
+                alignItems: 'start',
+                flexDirection: 'column',
+                position: 'absolute'
+            }}>
+                <div>
+                    <Sidebar executeCode={executeCode} openTerminal={handleTerminal} isTask={isTask}
+                             openTaskInfo={openTaskInfo} startTestSolution={startTestSolution}/>
+                </div>
 
-            <div style={{marginLeft: 64}}>
-                <CodeEditor height={height - terminalHeight} width={width} value={code}/>
-                {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
-                                       executableCode={executedCode}/> : null}
-            </div>
+                <div style={{marginLeft: 64}}>
+                    <CodeEditor height={height - terminalHeight} width={width}/>
+                    {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
+                                           executableCode={executedCode}/> : null}
+                </div>
 
-        </div>
+            </div>
+        </React.Fragment>
     );
 
 }

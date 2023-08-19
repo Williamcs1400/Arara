@@ -11,9 +11,16 @@ import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Sheet from '@mui/joy/Sheet';
 
-function Main({height, width}) {
+function Main() {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -65,8 +72,7 @@ function Main({height, width}) {
     }
 
     return (
-        <div>
-            {/*<Header showIcon={false} showButtonLogin={true} redirectUrl={'/'}/>*/}
+        <React.Fragment id='main'>
             <div style={{height: height - 70, width: width, background: '#263238'}}>
                 <div style={{display: 'flex', flexDirection: 'column', marginRight: 20, marginLeft: 20}}>
                     <img src={logo512} alt='logo' width='175' height='175'
@@ -128,7 +134,7 @@ function Main({height, width}) {
                     </div>
                 </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 
 }

@@ -8,8 +8,16 @@ import Tooltip from '@mui/material/Tooltip';
 
 
 function RegisterFinish(props) {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
+
     const [textCopy, setTextCopy] = React.useState('Clique para copiar');
     const location = useLocation();
+
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
 
     function getLink() {
         if (location.state) {
@@ -33,12 +41,12 @@ function RegisterFinish(props) {
     }
 
     return (
-        <div>
+        <React.Fragment id='registerFinish'>
             <div
                 style={{
-                    minHeight: location.state.height.height - 70,
+                    minHeight: height - 70,
                     height: 'fit-content',
-                    width: location.state.width,
+                    width: width,
                     background: '#DCDCDC',
                     display: 'flex',
                     flexDirection: 'column',
@@ -96,7 +104,7 @@ function RegisterFinish(props) {
                     </Typography>
                 </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 }
 

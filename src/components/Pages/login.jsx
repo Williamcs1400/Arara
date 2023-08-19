@@ -10,19 +10,19 @@ import {
     createUserWithEmailAndPassword
 } from "firebase/auth";
 import {auth} from "../../services/firebase/firabaseConfig";
-import Header from "./header";
 import {useLocation, useNavigate} from 'react-router-dom';
-import {GoogleLoginButton} from "react-social-login-buttons";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Typography from "@mui/material/Typography";
 import Swal from 'sweetalert2';
 import {db} from "../../services/firebase/firabaseConfig";
-import {browserSessionPersistence, browserLocalPersistence, setPersistence} from "firebase/auth";
+import {browserLocalPersistence, setPersistence} from "firebase/auth";
 import {collection, addDoc, updateDoc, doc, getDoc} from "firebase/firestore";
 
-export default function Login({height, width, redirectUrl, alterHeader, getUserData}) {
+export default function Login({redirectUrl, alterHeader, getUserData}) {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
     const [option, setOption] = React.useState('initial');
     const [email, setEmail] = React.useState('');
     const [emailLogin, setEmailLogin] = React.useState('');
@@ -33,6 +33,11 @@ export default function Login({height, width, redirectUrl, alterHeader, getUserD
     const [isTeacher, setIsTeacher] = React.useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
 
     async function register() {
         Swal.fire({
@@ -146,7 +151,6 @@ export default function Login({height, width, redirectUrl, alterHeader, getUserD
             // ...
         });
     }
-
 
     const loginComponent = () => {
         return (
@@ -502,10 +506,12 @@ export default function Login({height, width, redirectUrl, alterHeader, getUserD
     }
 
     return (
-        <div style={{height: height - 70, width: width, backgroundColor: '#263238'}}>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
-                {option === 'initial' ? initialComponent() : option === 'login' ? loginComponent() : registerComponent()}
+        <React.Fragment id='login'>
+            <div style={{height: height - 70, width: width, backgroundColor: '#263238'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+                    {option === 'initial' ? initialComponent() : option === 'login' ? loginComponent() : registerComponent()}
+                </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 }

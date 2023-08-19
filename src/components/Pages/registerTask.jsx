@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Header from "./header";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -26,7 +26,10 @@ import Swal from "sweetalert2";
 import {getCurrentUser} from "../../services/firebase/firebaseAux";
 import {useNavigate} from "react-router-dom";
 
-function RegisterTask(height, width) {
+function RegisterTask() {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
+
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [inputFormat, setInputFormat] = React.useState('');
@@ -48,6 +51,11 @@ function RegisterTask(height, width) {
     const [inRows, setInRows] = React.useState([]);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
 
     async function save() {
 
@@ -94,7 +102,7 @@ function RegisterTask(height, width) {
 
             if (id !== undefined) {
                 Swal.close();
-                navigate('/cadastroAtividadeFeito', {state: {height, width, taskId: id}});
+                navigate('/cadastroAtividadeFeito', {state: {taskId: id}});
             }
 
         } catch (e) {
@@ -203,427 +211,428 @@ function RegisterTask(height, width) {
     }
 
     return (
-        <div style={{
-            minHeight: height.height - 70,
-            height: 'fit-content',
-            width: width,
-            background: '#DCDCDC',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-        }}>
-            <Typography sx={{fontWeight: 'bold', fontFamily: 'Poppins', color: '#17202A', fontSize: 32}}>
-                Cadastrar tarefa
-            </Typography>
-            <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}
-                       expanded={expandedFirst ^ viewFirst}
-            >
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    onClick={() => setViewFirst(!viewFirst)}
+        <React.Fragment id='registerTask'>
+            <div style={{
+                minHeight: height - 70,
+                height: 'fit-content',
+                width: width,
+                background: '#DCDCDC',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}>
+                <Typography sx={{fontWeight: 'bold', fontFamily: 'Poppins', color: '#17202A', fontSize: 32}}>
+                    Cadastrar tarefa
+                </Typography>
+                <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}
+                           expanded={expandedFirst ^ viewFirst}
                 >
-                    <Typography
-                        sx={{
-                            fontWeight: 'bold',
-                            fontFamily: 'Poppins',
-                            fontSize: 18
-                        }}
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        onClick={() => setViewFirst(!viewFirst)}
                     >
-                        Informações gerais
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails style={{textAlign: 'center'}}>
-                    {editFirst ? <TextField
-                            id='nameTaskArara'
-                            label='Nome da tarefa'
-                            variant='outlined'
-                            multiline
-                            sx={styleWhite}
-                            style={{width: '100%', marginBottom: 15}}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        /> :
-                        <div style={{display: 'flex', marginBottom: 25}}>
-                            <Typography variant='title' sx={{
+                        <Typography
+                            sx={{
                                 fontWeight: 'bold',
                                 fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                Nome da tarefa: &nbsp;
-                            </Typography>
-                            <Typography variant='subheading' sx={{
-                                fontWeight: 'Light',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                {name}
-                            </Typography>
-                        </div>
-                    }
-
-                    {editFirst ? <TextField
-                            id='descriptionTaskArara'
-                            label='Descrição da tarefa'
-                            variant='outlined'
-                            multiline
-                            sx={styleWhite}
-                            style={{width: '100%', marginBottom: 25}}
-                            value={description}
-                            enabled={!validateFirstInput()}
-                            onChange={(e) => setDescription(e.target.value)}
-                        /> :
-                        <div style={{display: 'flex', marginBottom: 25}}>
-                            <Typography variant='title' sx={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                Descrição da tarefa: &nbsp;
-                            </Typography>
-                            <Typography variant='subheading' sx={{
-                                fontWeight: 'Light',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                {description}
-                            </Typography>
-                        </div>
-                    }
-
-                    <Tooltip
-                        title={
-                            <Typography
-                                sx={{fontWeight: 'bold', fontFamily: 'Poppins', fontSize: 16, textAlign: 'center'}}>
-                                {validateFirstInput() ? 'Salve para prosseguir!' : 'É necessário preencher nome e descrição da tarefa!'}
-                            </Typography>
-                        }
-                    >
-                        <div>
-                            <Button
-                                variant="contained"
-                                style={{
-                                    backgroundColor: '#ffffff',
-                                    color: '#17202a',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    fontWeight: 'thin',
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    textTransform: 'none',
-                                    alignSelf: 'center'
-                                }}
-                                disabled={!validateFirstInput()}
-                                onClick={firstInput}
-                            >
-                                {editFirst ? 'Salvar' : 'Editar'}
-                            </Button>
-                        </div>
-                    </Tooltip>
-                </AccordionDetails>
-            </Accordion>
-
-            <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}
-                       disabled={!validateFirstInput()}
-                       expanded={expandedSecond ^ viewSecond}
-            >
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    onClick={() => setViewSecond(!viewSecond)}
-                >
-                    <Typography
-                        sx={{
-                            fontWeight: 'bold',
-                            fontFamily: 'Poppins',
-                            fontSize: 18
-                        }}
-                    >
-                        Formato de entrada e saída
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails style={{textAlign: 'center'}}>
-                    {editSecond ?
-                        <div style={{display: 'flex'}}>
-                            <TextField
-                                id='inputFormatTaskArara'
-                                label='Formato da entrada'
+                                fontSize: 18
+                            }}
+                        >
+                            Informações gerais
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails style={{textAlign: 'center'}}>
+                        {editFirst ? <TextField
+                                id='nameTaskArara'
+                                label='Nome da tarefa'
                                 variant='outlined'
                                 multiline
                                 sx={styleWhite}
-                                style={{width: '100%', marginBottom: 15, marginRight: 10}}
-                                value={inputFormat}
-                                onChange={(e) => setInputFormat(e.target.value)}
-                            />
-                            <FormControl sx={styleWhite} style={{width: '40%'}}>
-                                <InputLabel id="arara-qtdinput">Quantidade de entrdas</InputLabel>
-                                <Select
-                                    labelId="arara-qtdinput-select-id"
-                                    id="arara-qtdinput-select"
-                                    value={qtdInput}
-                                    label="Quantidade de entrdas"
-                                    onChange={(e) => setQtdInput(e.target.value)}
-                                >
-                                    <MenuItem value={''}>&nbsp;</MenuItem>
-                                    <MenuItem value={2}>1</MenuItem>
-                                    <MenuItem value={3}>2</MenuItem>
-                                    <MenuItem value={4}>3</MenuItem>
-                                    <MenuItem value={5}>4</MenuItem>
-                                    <MenuItem value={6}>5</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
-                        :
-                        <div>
+                                style={{width: '100%', marginBottom: 15}}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            /> :
                             <div style={{display: 'flex', marginBottom: 25}}>
                                 <Typography variant='title' sx={{
                                     fontWeight: 'bold',
                                     fontFamily: 'Poppins',
                                     fontSize: 16
                                 }} noWrap>
-                                    Formato da entrada: &nbsp;
+                                    Nome da tarefa: &nbsp;
                                 </Typography>
                                 <Typography variant='subheading' sx={{
                                     fontWeight: 'Light',
                                     fontFamily: 'Poppins',
                                     fontSize: 16
                                 }} noWrap>
-                                    {inputFormat}
+                                    {name}
                                 </Typography>
                             </div>
-                            <div style={{display: 'flex', marginBottom: 25}}>
-                                <Typography variant='title' sx={{
-                                    fontWeight: 'bold',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16
-                                }} noWrap>
-                                    Quantidade de entradas: &nbsp;
-                                </Typography>
-                                <Typography variant='subheading' sx={{
-                                    fontWeight: 'Light',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16
-                                }} noWrap>
-                                    {qtdInput}
-                                </Typography>
-                            </div>
-                        </div>
-                    }
-
-                    {editSecond ? <TextField
-                            id='outputFormatTaskArara'
-                            label='Formato da saída'
-                            variant='outlined'
-                            multiline
-                            sx={styleWhite}
-                            style={{width: '100%', marginBottom: 15}}
-                            value={outputFormat}
-                            enabled={!validateSecondInput()}
-                            onChange={(e) => setOutputFormat(e.target.value)}
-                        /> :
-                        <div style={{display: 'flex', marginBottom: 25}}>
-                            <Typography variant='title' sx={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                Formato da saída: &nbsp;
-                            </Typography>
-                            <Typography variant='subheading' sx={{
-                                fontWeight: 'Light',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                {outputFormat}
-                            </Typography>
-                        </div>
-                    }
-
-                    {editSecond ? <TextField
-                            id='outputExampleTaskArara'
-                            label='Exemplo de saída'
-                            variant='outlined'
-                            multiline
-                            sx={styleWhite}
-                            style={{width: '100%', marginBottom: 25}}
-                            value={outputExample}
-                            enabled={!validateSecondInput()}
-                            onChange={(e) => setOutputExample(e.target.value)}
-                        /> :
-                        <div style={{display: 'flex', marginBottom: 25}}>
-                            <Typography variant='title' sx={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                Exemplo de saída: &nbsp;
-                            </Typography>
-                            <Typography variant='subheading' sx={{
-                                fontWeight: 'Light',
-                                fontFamily: 'Poppins',
-                                fontSize: 16
-                            }} noWrap>
-                                {outputExample}
-                            </Typography>
-                        </div>
-                    }
-
-                    <Tooltip
-                        title={
-                            <Typography
-                                sx={{fontWeight: 'bold', fontFamily: 'Poppins', fontSize: 16, textAlign: 'center'}}>
-                                {validateSecondInput() ? 'Salve para prosseguir!' : 'É necessário preencher o formato de entrada e saída!'}
-                            </Typography>
                         }
-                    >
-                        <div>
-                            <Button
-                                variant="contained"
-                                style={{
-                                    backgroundColor: '#ffffff',
-                                    color: '#17202a',
+
+                        {editFirst ? <TextField
+                                id='descriptionTaskArara'
+                                label='Descrição da tarefa'
+                                variant='outlined'
+                                multiline
+                                sx={styleWhite}
+                                style={{width: '100%', marginBottom: 25}}
+                                value={description}
+                                enabled={!validateFirstInput()}
+                                onChange={(e) => setDescription(e.target.value)}
+                            /> :
+                            <div style={{display: 'flex', marginBottom: 25}}>
+                                <Typography variant='title' sx={{
+                                    fontWeight: 'bold',
                                     fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    fontWeight: 'thin',
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    textTransform: 'none',
-                                    alignSelf: 'center'
-                                }}
-                                disabled={!validateSecondInput()}
-                                onClick={secondInput}
-                            >
-                                {editSecond ? 'Salvar' : 'Editar'}
-                            </Button>
-                        </div>
-                    </Tooltip>
-                </AccordionDetails>
-            </Accordion>
+                                    fontSize: 16
+                                }} noWrap>
+                                    Descrição da tarefa: &nbsp;
+                                </Typography>
+                                <Typography variant='subheading' sx={{
+                                    fontWeight: 'Light',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    {description}
+                                </Typography>
+                            </div>
+                        }
 
-            <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}
-                       disabled={!validateSecondInput() || !validateFirstInput()}
-                       expanded={expandedThird ^ viewThird}
-            >
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    onClick={() => setViewThird(!viewThird)}
+                        <Tooltip
+                            title={
+                                <Typography
+                                    sx={{fontWeight: 'bold', fontFamily: 'Poppins', fontSize: 16, textAlign: 'center'}}>
+                                    {validateFirstInput() ? 'Salve para prosseguir!' : 'É necessário preencher nome e descrição da tarefa!'}
+                                </Typography>
+                            }
+                        >
+                            <div>
+                                <Button
+                                    variant="contained"
+                                    style={{
+                                        backgroundColor: '#ffffff',
+                                        color: '#17202a',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: 'thin',
+                                        width: 300,
+                                        height: 50,
+                                        borderRadius: 5,
+                                        textTransform: 'none',
+                                        alignSelf: 'center'
+                                    }}
+                                    disabled={!validateFirstInput()}
+                                    onClick={firstInput}
+                                >
+                                    {editFirst ? 'Salvar' : 'Editar'}
+                                </Button>
+                            </div>
+                        </Tooltip>
+                    </AccordionDetails>
+                </Accordion>
+
+                <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}
+                           disabled={!validateFirstInput()}
+                           expanded={expandedSecond ^ viewSecond}
                 >
-                    <Typography
-                        sx={{
-                            fontWeight: 'bold',
-                            fontFamily: 'Poppins',
-                            fontSize: 18
-                        }}
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        onClick={() => setViewSecond(!viewSecond)}
                     >
-                        Entradas e saídas esperadas
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails style={{textAlign: 'center'}}>
-
-                    {qtdInput !== '' ?
-                        <div>
-                            <div style={{display: 'flex', flexDirection: 'row'}}>
-                                {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
-                                    return (
-                                        multipliesInputs(i)
-                                    )
-                                })}
+                        <Typography
+                            sx={{
+                                fontWeight: 'bold',
+                                fontFamily: 'Poppins',
+                                fontSize: 18
+                            }}
+                        >
+                            Formato de entrada e saída
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails style={{textAlign: 'center'}}>
+                        {editSecond ?
+                            <div style={{display: 'flex'}}>
                                 <TextField
-                                    id='outputTaskArara'
-                                    label='Saída esperada'
+                                    id='inputFormatTaskArara'
+                                    label='Formato da entrada'
                                     variant='outlined'
                                     multiline
                                     sx={styleWhite}
-                                    value={inputsAux[qtdInput - 1]}
-                                    style={{width: '100%', marginBottom: 15}}
-                                    onChange={(e) => handleChangeInput(e.target.value, qtdInput - 1)}
+                                    style={{width: '100%', marginBottom: 15, marginRight: 10}}
+                                    value={inputFormat}
+                                    onChange={(e) => setInputFormat(e.target.value)}
                                 />
-                            </div>
-                            <Button
-                                variant="contained"
-                                style={{
-                                    backgroundColor: '#ffffff',
-                                    color: '#17202a',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    fontWeight: 'thin',
-                                    width: 300,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    marginBottom: 15,
-                                    textTransform: 'none',
-                                    alignSelf: 'center'
-                                }}
-                                // disabled={!validateSecondInput()}
-                                onClick={addNewIO}
-                            >
-                                Adicionar
-                            </Button>
-                        </div>
-                        :
-                        <div/>
-                    }
-
-                    <TableContainer component={Paper}>
-                        <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
-                            <TableHead>
-                                {qtdInput !== '' ?
-                                    <TableRow>
-                                        {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
-                                            return (
-                                                <TableCell align="right">Entrada {i + 1}</TableCell>
-                                            )
-                                        })}
-                                        <TableCell align="right">Saída esperada</TableCell>
-                                    </TableRow>
-                                    : <div></div>
-                                }
-                            </TableHead>
-                            <TableBody>
-                                {inRows.map((row) => (
-                                    <TableRow
-                                        key={row.aux}
-                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                <FormControl sx={styleWhite} style={{width: '40%'}}>
+                                    <InputLabel id="arara-qtdinput">Quantidade de entrdas</InputLabel>
+                                    <Select
+                                        labelId="arara-qtdinput-select-id"
+                                        id="arara-qtdinput-select"
+                                        value={qtdInput}
+                                        label="Quantidade de entrdas"
+                                        onChange={(e) => setQtdInput(e.target.value)}
                                     >
-                                        {row.aux.map((cell) => (
-                                            <TableCell align="right">{cell}</TableCell>
-                                        ))}
-                                        <TableCell align="right">{row.out}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </AccordionDetails>
-            </Accordion>
+                                        <MenuItem value={''}>&nbsp;</MenuItem>
+                                        <MenuItem value={2}>1</MenuItem>
+                                        <MenuItem value={3}>2</MenuItem>
+                                        <MenuItem value={4}>3</MenuItem>
+                                        <MenuItem value={5}>4</MenuItem>
+                                        <MenuItem value={6}>5</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </div>
+                            :
+                            <div>
+                                <div style={{display: 'flex', marginBottom: 25}}>
+                                    <Typography variant='title' sx={{
+                                        fontWeight: 'bold',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16
+                                    }} noWrap>
+                                        Formato da entrada: &nbsp;
+                                    </Typography>
+                                    <Typography variant='subheading' sx={{
+                                        fontWeight: 'Light',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16
+                                    }} noWrap>
+                                        {inputFormat}
+                                    </Typography>
+                                </div>
+                                <div style={{display: 'flex', marginBottom: 25}}>
+                                    <Typography variant='title' sx={{
+                                        fontWeight: 'bold',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16
+                                    }} noWrap>
+                                        Quantidade de entradas: &nbsp;
+                                    </Typography>
+                                    <Typography variant='subheading' sx={{
+                                        fontWeight: 'Light',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16
+                                    }} noWrap>
+                                        {qtdInput}
+                                    </Typography>
+                                </div>
+                            </div>
+                        }
 
-            <Button
-                variant="contained"
-                style={{
-                    backgroundColor: '#17202A',
-                    color: '#ffffff',
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: 'bolder',
-                    width: 300,
-                    height: 50,
-                    borderRadius: 5,
-                    marginTop: 20,
-                    textTransform: 'none',
-                    alignSelf: 'center'
-                }}
-                onClick={save}
-            >
-                Salvar tarefa
-            </Button>
-        </div>
-        // </div>
+                        {editSecond ? <TextField
+                                id='outputFormatTaskArara'
+                                label='Formato da saída'
+                                variant='outlined'
+                                multiline
+                                sx={styleWhite}
+                                style={{width: '100%', marginBottom: 15}}
+                                value={outputFormat}
+                                enabled={!validateSecondInput()}
+                                onChange={(e) => setOutputFormat(e.target.value)}
+                            /> :
+                            <div style={{display: 'flex', marginBottom: 25}}>
+                                <Typography variant='title' sx={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    Formato da saída: &nbsp;
+                                </Typography>
+                                <Typography variant='subheading' sx={{
+                                    fontWeight: 'Light',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    {outputFormat}
+                                </Typography>
+                            </div>
+                        }
+
+                        {editSecond ? <TextField
+                                id='outputExampleTaskArara'
+                                label='Exemplo de saída'
+                                variant='outlined'
+                                multiline
+                                sx={styleWhite}
+                                style={{width: '100%', marginBottom: 25}}
+                                value={outputExample}
+                                enabled={!validateSecondInput()}
+                                onChange={(e) => setOutputExample(e.target.value)}
+                            /> :
+                            <div style={{display: 'flex', marginBottom: 25}}>
+                                <Typography variant='title' sx={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    Exemplo de saída: &nbsp;
+                                </Typography>
+                                <Typography variant='subheading' sx={{
+                                    fontWeight: 'Light',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16
+                                }} noWrap>
+                                    {outputExample}
+                                </Typography>
+                            </div>
+                        }
+
+                        <Tooltip
+                            title={
+                                <Typography
+                                    sx={{fontWeight: 'bold', fontFamily: 'Poppins', fontSize: 16, textAlign: 'center'}}>
+                                    {validateSecondInput() ? 'Salve para prosseguir!' : 'É necessário preencher o formato de entrada e saída!'}
+                                </Typography>
+                            }
+                        >
+                            <div>
+                                <Button
+                                    variant="contained"
+                                    style={{
+                                        backgroundColor: '#ffffff',
+                                        color: '#17202a',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: 'thin',
+                                        width: 300,
+                                        height: 50,
+                                        borderRadius: 5,
+                                        textTransform: 'none',
+                                        alignSelf: 'center'
+                                    }}
+                                    disabled={!validateSecondInput()}
+                                    onClick={secondInput}
+                                >
+                                    {editSecond ? 'Salvar' : 'Editar'}
+                                </Button>
+                            </div>
+                        </Tooltip>
+                    </AccordionDetails>
+                </Accordion>
+
+                <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}
+                           disabled={!validateSecondInput() || !validateFirstInput()}
+                           expanded={expandedThird ^ viewThird}
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        onClick={() => setViewThird(!viewThird)}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 'bold',
+                                fontFamily: 'Poppins',
+                                fontSize: 18
+                            }}
+                        >
+                            Entradas e saídas esperadas
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails style={{textAlign: 'center'}}>
+
+                        {qtdInput !== '' ?
+                            <div>
+                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                    {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
+                                        return (
+                                            multipliesInputs(i)
+                                        )
+                                    })}
+                                    <TextField
+                                        id='outputTaskArara'
+                                        label='Saída esperada'
+                                        variant='outlined'
+                                        multiline
+                                        sx={styleWhite}
+                                        value={inputsAux[qtdInput - 1]}
+                                        style={{width: '100%', marginBottom: 15}}
+                                        onChange={(e) => handleChangeInput(e.target.value, qtdInput - 1)}
+                                    />
+                                </div>
+                                <Button
+                                    variant="contained"
+                                    style={{
+                                        backgroundColor: '#ffffff',
+                                        color: '#17202a',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: 'thin',
+                                        width: 300,
+                                        height: 50,
+                                        borderRadius: 5,
+                                        marginBottom: 15,
+                                        textTransform: 'none',
+                                        alignSelf: 'center'
+                                    }}
+                                    // disabled={!validateSecondInput()}
+                                    onClick={addNewIO}
+                                >
+                                    Adicionar
+                                </Button>
+                            </div>
+                            :
+                            <div/>
+                        }
+
+                        <TableContainer component={Paper}>
+                            <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
+                                <TableHead>
+                                    {qtdInput !== '' ?
+                                        <TableRow>
+                                            {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
+                                                return (
+                                                    <TableCell align="right">Entrada {i + 1}</TableCell>
+                                                )
+                                            })}
+                                            <TableCell align="right">Saída esperada</TableCell>
+                                        </TableRow>
+                                        : <div></div>
+                                    }
+                                </TableHead>
+                                <TableBody>
+                                    {inRows.map((row) => (
+                                        <TableRow
+                                            key={row.aux}
+                                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            {row.aux.map((cell) => (
+                                                <TableCell align="right">{cell}</TableCell>
+                                            ))}
+                                            <TableCell align="right">{row.out}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </AccordionDetails>
+                </Accordion>
+
+                <Button
+                    variant="contained"
+                    style={{
+                        backgroundColor: '#17202A',
+                        color: '#ffffff',
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: 'bolder',
+                        width: 300,
+                        height: 50,
+                        borderRadius: 5,
+                        marginTop: 20,
+                        textTransform: 'none',
+                        alignSelf: 'center'
+                    }}
+                    onClick={save}
+                >
+                    Salvar tarefa
+                </Button>
+            </div>
+        </React.Fragment>
     );
 }
 

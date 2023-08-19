@@ -11,6 +11,9 @@ import Ide from "./codeComponents/ide";
 import {getCurrentUser} from "../../services/firebase/firebaseAux";
 
 function Task(props) {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
+
     const [codeTask, setCodeTask] = useState('');
     const [dataTask, setDataTask] = useState({});
     const [tests, setTests] = useState([]);
@@ -18,28 +21,33 @@ function Task(props) {
     const navigate = useNavigate();
     const {id} = useParams();
 
-    function isLogged(code){
-        if(getCurrentUser() === null){
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
+
+    function isLogged(code) {
+        if (getCurrentUser() === null) {
             Swal.fire({
                 title: 'Ops',
                 text: 'Você precisa estar logado para acessar essa página!',
                 icon: 'warning',
             }).then((result) => {
-                if(result.isConfirmed){
+                if (result.isConfirmed) {
                     id === undefined ?
                         navigate('/entrar', {state: {redirectUrl: '/atividade/' + code.replaceAll(' ', '')}})
                         :
                         navigate('/entrar', {state: {redirectUrl: '/atividade/' + id.replaceAll(' ', '')}});
                 }
             });
-        }else{
+        } else {
             return true;
         }
     }
 
     async function findTask(id) {
         const ok = isLogged(id);
-        if(ok) {
+        if (ok) {
             Swal.fire({
                 title: 'Buscando tarefa...',
                 allowOutsideClick: false,
@@ -65,7 +73,7 @@ function Task(props) {
     async function loadTaskInfo(code) {
         const ok = isLogged(code);
 
-        if(ok) {
+        if (ok) {
             Swal.fire({
                 title: 'Carregando tarefa...',
                 allowOutsideClick: false,
@@ -113,7 +121,7 @@ function Task(props) {
             response: response,
             uid: getCurrentUser().uuid,
             date: date
-        }).then(async ( res) => {
+        }).then(async (res) => {
             await addDoc(collection(db, 'users', getCurrentUser().uuid, 'myAttempts'), {
                 taskCode: id,
                 attemptCode: res.id,
@@ -136,42 +144,44 @@ function Task(props) {
     }, [id]);
 
     return (
-        <div style={{
-            minHeight: props.height - 70,
-            height: 'fit-content',
-            width: props.width,
-            background: '#DCDCDC',
-        }}>
-            {id === undefined ?
-                <div>
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: 100
-                    }}>
-                        <TextField id='outputTaskArara' label='Código da tarefa, ex: abcxyz123' variant='outlined'
-                                   sx={stylePrimary} value={codeTask} style={{width: '40%', marginBottom: 15}}
-                                   onChange={(e) => setCodeTask(e.target.value)}/>
-                        <Button
-                            style={{
-                                backgroundColor: '#17202A', color: '#fff', fontSize: 22, fontWeight: 'lighter',
-                                alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
-                                textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
-                            }}
-                            onClick={callByCode}
-                        >
-                            <img src={search} alt="logo" width='25' height='27'
-                                 style={{alignSelf: 'center', marginRight: 5}}/>
-                            Buscar
-                        </Button>
+        <React.Fragment id='task'>
+            <div style={{
+                minHeight: height - 70,
+                height: 'fit-content',
+                width: width,
+                background: '#DCDCDC',
+            }}>
+                {id === undefined ?
+                    <div>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: 100
+                        }}>
+                            <TextField id='outputTaskArara' label='Código da tarefa, ex: abcxyz123' variant='outlined'
+                                       sx={stylePrimary} value={codeTask} style={{width: '40%', marginBottom: 15}}
+                                       onChange={(e) => setCodeTask(e.target.value)}/>
+                            <Button
+                                style={{
+                                    backgroundColor: '#17202A', color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                    alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                    textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                }}
+                                onClick={callByCode}
+                            >
+                                <img src={search} alt="logo" width='25' height='27'
+                                     style={{alignSelf: 'center', marginRight: 5}}/>
+                                Buscar
+                            </Button>
+                        </div>
                     </div>
-                </div>
-                :
-                <Ide isTask={true} dataTask={dataTask} tests={tests} saveAttempt={saveTaskAttempt}/>
-            }
-        </div>
+                    :
+                    <Ide isTask={true} dataTask={dataTask} tests={tests} saveAttempt={saveTaskAttempt}/>
+                }
+            </div>
+        </React.Fragment>
     )
 }
 

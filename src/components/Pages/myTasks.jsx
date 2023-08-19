@@ -15,10 +15,18 @@ import Swal from "sweetalert2";
 import Typography from "@mui/material/Typography";
 
 function MyTasks(props) {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
+
     const [value, setValue] = React.useState('1');
     const [studentTasks, setStudentTasks] = React.useState([]);
     const [teacherTasks, setTeacherTasks] = React.useState([]);
     const [flag, setFlag] = React.useState(false);
+
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -73,63 +81,65 @@ function MyTasks(props) {
     }, [getCurrentUser()]);
 
     return (
-        <div style={{minHeight: props.height - 1, height: 'fit-content', width: props.width, background: '#DCDCDC'}}>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Box style={{marginTop: 25}}>
-                    <TabContext value={value}>
-                        <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                            <TabList onChange={handleChange} sx={tabSx}>
-                                <Tab label="Suas tentativas" value="1"
-                                     style={{
-                                         width: 350, borderRadius: '10px 0 0 10px', textTransform: 'none',
-                                         fontSize: 18, fontWeight: 'bold'
-                                     }}
-                                />
-                                <Tab label="Atividades cadastradas" value="2"
-                                     style={{
-                                         width: 350, borderRadius: '0 10px 10px 0', textTransform: 'none',
-                                         fontSize: 18, fontWeight: 'bold'
-                                     }}
-                                />
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">
-                            {studentTasks.length === 0 ?
-                                <Typography
-                                    sx={{
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Poppins',
-                                        fontSize: 26,
-                                        textAlign: 'center',
-                                        color: '#17202a'
-                                    }}>
-                                    Você ainda não realizou nenhuma atividade!
-                                </Typography>
-                                :
-                                <ListAttemps data={studentTasks}/>
-                            }
+        <React.Fragment id='myTasks'>
+            <div style={{minHeight: height - 1, height: 'fit-content', width: width, background: '#DCDCDC'}}>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <Box style={{marginTop: 25}}>
+                        <TabContext value={value}>
+                            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                                <TabList onChange={handleChange} sx={tabSx}>
+                                    <Tab label="Suas tentativas" value="1"
+                                         style={{
+                                             width: 350, borderRadius: '10px 0 0 10px', textTransform: 'none',
+                                             fontSize: 18, fontWeight: 'bold'
+                                         }}
+                                    />
+                                    <Tab label="Atividades cadastradas" value="2"
+                                         style={{
+                                             width: 350, borderRadius: '0 10px 10px 0', textTransform: 'none',
+                                             fontSize: 18, fontWeight: 'bold'
+                                         }}
+                                    />
+                                </TabList>
+                            </Box>
+                            <TabPanel value="1">
+                                {studentTasks.length === 0 ?
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 'bold',
+                                            fontFamily: 'Poppins',
+                                            fontSize: 26,
+                                            textAlign: 'center',
+                                            color: '#17202a'
+                                        }}>
+                                        Você ainda não realizou nenhuma atividade!
+                                    </Typography>
+                                    :
+                                    <ListAttemps data={studentTasks}/>
+                                }
 
-                        </TabPanel>
-                        <TabPanel value="2">
-                            {teacherTasks.length === 0 ?
-                                <Typography
-                                    sx={{
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Poppins',
-                                        fontSize: 26,
-                                        textAlign: 'center',
-                                        color: '#17202a'
-                                    }}>
-                                    Nenhuma atividade cadastrada!
-                                </Typography>
-                                :
-                                <ListTasks data={teacherTasks}/>
-                            }
-                        </TabPanel>
-                    </TabContext>
-                </Box>
+                            </TabPanel>
+                            <TabPanel value="2">
+                                {teacherTasks.length === 0 ?
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 'bold',
+                                            fontFamily: 'Poppins',
+                                            fontSize: 26,
+                                            textAlign: 'center',
+                                            color: '#17202a'
+                                        }}>
+                                        Nenhuma atividade cadastrada!
+                                    </Typography>
+                                    :
+                                    <ListTasks data={teacherTasks}/>
+                                }
+                            </TabPanel>
+                        </TabContext>
+                    </Box>
+                </div>
             </div>
-        </div>
+        </React.Fragment>
     );
 }
 

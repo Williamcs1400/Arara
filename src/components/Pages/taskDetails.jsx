@@ -18,6 +18,9 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 
 function TaskDetails(props) {
+    const [height, setHeight] = React.useState(null);
+    const [width, setWidth] = React.useState(null);
+
     const [task, setTask] = useState({});
     const [qtdAttempts, setQtdAttempts] = useState(0);
     const [qtdCorrect, setQtdCorrect] = useState(0);
@@ -27,6 +30,11 @@ function TaskDetails(props) {
     const navigate = useNavigate();
     const location = useLocation();
     const {id} = useParams();
+
+    useEffect(() => {
+        setHeight(window.innerHeight);
+        setWidth(window.innerWidth);
+    }, []);
 
     async function findTask() {
         if (location.state.task !== undefined) {
@@ -54,13 +62,13 @@ function TaskDetails(props) {
                 }
             });
 
-            if(listOfIds.length === 0){
+            if (listOfIds.length === 0) {
                 Swal.fire({
                     title: 'Ops',
                     text: 'Nenhum aluno fez essa tarefa ainda!',
                     icon: 'warning',
                 }).then((result) => {
-                    if(result.isConfirmed){
+                    if (result.isConfirmed) {
                         navigate('/minhasAtividades');
                     }
                 });
@@ -205,128 +213,141 @@ function TaskDetails(props) {
     }
 
     return (
-        <div style={{
-            minHeight: props.height - 70,
-            height: 'fit-content',
-            width: props.width,
-            background: '#DCDCDC',
-        }}>
+        <React.Fragment id='taskDetails'>
             <div style={{
-                display: 'flex', flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'center', width: '100%'
+                minHeight: height - 70,
+                height: 'fit-content',
+                width: width,
+                background: '#DCDCDC',
             }}>
-                {infoBlock(qtdAttempts === 0 ? '-' : qtdAttempts, textAttemps())}
-                {infoBlock(qtdCorrect === 0 ? '-' : qtdCorrect, textCorrect())}
-                {infoBlock(qtdPeople === 0 ? '-' : qtdPeople, textPeople())}
-            </div>
+                <div style={{
+                    display: 'flex', flexDirection: 'row', alignItems: 'center',
+                    justifyContent: 'center', width: '100%'
+                }}>
+                    {infoBlock(qtdAttempts === 0 ? '-' : qtdAttempts, textAttemps())}
+                    {infoBlock(qtdCorrect === 0 ? '-' : qtdCorrect, textCorrect())}
+                    {infoBlock(qtdPeople === 0 ? '-' : qtdPeople, textPeople())}
+                </div>
 
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 20,
-                width: '100%'
-            }}>
-                <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
-                                      aria-controls="panel1a-content"
-                                      id="panel1a-header"
-                    >
-                        <Typography
-                            sx={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Poppins',
-                                fontSize: 18
-                            }}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 20,
+                    width: '100%'
+                }}>
+                    <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginTop: 20}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
+                                          aria-controls="panel1a-content"
+                                          id="panel1a-header"
                         >
-                            Informações da atividade
-                        </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails style={{textAlign: 'center'}}>
+                            <Typography
+                                sx={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 18
+                                }}
+                            >
+                                Informações da atividade
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails style={{textAlign: 'center'}}>
 
-                        {InfoRow('Nome: ', task.name)}
-                        {InfoRow('Descrição: ', task.description)}
-                        {InfoRow('Data de criação: ', task.date ? convertDateHour(task.date.seconds) : '-')}
-                        {InfoRow('Formato de entrada: ', task.inputFormat)}
-                        {InfoRow('Formato de saída: ', task.outputFormat)}
-                        {InfoRow('Exemplo: ', task.outputExample)}
+                            {InfoRow('Nome: ', task.name)}
+                            {InfoRow('Descrição: ', task.description)}
+                            {InfoRow('Data de criação: ', task.date ? convertDateHour(task.date.seconds) : '-')}
+                            {InfoRow('Formato de entrada: ', task.inputFormat)}
+                            {InfoRow('Formato de saída: ', task.outputFormat)}
+                            {InfoRow('Exemplo: ', task.outputExample)}
 
-                        {tableIO()}
+                            {tableIO()}
 
-                    </AccordionDetails>
-                </Accordion>
-            </div>
+                        </AccordionDetails>
+                    </Accordion>
+                </div>
 
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 20,
-                width: '100%'
-            }}>
-                <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginBottom: 50}}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
-                                      aria-controls="panel1a-content"
-                                      id="panel1a-header"
-                    >
-                        <Typography
-                            sx={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Poppins',
-                                fontSize: 18
-                            }}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 20,
+                    width: '100%'
+                }}>
+                    <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginBottom: 50}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
+                                          aria-controls="panel1a-content"
+                                          id="panel1a-header"
                         >
-                            Detalhes das tentativas
-                        </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails style={{textAlign: 'center'}}>
-                        {teste.map((student) => (
-                            <Accordion style={{width: '100%', backgroundColor: '#243649', color: '#fff', marginBottom: 5}}>
-                                <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
-                                                  aria-controls="panel1a-content"
-                                                  id="panel1a-header"
-                                >
-                                    <Typography
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            fontFamily: 'Poppins',
-                                            fontSize: 18
-                                        }}
+                            <Typography
+                                sx={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 18
+                                }}
+                            >
+                                Detalhes das tentativas
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails style={{textAlign: 'center'}}>
+                            {teste.map((student) => (
+                                <Accordion
+                                    style={{width: '100%', backgroundColor: '#243649', color: '#fff', marginBottom: 5}}>
+                                    <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
+                                                      aria-controls="panel1a-content"
+                                                      id="panel1a-header"
                                     >
-                                        {student.name}
-                                    </Typography>
-                                </AccordionSummary>
-                                <AccordionDetails style={{textAlign: 'center'}}>
-                                    {student.detail.map((attempt) => (
-                                        <div>
-                                            <div style={{display: 'flex', marginBottom: 25, justifyContent: 'center'}}>
-                                                <Typography variant='title' sx={{
-                                                    fontWeight: 'bold',
-                                                    fontFamily: 'Poppins',
-                                                    fontSize: 16
-                                                }} noWrap>
-                                                    Resultado: &nbsp;
-                                                </Typography>
-                                                <Typography variant='subheading' sx={{
-                                                    fontWeight: 'Light',
-                                                    fontFamily: 'Poppins',
-                                                    fontSize: 16
-                                                }} noWrap>
-                                                    {attempt.success ? 'Acertou' : 'Errou'} - {attempt.detail}% de acerto - {convertDateHour(attempt.date.seconds)}
-                                                </Typography>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 'bold',
+                                                fontFamily: 'Poppins',
+                                                fontSize: 18
+                                            }}
+                                        >
+                                            {student.name}
+                                        </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails style={{textAlign: 'center'}}>
+                                        {student.detail.map((attempt) => (
+                                            <div>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    marginBottom: 25,
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <Typography variant='title' sx={{
+                                                        fontWeight: 'bold',
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 16
+                                                    }} noWrap>
+                                                        Resultado: &nbsp;
+                                                    </Typography>
+                                                    <Typography variant='subheading' sx={{
+                                                        fontWeight: 'Light',
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 16
+                                                    }} noWrap>
+                                                        {attempt.success ? 'Acertou' : 'Errou'} - {attempt.detail}% de
+                                                        acerto - {convertDateHour(attempt.date.seconds)}
+                                                    </Typography>
+                                                </div>
+                                                <hr style={{
+                                                    width: '100%',
+                                                    backgroundColor: '#fff',
+                                                    marginTop: 10,
+                                                    marginBottom: 10
+                                                }}/>
                                             </div>
-                                            <hr style={{width: '100%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
-                                        </div>
-                                    ))}
-                                </AccordionDetails>
-                            </Accordion>
-                        ))}
-                    </AccordionDetails>
-                </Accordion>
+                                        ))}
+                                    </AccordionDetails>
+                                </Accordion>
+                            ))}
+                        </AccordionDetails>
+                    </Accordion>
+                </div>
             </div>
-        </div>
+        </React.Fragment>
     )
 }
 

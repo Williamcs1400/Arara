@@ -1,19 +1,18 @@
 import React from 'react';
 import AceEditor from 'react-ace';
 import CustomAraraMode from '../../../services/utils/CustomAraraMode.js';
-import {setCodeFromEditor} from "../../../services/analyzers/compiler";
-import {defaultCode} from "../../../services/utils/definitions";
+import {getCodeFromEditor, setCodeFromEditor} from "../../../services/analyzers/compiler";
 
-class App extends React.Component {
+class App extends React.PureComponent {
 
     constructor(props) {
         super(props);
         this.state = {
-            value: props.value === '' ? defaultCode : props.value,
+            value: getCodeFromEditor(),
             height: props.height,
             width: props.width
         }
-        setCodeFromEditor(props.value);
+        setCodeFromEditor(getCodeFromEditor());
     }
 
     componentDidMount() {
@@ -24,8 +23,8 @@ class App extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.height !== this.props.height || prevProps.width !== this.props.width) {
             this.setState({
-                height: this.props.height,
-                width: this.props.width
+                height: prevProps.height,
+                width: prevProps.width
             });
         }
     }
@@ -48,8 +47,8 @@ class App extends React.Component {
                     onChange={this.onChange.bind(this)}
                     name="UNIQUE_ID_OF_DIV"
                     editorProps={{ $blockScrolling: true }}
-                    height={this.state.height ? this.state.height - 70 : 500}
-                    width={this.state.width ? this.state.width - 64 : 500}
+                    height={this.props.height ? this.props.height - 70 : 500}
+                    width={this.props.width ? this.props.width - 64 : 500}
                     fontSize={21}
                 />
             </div>
