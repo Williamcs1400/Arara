@@ -56,9 +56,11 @@ export class CustomHighlightRules extends window.ace.acequire('ace/mode/text_hig
                 token: 'comment',
                 regex: '//.*$'
             }, {
-                // aceitar exatamente a palavra 'se' e não palavras que contenham 'se'
                 token: 'keyword.operator',
                 regex: '\\bse\\b'
+            }, {
+                token: 'keyword.operator',
+                regex: '\\bsenao se\\b'
             }
             ]
         };

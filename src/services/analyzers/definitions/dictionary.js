@@ -16,7 +16,7 @@ const knownCommands = [
     'logico',
     'caractere',
     'se',
-    'senao_se',
+    'senao se',
     'senao',
 ];
 
@@ -56,11 +56,11 @@ const knownInstructions = {
         'example': 'se(x > 0)',
         'constructionInOrder': ['se', '(', ')'],
     },
-    'senao_se': {
+    'senao se': {
         'description': 'Executa um bloco de código se a condição for verdadeira, desde que a condição do se anterior seja falsa',
-        'syntax': "senao_se()",
-        'example': 'senao_se(x > 0)',
-        'constructionInOrder': ['senao_se', '(', ')'],
+        'syntax': "senaose(){}",
+        'example': 'senao se(x > 0)',
+        'constructionInOrder': ['senao se', '(', ')'],
     },
     'senao': {
         'description': 'Executa um bloco de código se a condição do se e do senao_se anterior forem falsas',

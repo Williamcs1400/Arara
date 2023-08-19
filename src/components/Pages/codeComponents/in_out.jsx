@@ -44,120 +44,137 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
     function executeCode() {
         let aux = '';
         let i = pauseOrder !== 0 ? pauseOrder + 1 : 0;
+        let response;
+        let lastResponse = null;
 
-        if (executableCode !== undefined && executableCode.length > 0) {
-            for (; i < executableCode.length; i++) {
-                // Somente permite a leitura se o terminal quando cair no comando de leitura
-                if (readingEnabled) {
-                    setReadingEnabled(false);
-                }
+        try {
+            if (executableCode !== undefined && executableCode.length > 0) {
+                for (; i < executableCode.length; i++) {
+                    // Somente permite a leitura se o terminal quando cair no comando de leitura
+                    if (readingEnabled) {
+                        setReadingEnabled(false);
+                    }
 
-                const response = executor(executableCode[i], valueVariables);
+                    if (i > 0) {
+                        response = executor(executableCode[i], valueVariables, lastResponse);
+                    } else {
+                        response = executor(executableCode[i], valueVariables, null);
+                    }
 
-                // Escrita no terminal
-                if (response.actionType === ExecutableActionType.writing) {
-                    // Verifica se o valor é uma string ou uma variável
-                    if (response.type === 'string') {
-                        if (response.value.indexOf('\\n') !== -1) {
-                            for (let i = 0; i < response.value.length; i++) {
-                                if (response.value[i] === '\\' && response.value[i + 1] === 'n') {
-                                    aux += '\n';
-                                    i++;
-                                } else {
-                                    aux += response.value[i];
+                    if (response.actionType !== ExecutableActionType.comparison && executableCode[i].subContent === undefined) {
+                        lastResponse = null;
+                    }
+
+                    // Escrita no terminal
+                    if (response.actionType === ExecutableActionType.writing) {
+                        // Verifica se o valor é uma string ou uma variável
+                        if (response.type === 'string') {
+                            if (response.value.indexOf('\\n') !== -1) {
+                                for (let i = 0; i < response.value.length; i++) {
+                                    if (response.value[i] === '\\' && response.value[i + 1] === 'n') {
+                                        aux += '\n';
+                                        i++;
+                                    } else {
+                                        aux += response.value[i];
+                                    }
+                                }
+                            } else {
+                                aux += response.value;
+                            }
+                            // Verifica se o valor é uma variável
+                        } else if (response.type === 'variable') {
+                            for (let i = 0; i < valueVariables.length; i++) {
+                                if (valueVariables[i].name === response.value) {
+                                    aux += valueVariables[i].value;
                                 }
                             }
-                        } else {
-                            aux += response.value;
                         }
-                        // Verifica se o valor é uma variável
-                    } else if (response.type === 'variable') {
+                        setText(text + aux);
+                    }
+
+                    // Leitura do terminal
+                    if (response.actionType === ExecutableActionType.reading) {
+                        setReadingEnabled(true);
+                        setFocus(true);
+                        setPauseOrder(i);
+                        setLastVariable(response.value);
+
+                        break;
+                    }
+
+                    // Atribuição de valor a variável
+                    if (response.actionType === ExecutableActionType.assignment) {
+                        let exists = false;
                         for (let i = 0; i < valueVariables.length; i++) {
-                            if (valueVariables[i].name === response.value) {
-                                aux += valueVariables[i].value;
+                            if (valueVariables[i].name === response.variable) {
+                                valueVariables[i].value = response.value;
+                                exists = true;
                             }
                         }
-                    }
-                    setText(text + aux);
-                }
 
-                // Leitura do terminal
-                if (response.actionType === ExecutableActionType.reading) {
-                    setReadingEnabled(true);
-                    setFocus(true);
-                    setPauseOrder(i);
-                    setLastVariable(response.value);
-
-                    break;
-                }
-
-                // Atribuição de valor a variável
-                if (response.actionType === ExecutableActionType.assignment) {
-                    let exists = false;
-                    for (let i = 0; i < valueVariables.length; i++) {
-                        if (valueVariables[i].name === response.variable) {
-                            valueVariables[i].value = response.value;
-                            exists = true;
+                        if (!exists) {
+                            valueVariables.push({name: response.variable, value: response.value, type: response.type});
                         }
                     }
 
-                    if (!exists) {
-                        valueVariables.push({name: response.variable, value: response.value, type: response.type});
-                    }
-                }
-
-                // Operações matemáticas
-                if (response.actionType === ExecutableActionType.operation) {
-                    const operations = response.value;
-                    operations.forEach((operation, index) => {
-                        valueVariables.forEach((variable) => {
-                            if (operation === variable.name) {
-                                if (variable.value === undefined || variable.value === '') {
-                                    operations[index] = 0;
-                                } else {
-                                    operations[index] = variable.value;
+                    // Operações matemáticas
+                    if (response.actionType === ExecutableActionType.operation) {
+                        const operations = response.value;
+                        operations.forEach((operation, index) => {
+                            valueVariables.forEach((variable) => {
+                                if (operation === variable.name) {
+                                    if (variable.value === undefined || variable.value === '') {
+                                        operations[index] = 0;
+                                    } else {
+                                        operations[index] = variable.value;
+                                    }
                                 }
-                            }
+                            });
                         });
-                    });
-                    const value = executeOperation(operations, response.order);
-                    for (let i = 0; i < valueVariables.length; i++) {
-                        if (valueVariables[i].name === response.variable) {
-                            valueVariables[i].value = value;
+                        const value = executeOperation(operations, response.order);
+                        for (let i = 0; i < valueVariables.length; i++) {
+                            if (valueVariables[i].name === response.variable) {
+                                valueVariables[i].value = value;
+                            }
                         }
                     }
-                }
 
-                // Condicional
-                if (response.actionType === ExecutableActionType.comparison) {
-                    if(response.value){
-                        // Se a condição for verdadeira, executa o código dentro do if
-                        const executableCodeAux = []
-                        // monta o código que será executado
-                        response.subCode.forEach((code) => {
-                            executableCodeAux.push({token: code, content: null});
-                        });
+                    // Condicional
+                    if (response.actionType === ExecutableActionType.comparison) {
+                        lastResponse = response;
+                        if (response.value) {
+                            // Se a condição for verdadeira, executa o código dentro do if
+                            const executableCodeAux = []
+                            // monta o código que será executado
+                            response.subCode.forEach((code) => {
+                                executableCodeAux.push({token: code, content: null, subContent: true});
+                            });
 
-                        // remove a instrução se já processada
-                        const part1 = executableCode.slice(0, i);
-                        const part2 = executableCode.slice(i + 1, executableCode.length);
+                            // remove a instrução se já processada
+                            const part1 = executableCode.slice(0, i);
+                            const part2 = executableCode.slice(i + 1, executableCode.length);
 
-                        // insere o código que será executado no ponto onde o se estava
-                        const exeAux = [{token: null, content: null}];
-                        part1.push(...exeAux);
-                        part1.push(...executableCodeAux);
-                        part1.push(...part2);
-                        executableCode = part1;
+                            // insere o código que será executado no ponto onde o se estava
+                            const exeAux = [{token: null, content: null}];
+                            part1.push(...exeAux);
+                            part1.push(...executableCodeAux);
+                            part1.push(...part2);
+
+                            executableCode = part1;
+                        }
+                    }
+
+                    // Verifica se o código chegou ao fim
+                    if (i === executableCode.length - 1) {
+                        setFinalized(true);
                     }
                 }
-
-                // Verifica se o código chegou ao fim
-                if (i === executableCode.length - 1) {
-                    setFinalized(true);
-                }
+            } else {
+                setText('');
             }
-        } else {
-            setText('');
+        } catch (e) {
+            // TODO: colocar em vermelho isso aqui
+            setText(`${text}\n${e.message}`);
         }
     }
 

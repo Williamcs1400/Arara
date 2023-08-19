@@ -3,19 +3,25 @@ import {
     isPossibleNameOfVariable
 } from "../definitions/dictionary";
 import {compilerFromScope} from "../compiler";
+import {ConditionalType} from "../definitions/actionTypes";
 
 // TODO: arrumar a validação para aceitar negação !
 // TODO: aceitar variável booleana e o valor true ou false
 
-export function validateSeInstruction(instruction) {
-    const definition = getInstructionByToken('se');
+/*
+ * Função que valida a instrução de condição
+ * @param {string} instruction: instrução a ser validada
+ * @param {ConditionalType} conditionalName: tipo de condição (se, senao)
+ */
+export function validateSeInstruction(instruction, conditionalName) {
+    const definition = getInstructionByToken(conditionalName);
     const syntax = definition.syntax;
 
     const content = instruction.substring(instruction.indexOf('{') + 1, instruction.lastIndexOf('}'));
     instruction = instruction.replace(content, '');
 
     // verifica se há a quantidade correta de cada componente da instrução
-    if (instruction.split('se').length - 1 !== 1 ||
+    if (instruction.split(conditionalName).length - 1 !== 1 ||
         instruction.split('(').length - 1 !== 1 ||
         instruction.split(')').length - 1 !== 1
     ) {

@@ -1,11 +1,16 @@
 import {getInstructionByToken, getNotAcceptedSpecialCharacters, validateTyping} from '../definitions/dictionary.js';
 import {validateSeInstruction} from "./validateConditional";
+import {ConditionalType} from "../definitions/actionTypes";
+
+let lastInstruction = '';
 
 /*
     Analisador sintático
     Verifica se a construção da instrução está correta
  */
 export function syntacticAnalyze(instruction) {
+
+    setLastInstruction(instruction);
 
     // verificação para declaração de variáveis
     if (instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
@@ -39,12 +44,33 @@ export function syntacticAnalyze(instruction) {
     }
 
     // verificação para instrução **se**
-    if (instruction.startsWith('se')) {
+    if (instruction.startsWith('se') && instruction.indexOf('senao se') === -1 && instruction.indexOf('senao') === -1){
         if(instruction.split('se').length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
-        return validateSeInstruction(instruction);
+        return validateSeInstruction(instruction, ConditionalType.se);
     }
+
+    // verificação para instrução **senao se**
+    if (instruction.startsWith('senao se')) {
+        if(instruction.split('senao se').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
+        if(lastInstruction.indexOf('se') === -1){
+            throw new Error('Erro sintático | Não há uma instrução **se** anterior para a instrução **senao se**.');
+        }
+        return validateSeInstruction(instruction, ConditionalType.senao);
+    }
+}
+
+// atualiza a última instrução
+export function setLastInstruction(instruction){
+    lastInstruction = instruction;
+}
+
+// recupera a última instrução
+export function getLastInstruction(){
+    return lastInstruction;
 }
 
 // TODO: verificar o pq de tirar o ; do final da atribuição não gera erro

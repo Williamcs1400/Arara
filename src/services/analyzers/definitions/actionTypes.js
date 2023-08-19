@@ -6,3 +6,9 @@ export const ExecutableActionType = {
     operation: 'OPERATION',
     comparison: 'COMPARISON'
 }
+
+// Tipos de condicionais
+export const ConditionalType = {
+    se: 'se',
+    senao: 'senao se',
+}

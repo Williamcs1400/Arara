@@ -2,11 +2,11 @@ import {ExecutableActionType} from "./definitions/actionTypes";
 import {containsOperator, isDeclaration, isOperator} from "./definitions/dictionary";
 
 // executa o código gerado pelo compilador linha a linha
-export function executor(token, valueVariables) {
-    return execute(token.token, token.content, valueVariables);
+export function executor(token, valueVariables, lastComparison) {
+    return execute(token.token, token.content, valueVariables, lastComparison);
 }
 
-function execute(token, content, valueVariables) {
+function execute(token, content, valueVariables, lastComparison) {
     if (token.startsWith('escreva')) {
         const response = getValueOfWriting(token);
         return {actionType: ExecutableActionType.writing, value: response.value, type: response.type};
@@ -38,8 +38,21 @@ function execute(token, content, valueVariables) {
     } else if (isDeclaration(token)) {
         return {actionType: ExecutableActionType.assignment, value: getDefaultValueOfTyping(token), type: isAssignment(token), variable: getVariableOfDeclarationWithoutAssignment(token)};
     }
-    else if (token.startsWith('se')) {
+
+    else if (token.startsWith('se') && !token.startsWith('senao se')) {
         return {actionType: ExecutableActionType.comparison, value: executeComparison(token, valueVariables), subCode: content};
+    }
+
+    else if (token.startsWith('senao se')){
+        const result = executeComparison(token, valueVariables);
+
+        if(lastComparison === null){
+            throw new Error('Erro semântico | Não há uma instrução **se** anterior para a instrução **senao se**.');
+        }else if(!lastComparison.value && result) {
+            return {actionType: ExecutableActionType.comparison, value: result, subCode: content};
+        }else{
+            return {actionType: ExecutableActionType.comparison, value: false, subCode: content};
+        }
     }
 
     else {
