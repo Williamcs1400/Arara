@@ -141,7 +141,6 @@ function Ide(props) {
                     {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
                                            executableCode={executedCode}/> : null}
                 </div>
-
             </div>
         </React.Fragment>
     );

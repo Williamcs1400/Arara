@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import Header from "./header";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -612,25 +611,37 @@ function RegisterTask() {
                     </AccordionDetails>
                 </Accordion>
 
-                <Button
-                    variant="contained"
-                    style={{
-                        backgroundColor: '#17202A',
-                        color: '#ffffff',
-                        fontFamily: 'Poppins',
-                        fontSize: 18,
-                        fontWeight: 'bolder',
-                        width: 300,
-                        height: 50,
-                        borderRadius: 5,
-                        marginTop: 20,
-                        textTransform: 'none',
-                        alignSelf: 'center'
-                    }}
-                    onClick={save}
+                <Tooltip
+                    title={
+                        <Typography
+                            sx={{fontWeight: 'bold', fontFamily: 'Poppins', fontSize: 16, textAlign: 'center'}}>
+                            {inRows.length === 0 ? 'Adicione pelo menos uma entrada e saída!' : 'Clique para salvar a tarefa e gerar um link!'}
+                        </Typography>
+                    }
                 >
-                    Salvar tarefa
-                </Button>
+                    <div>
+                        <Button
+                            variant="contained"
+                            style={{
+                                backgroundColor: '#17202A',
+                                color: '#ffffff',
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: 'bolder',
+                                width: 300,
+                                height: 50,
+                                borderRadius: 5,
+                                marginTop: 20,
+                                textTransform: 'none',
+                                alignSelf: 'center'
+                            }}
+                            onClick={save}
+                            disabled={inRows.length === 0}
+                        >
+                            Salvar tarefa
+                        </Button>
+                    </div>
+                </Tooltip>
             </div>
         </React.Fragment>
     );
