@@ -21,7 +21,7 @@ function RegisterFinish(props) {
 
     function getLink() {
         if (location.state) {
-            return window.location.host + '/atividade/' + location.state.taskId;
+            return window.location.host + '/#/atividade/' + location.state.taskId;
         }
         return '/';
     }
