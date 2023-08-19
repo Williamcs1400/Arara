@@ -39,7 +39,7 @@ function execute(token, content, valueVariables, lastComparison) {
         return {actionType: ExecutableActionType.assignment, value: getDefaultValueOfTyping(token), type: isAssignment(token), variable: getVariableOfDeclarationWithoutAssignment(token)};
     }
 
-    else if (token.startsWith('se') && !token.startsWith('senao se')) {
+    else if (token.startsWith('se') && !token.startsWith('senao se') && !token.startsWith('senao')) {
         return {actionType: ExecutableActionType.comparison, value: executeComparison(token, valueVariables), subCode: content};
     }
 
@@ -50,6 +50,16 @@ function execute(token, content, valueVariables, lastComparison) {
             throw new Error('Erro semântico | Não há uma instrução **se** anterior para a instrução **senao se**.');
         }else if(!lastComparison.value && result) {
             return {actionType: ExecutableActionType.comparison, value: result, subCode: content};
+        }else{
+            return {actionType: ExecutableActionType.comparison, value: false, subCode: content};
+        }
+    }
+
+    else if (token.startsWith('senao')) {
+        if(lastComparison === null){
+            throw new Error('Erro semântico | Não há uma instrução **se** ou senão se anterior para a instrução **senao**.');
+        }else if(!lastComparison.value) {
+            return {actionType: ExecutableActionType.comparison, value: true, subCode: content};
         }else{
             return {actionType: ExecutableActionType.comparison, value: false, subCode: content};
         }

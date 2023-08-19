@@ -61,6 +61,17 @@ export function syntacticAnalyze(instruction) {
         }
         return validateSeInstruction(instruction, ConditionalType.senao);
     }
+
+    // verificação para instrução **senao**
+    if (instruction.startsWith('senao') && instruction.indexOf('senao se') === -1) {
+        if(instruction.split('senao').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
+        if(lastInstruction.indexOf('se') === -1){
+            throw new Error('Erro sintático | Não há uma instrução **se** anterior para a instrução **senao**.');
+        }
+        return {'action': 'else'};
+    }
 }
 
 // atualiza a última instrução

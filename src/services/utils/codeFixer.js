@@ -19,6 +19,15 @@ export function removeCodeExpression(token){
     if(token.startsWith('caractere')) {
         return 'caractere';
     }
+    if(token.replaceAll(' ', '').startsWith('se(')) {
+        return 'se';
+    }
+    if(token.replaceAll(' ', '').startsWith('senaose(')) {
+        return 'senao se';
+    }
+    if(token.replaceAll(' ', '').startsWith('senao')) {
+        return 'senao';
+    }
 
     return token.split('(')[0];
 }

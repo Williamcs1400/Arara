@@ -64,9 +64,9 @@ const knownInstructions = {
     },
     'senao': {
         'description': 'Executa um bloco de código se a condição do se e do senao_se anterior forem falsas',
-        'syntax': "senao",
-        'example': 'senao',
-        'constructionInOrder': ['senao'],
+        'syntax': "senao{}",
+        'example': 'senao{}',
+        'constructionInOrder': ['senao', '{', '}'],
     },
     'inteiro': {
         'description': 'Declara uma variável do tipo inteiro',
