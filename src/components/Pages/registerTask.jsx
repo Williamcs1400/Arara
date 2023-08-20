@@ -185,28 +185,79 @@ function RegisterTask() {
         }
 
         setInRows([...inRows, {aux}]);
-        setInputsAux([])
+
+        const cleanArray = [];
+        for (let i = 0; i < qtdInput; i++) {
+            cleanArray.push('');
+        }
+        setInputsAux(cleanArray)
     }
 
     const handleChangeInput = (value, index) => {
-        let aux = inputsAux;
+        let aux = [];
+        for(let i = 0; i < inputsAux.length; i++) {
+            aux[i] = inputsAux[i];
+        }
         aux[index] = value;
         setInputsAux(aux);
     }
 
-    const multipliesInputs = (index) => {
+    const formInOut = () => {
         return (
-            <TextField
-                id='inputTaskArara'
-                label={'Entrada ' + (index + 1)}
-                variant='outlined'
-                multiline
-                sx={styleWhite}
-                value={inputsAux[index]}
-                style={{width: '100%', marginBottom: 15, marginRight: 10}}
-                onChange={(e) => handleChangeInput(e.target.value, index)}
-            />
-        )
+            <div>
+                {qtdInput !== '' ?
+                    <div>
+                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                            {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
+                                return (
+                                <TextField
+                                    // id='inputTaskArara'
+                                    label={'Entrada ' + (i + 1)}
+                                    variant='outlined'
+                                    multiline
+                                    sx={styleWhite}
+                                    value={inputsAux[i]}
+                                    style={{width: '100%', marginBottom: 15, marginRight: 10}}
+                                    onChange={(e) => handleChangeInput(e.target.value, i)}
+                                />
+                                )
+                            })}
+                            <TextField
+                                id='outputTaskArara'
+                                label='Saída esperada'
+                                variant='outlined'
+                                multiline
+                                sx={styleWhite}
+                                value={inputsAux[qtdInput - 1]}
+                                style={{width: '100%', marginBottom: 15}}
+                                onChange={(e) => handleChangeInput(e.target.value, qtdInput - 1)}
+                            />
+                        </div>
+                        <Button
+                            variant="contained"
+                            style={{
+                                backgroundColor: '#ffffff',
+                                color: '#17202a',
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: 'thin',
+                                width: 300,
+                                height: 50,
+                                borderRadius: 5,
+                                marginBottom: 15,
+                                textTransform: 'none',
+                                alignSelf: 'center'
+                            }}
+                            onClick={addNewIO}
+                        >
+                            Adicionar
+                        </Button>
+                    </div>
+                    :
+                    <div/>
+                }
+            </div>
+        );
     }
 
     return (
@@ -534,49 +585,7 @@ function RegisterTask() {
                     </AccordionSummary>
                     <AccordionDetails style={{textAlign: 'center'}}>
 
-                        {qtdInput !== '' ?
-                            <div>
-                                <div style={{display: 'flex', flexDirection: 'row'}}>
-                                    {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
-                                        return (
-                                            multipliesInputs(i)
-                                        )
-                                    })}
-                                    <TextField
-                                        id='outputTaskArara'
-                                        label='Saída esperada'
-                                        variant='outlined'
-                                        multiline
-                                        sx={styleWhite}
-                                        value={inputsAux[qtdInput - 1]}
-                                        style={{width: '100%', marginBottom: 15}}
-                                        onChange={(e) => handleChangeInput(e.target.value, qtdInput - 1)}
-                                    />
-                                </div>
-                                <Button
-                                    variant="contained"
-                                    style={{
-                                        backgroundColor: '#ffffff',
-                                        color: '#17202a',
-                                        fontFamily: 'Poppins',
-                                        fontSize: 18,
-                                        fontWeight: 'thin',
-                                        width: 300,
-                                        height: 50,
-                                        borderRadius: 5,
-                                        marginBottom: 15,
-                                        textTransform: 'none',
-                                        alignSelf: 'center'
-                                    }}
-                                    // disabled={!validateSecondInput()}
-                                    onClick={addNewIO}
-                                >
-                                    Adicionar
-                                </Button>
-                            </div>
-                            :
-                            <div/>
-                        }
+                        {formInOut()}
 
                         <TableContainer component={Paper}>
                             <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
