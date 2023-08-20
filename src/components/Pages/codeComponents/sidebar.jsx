@@ -14,7 +14,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Sidebar({executeCode, openTerminal, isTask, openTaskInfo, startTestSolution}) {
+export default function Sidebar({executeCode, executeCodeError, openTerminal, isTask, openTaskInfo, startTestSolution}) {
     const [open, setOpen] = React.useState(false);
     const [result, setResult] = React.useState({});
     const [message, setMessage] = React.useState('');
@@ -25,11 +25,13 @@ export default function Sidebar({executeCode, openTerminal, isTask, openTaskInfo
             return;
 
         result.sucess === true ? setTypeOfAlert('success') : setTypeOfAlert('error');
-        setMessage(result.message);
+        setMessage('Error ao copilar o código');
 
-        if (result.sucess === true)
+        if (result.sucess === true) {
             executeCode(result.executableCode);
-
+        }else{
+            executeCodeError(result.message);
+        }
         handleClick();
     }, [result]);
 

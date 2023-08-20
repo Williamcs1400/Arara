@@ -3,10 +3,9 @@ body {
 }
 
 .textOut {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1.1em;
     font-weight: bold;
-    color: #008F11;
     display: flex;
     white-space: pre-line;
 }

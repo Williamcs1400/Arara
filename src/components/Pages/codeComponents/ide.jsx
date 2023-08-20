@@ -13,6 +13,8 @@ function Ide(props) {
     const [isTask, setIsTask] = React.useState(false);
     const [flagTaskInfo, setFlagTaskInfo] = React.useState(false);
     const [terminalHeight, setTerminalHeight] = React.useState(0);
+    const [errorMessage, setErrorMessage] = React.useState('');
+    const [colorOutput, setColorOutput] = React.useState('#fff');
 
     // Atualiza o tamanho da tela
     useEffect(() => {
@@ -22,12 +24,28 @@ function Ide(props) {
 
     // Abre ou fecha o terminal e executa o código - adequando o tamanho da tela
     function executeCode(message) {
+        setErrorMessage('');
         if (message !== undefined) {
             setExecutedCode(message);
             setTerminalHeight((height / 3) + 150)
             setOpenTerminal(true);
         } else {
             setExecutedCode(message);
+            setTerminalHeight(0)
+            setOpenTerminal(false);
+        }
+    }
+
+    // Abre ou fecha o terminal e mostra o erro - adequando o tamanho da tela
+    function executeCodeError(message) {
+        setExecutedCode('');
+        setColorOutput('#FF2E44');
+        if (message !== undefined) {
+            setErrorMessage(message)
+            setTerminalHeight((height / 3) + 150)
+            setOpenTerminal(true);
+        } else {
+            setErrorMessage(message)
             setTerminalHeight(0)
             setOpenTerminal(false);
         }
@@ -132,14 +150,14 @@ function Ide(props) {
                 position: 'absolute'
             }}>
                 <div>
-                    <Sidebar executeCode={executeCode} openTerminal={handleTerminal} isTask={isTask}
+                    <Sidebar executeCode={executeCode} executeCodeError={executeCodeError} openTerminal={handleTerminal} isTask={isTask}
                              openTaskInfo={openTaskInfo} startTestSolution={startTestSolution}/>
                 </div>
 
                 <div style={{marginLeft: 64}}>
                     <CodeEditor height={height - terminalHeight} width={width}/>
                     {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
-                                           executableCode={executedCode}/> : null}
+                                           executableCode={executedCode} errorMessage={errorMessage}/> : null}
                 </div>
             </div>
         </React.Fragment>

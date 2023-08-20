@@ -6,7 +6,7 @@ import {executeOperation, executor} from '../../../services/analyzers/executor.j
 import {ExecutableActionType} from "../../../services/analyzers/definitions/actionTypes";
 
 
-export default function InOut({height, width, closeTerminal, executableCode}) {
+export default function InOut({height, width, closeTerminal, executableCode, errorMessage}) {
     const [text, setText] = React.useState('');
     const [input, setInput] = React.useState('');
     const [readingEnabled, setReadingEnabled] = React.useState(false);
@@ -173,7 +173,6 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
                 setText('');
             }
         } catch (e) {
-            // TODO: colocar em vermelho isso aqui
             setText(`${text}\n${e.message}`);
         }
     }
@@ -209,7 +208,7 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
 
     useEffect(() => {
         if (finalized) {
-            setText(`${text}\nPROGRAMA FINALIZADO`)
+            setText(`${text}\n\n------------------ PROGRAMA FINALIZADO ------------------`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [finalized]);
@@ -218,19 +217,19 @@ export default function InOut({height, width, closeTerminal, executableCode}) {
         <div style={{width: width - 64, height: height, background: '#2F2F2F'}}>
             <div style={{
                 width: width - 64,
-                height: 40,
+                height: 29,
                 background: '#272727',
                 display: 'flex',
-                justifyContent: "flex-end",
+                justifyContent: "flex-end"
             }}>
                 <IconButton aria-label="delete" style={{marginLeft: 'auto', marginRight: 0}}
                             onClick={() => closeTerminal()}>
                     <CloseOutlinedIcon color='error'/>
                 </IconButton>
             </div>
-            <div style={{border: '2px solid #008F11', height: height - 43}}>
-                <text className="textOut">
-                    {text}
+            <div style={{border: '2px solid #008F11', height: height - 43, padding: 5}}>
+                <text className="textOut" style={{color: errorMessage ? '#FF2E44' : '#fff'}}>
+                    {errorMessage ? errorMessage : text}
                 </text>
                 <input
                     ref={input => {
