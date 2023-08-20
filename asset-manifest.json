@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Arara/static/css/main.9aba1e6c.css",
-    "main.js": "/Arara/static/js/main.7c95658b.js",
+    "main.css": "/Arara/static/css/main.c3d30ac7.css",
+    "main.js": "/Arara/static/js/main.0f9505f6.js",
     "static/media/wrong.png": "/Arara/static/media/wrong.3dbdd42f7ec7025627a4.png",
     "static/media/accept.png": "/Arara/static/media/accept.8e7f02b8024991b5ec84.png",
     "static/media/judge.png": "/Arara/static/media/judge.657d9b10de91183769ec.png",
@@ -20,11 +20,11 @@
     "static/media/exit.png": "/Arara/static/media/exit.0953d7ee3b8d0bb263e6.png",
     "static/media/documentation.png": "/Arara/static/media/documentation.42f3c06c32418d119ae1.png",
     "index.html": "/Arara/index.html",
-    "main.9aba1e6c.css.map": "/Arara/static/css/main.9aba1e6c.css.map",
-    "main.7c95658b.js.map": "/Arara/static/js/main.7c95658b.js.map"
+    "main.c3d30ac7.css.map": "/Arara/static/css/main.c3d30ac7.css.map",
+    "main.0f9505f6.js.map": "/Arara/static/js/main.0f9505f6.js.map"
   },
   "entrypoints": [
-    "static/css/main.9aba1e6c.css",
-    "static/js/main.7c95658b.js"
+    "static/css/main.c3d30ac7.css",
+    "static/js/main.0f9505f6.js"
   ]
 }
