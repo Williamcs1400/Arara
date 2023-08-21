@@ -1,6 +1,7 @@
 import {getInstructionByToken, getNotAcceptedSpecialCharacters, validateTyping} from '../definitions/dictionary.js';
-import {validateSeInstruction} from "./validateConditional";
+import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
+import {compilerFromScope} from "../compiler";
 
 let lastInstruction = '';
 
@@ -23,7 +24,7 @@ export function syntacticAnalyze(instruction) {
 
     // TODO: comparação do se de uma forma melhor
     // verificação para atribuição de valor fora da declaração
-    else if(instruction.indexOf('=') !== -1 && instruction.indexOf('se(') === -1){
+    else if(instruction.indexOf('=') !== -1 && instruction.indexOf('se(') === -1 && instruction.indexOf('senao se(') === -1 && instruction.indexOf('senao(') === -1 && instruction.indexOf('enquanto(') === -1){
         return validateAssignmentWithDeclarationInstruction(instruction);
     }
 
@@ -41,6 +42,14 @@ export function syntacticAnalyze(instruction) {
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
         return validateLeiaInstruction(instruction);
+    }
+
+    // verificação para instrução enquanto
+    if (instruction.startsWith('enquanto')) {
+        if(instruction.split('enquanto').length - 1 !== 1){
+            throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+        }
+        return validateEnquantoInstruction(instruction);
     }
 
     // verificação para instrução **se**
@@ -192,6 +201,39 @@ function validateLeiaInstruction(instruction) {
     }
 
     return {'name': name, 'action': 'read'};
+}
+
+// Validação da instrução enquanto
+function validateEnquantoInstruction(instruction) {
+    const definition = getInstructionByToken('enquanto');
+    const syntax = definition.syntax;
+
+    const content = instruction.substring(instruction.indexOf('{') + 1, instruction.lastIndexOf('}'));
+    instruction = instruction.replace(content, '');
+
+    // verifica se há a quantidade correta de cada componente da instrução
+    if (instruction.split('enquanto').length - 1 !== 1 ||
+        instruction.split('(').length - 1 !== 1 ||
+        instruction.split(')').length - 1 !== 1
+    ) {
+        throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+    }
+
+    const condition = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')'));
+    instruction = instruction.replace(condition, '').replaceAll(' ', '');
+
+    // Verifica se a instrução está correta
+    if(instruction !== syntax){
+        throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
+    }
+
+    const resultComparison = validateComparison(condition);
+
+    // TODO: tratar erros do conteudo
+    compilerFromScope(content);
+
+    return {'condition': condition, 'action': 'while', 'content': content, variables: resultComparison};
+
 }
 
 // Erros de atribuição

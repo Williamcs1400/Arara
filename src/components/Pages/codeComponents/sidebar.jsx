@@ -25,7 +25,7 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
             return;
 
         result.sucess === true ? setTypeOfAlert('success') : setTypeOfAlert('error');
-        setMessage('Error ao copilar o código');
+        setMessage(result.sucess ? 'Código compilado com sucesso!' : 'Erro ao compilar o código!');
 
         if (result.sucess === true) {
             executeCode(result.executableCode);

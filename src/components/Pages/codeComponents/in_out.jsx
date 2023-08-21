@@ -46,6 +46,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
         let i = pauseOrder !== 0 ? pauseOrder + 1 : 0;
         let response;
         let lastResponse = null;
+        let loopActive = false;
 
         try {
             if (executableCode !== undefined && executableCode.length > 0) {
@@ -164,6 +165,30 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                         }
                     }
 
+                    // Repetição
+                    if (response.actionType === ExecutableActionType.loop) {
+                        if(response.value){
+                            const executableCodeAux = []
+                            // monta o código que será executado
+                            response.subCode.forEach((code) => {
+                                executableCodeAux.push({token: code, content: null, subContent: true});
+                            });
+
+                            // remove a instrução se já processada
+                            const part1 = executableCode.slice(0, i);
+                            const part2 = executableCode.slice(i + 1, executableCode.length);
+
+                            // insere o código que será executado no ponto onde o se estava
+                            const exeAux = [{token: null, content: null}];
+                            part1.push(...exeAux);
+                            part1.push(...executableCodeAux);
+                            part1.push(...part2);
+                            part1.push(response.tokenLoop)
+
+                            executableCode = part1;
+                        }
+                    }
+
                     // Verifica se o código chegou ao fim
                     if (i === executableCode.length - 1) {
                         setFinalized(true);
@@ -214,10 +239,11 @@ export default function InOut({height, width, closeTerminal, executableCode, err
     }, [finalized]);
 
     return (
-        <div style={{width: width - 64, height: height, background: '#2F2F2F'}}>
+        <div style={{width: width - 64, maxHeight: height, background: '#2F2F2F'}}>
             <div style={{
                 width: width - 64,
-                height: 29,
+                height: 30,
+                maxHeight: 30,
                 background: '#272727',
                 display: 'flex',
                 justifyContent: "flex-end"
@@ -227,7 +253,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                     <CloseOutlinedIcon color='error'/>
                 </IconButton>
             </div>
-            <div style={{border: '2px solid #008F11', height: height - 43, padding: 5}}>
+            <div style={{border: '2px solid #008F11', height: height - 43, padding: 5, overflow: 'scroll'}}>
                 <text className="textOut" style={{color: errorMessage ? '#FF2E44' : '#fff'}}>
                     {errorMessage ? errorMessage : text}
                 </text>

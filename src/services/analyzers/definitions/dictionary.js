@@ -18,6 +18,7 @@ const knownCommands = [
     'se',
     'senao se',
     'senao',
+    'enquanto'
 ];
 
 const knownOperators = [
@@ -67,6 +68,12 @@ const knownInstructions = {
         'syntax': "senao{}",
         'example': 'senao{}',
         'constructionInOrder': ['senao', '{', '}'],
+    },
+    'enquanto': {
+        'description': 'Executa um bloco de código enquanto a condição for verdadeira',
+        'syntax': "enquanto(){}",
+        'example': 'enquanto(x > 0)',
+        'constructionInOrder': ['enquanto', '(', ')'],
     },
     'inteiro': {
         'description': 'Declara uma variável do tipo inteiro',

@@ -4,7 +4,8 @@ export const ExecutableActionType = {
     reading: 'READING',
     assignment: 'ASSIGNMENT',
     operation: 'OPERATION',
-    comparison: 'COMPARISON'
+    comparison: 'COMPARISON',
+    loop: 'LOOP',
 }
 
 // Tipos de condicionais

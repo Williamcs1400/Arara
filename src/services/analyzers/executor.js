@@ -17,8 +17,7 @@ function execute(token, content, valueVariables, lastComparison) {
         return {actionType: ExecutableActionType.reading, value: getValueOfReading(token)};
     }
 
-    else if (token.indexOf('=') !== -1 && token.indexOf('se(') === -1) {
-
+    else if (token.indexOf('=') !== -1 && token.indexOf('se(') === -1 && token.indexOf('enquanto(') === -1) {
         if (containsOperator(token)) {
             return {
                 actionType: ExecutableActionType.operation,
@@ -62,6 +61,15 @@ function execute(token, content, valueVariables, lastComparison) {
             return {actionType: ExecutableActionType.comparison, value: true, subCode: content};
         }else{
             return {actionType: ExecutableActionType.comparison, value: false, subCode: content};
+        }
+    }
+
+    else if (token.startsWith('enquanto')) {
+        const result = executeComparison(token, valueVariables);
+        if(result){
+            return {actionType: ExecutableActionType.loop, value: result, subCode: content, tokenLoop: {token, content}};
+        }else{
+            return {actionType: ExecutableActionType.loop, value: result, subCode: null, tokenLoop: null};
         }
     }
 
@@ -178,7 +186,7 @@ export function executeOperation(operands, operators) {
 
 export function executeComparison(instruction, valueVariables) {
     // regex para os simbolos de comparação: == != > < >= <= && ||
-    let regex = /==|!=|>|<|>=|<=|&&|\|\|/;
+    let regex = /==|!=|>=|<=|>|<|&&|\|\|/;
 
     // verifica se a instrução possui algum símbolo de comparação
     if (instruction.match(regex) === null) {
@@ -199,6 +207,14 @@ export function executeComparison(instruction, valueVariables) {
         const comparison = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')')).replaceAll(' ', '').split(symbol);
         let value1 = comparison[0];
         let value2 = comparison[1];
+
+        // verificar se o valor inicia com número
+        if(value1.match(/^\d/)){
+            value1 = parseFloat(value1);
+        }
+        if(value2.match(/^\d/)){
+            value2 = parseFloat(value2);
+        }
 
         // verifica se o valor é uma variável e substitui pelo valor da variável
         // se for um número, transforma a string em número

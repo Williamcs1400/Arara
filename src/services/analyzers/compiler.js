@@ -10,10 +10,12 @@ let codeEditor = '';
 
 let codeExample;
 
+// redefine o código do editor
 export function setCodeFromEditor(c) {
     codeEditor = c;
 }
 
+// retorna o código do editor - se estiver vazio, retorna o código padrão
 export function getCodeFromEditor() {
     if(codeEditor === undefined || codeEditor === ''){
         return defaultCode;
@@ -21,10 +23,12 @@ export function getCodeFromEditor() {
     return codeEditor;
 }
 
+// redefine o código do exemplo - documentação
 export function setCodeExample(c) {
     codeExample = c;
 }
 
+// retorna o código do exemplo - documentação
 export function getCodeExample() {
     return codeExample;
 }
@@ -109,6 +113,13 @@ export function compiler(code, isScope) {
                             useVariables.push({name: variable, order});
                         });
                     }
+
+                    // se for while, adiciona no array de uso com a condição
+                    else if(response.action === 'while'){
+                        response.variables.forEach(variable => {
+                            useVariables.push({name: variable, order});
+                        });
+                    }
                 }
                 order++;
             }
@@ -123,6 +134,11 @@ export function compiler(code, isScope) {
     }
 }
 
+/*
+ * Função que gera um array de instruções a serem interpretadas pelo o executor
+ * @param code: código a ser compilado
+ * retorna um array de objetos com o token e o conteúdo (se houver)
+ */
 function exportExecutableCode(code) {
     const executableCode = [];
 
@@ -138,10 +154,12 @@ function exportExecutableCode(code) {
                     executableCode.push({token: object, content: null});
                 });
             }
+            // se for uma instrução com escopo, retorna o token e o conteúdo
             else if(token.indexOf('{') !== -1 && token.indexOf('}') !== -1){
                 const content = token.substring(token.indexOf('{') + 1, token.lastIndexOf('}'));
                 const resp = exportExecutableCode(content);
                 const final = [];
+
                 resp.forEach(r => {
                     final.push(r.token);
                 });
@@ -189,7 +207,13 @@ function preProcessing(code){
     return {preProcessingCode: newCode.join('\n'), definitions, defAndTypes};
 }
 
-// retorna um array de tokens para escrever na tela quando for concatenação
+/*
+ * Função que desmembra o comando escreva com concatenação
+ * Retorna um array de "escreva" na tela
+ * @param object: comando escreva com concatenação
+ * Exemplo: escreva('Valor inteiro: ', num);
+ * Retorna: ['escreva('Valor inteiro: ')', 'escreva(num)']
+ */
 function dismemberEscrevaConcat(object){
     const name = object.substring(object.indexOf('(') + 1, object.lastIndexOf(')'));
     const parts = name.split(',');

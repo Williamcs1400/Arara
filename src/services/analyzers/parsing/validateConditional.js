@@ -28,7 +28,6 @@ export function validateSeInstruction(instruction, conditionalName) {
         throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
     }
 
-
     // recuperar o nome da variável e remover da instrução
     // TODO: remover conteúdo ente { }
     const condition = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')'));
@@ -52,7 +51,7 @@ export function validateSeInstruction(instruction, conditionalName) {
  * Função que valida a condição de uma instrução
  * @param condition: condição a ser validada
  */
-function validateComparison(condition) {
+export function validateComparison(condition) {
     condition = condition.replaceAll(' ', '');
     const operators = ['<', '>', '==', '!=', '>=', '<=', '&&', '||'];
     let operator = '';

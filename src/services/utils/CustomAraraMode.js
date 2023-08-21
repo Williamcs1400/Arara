@@ -42,10 +42,10 @@ export class CustomHighlightRules extends window.ace.acequire('ace/mode/text_hig
                 regex: '\\bse\\b'
             },{
                 token: 'constant.numeric',
-                regex: '\\b[0-9]\\b'
+                regex: '\\b[0-9]+\\b'
             }, {
                 token: 'keyword.operator',
-                regex: /!|==|!=|>|<|>=|<=|&&|\|\|/
+                regex: /!=|==|!|>=|<=|>|<|&&|\|\|/
             }, {
                 token: 'constant.numeric',
                 regex: '\\bverdadeiro\\b'
@@ -64,6 +64,9 @@ export class CustomHighlightRules extends window.ace.acequire('ace/mode/text_hig
             }, {
                 token: 'keyword.operator',
                 regex: '\\bsenao\\b'
+            }, {
+                token: 'keyword.operator',
+                regex: '\\benquanto\\b'
             }
             ]
         };
