@@ -97,3 +97,33 @@ export const divisao =
     '\n\nresultado = a / b;' +
     '\n\nescreva(\'O resultado da divisão é: \', resultado);' +
     '\n\n#FIM_PROGRAMA;';
+
+export const condicionalSe =
+    '#INICIO_PROGRAMA;' +
+    '\n\ninteiro num;' +
+    "\nescreva('Digite a sua idade: ');" +
+    '\n\nleia(num);' +
+    '\n\nse(num < 50){' +
+    "\n\tescreva('Você ainda está na flor da idade!');" +
+    '\n}' +
+    '\n\n// entrará aqui caso a condição imediatamente superior não seja verdadeira' +
+    '\nsenao{' +
+    "\n\tescreva('Melhor ficar esperto!');" +
+    '\n}' +
+    '\n\n#FIM_PROGRAMA;';
+
+export const condicionalSenaoSe =
+    '#INICIO_PROGRAMA;' +
+    '\n\ninteiro num;' +
+    "\nescreva('Digite a sua idade: ');" +
+    '\n\nleia(num);' +
+    '\n\nse(num < 18){' +
+    "\n\tescreva('Você ainda está na flor da idade!');" +
+    '\n}senao se(num < 40){' +
+    "\n\tescreva('Você ainda tem muito o que viver!');" +
+    '\n}senao se(num < 70){' +
+    "\n\tescreva('Hora de curtir aposentadoria!');" +
+    '\n}senao se(num < 100){' +
+    "\n\tescreva('Nessa idade e ainda quer aprender a programar???');" +
+    '\n}' +
+    '\n\n#FIM_PROGRAMA;';
