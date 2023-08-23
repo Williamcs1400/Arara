@@ -147,11 +147,8 @@ function executeCode(inputArray, executableCode) {
             }
 
             // Condicional
-            if (response.actionType === ExecutableActionType.comparison) {
-
-                lastResponse = response;
-                if (response.value) {
-                    // Se a condição for verdadeira, executa o código dentro do if
+            if (response.actionType === ExecutableActionType.loop) {
+                if(response.value){
                     const executableCodeAux = []
                     // monta o código que será executado
                     response.subCode.forEach((code) => {
@@ -166,6 +163,7 @@ function executeCode(inputArray, executableCode) {
                     const exeAux = [{token: null, content: null}];
                     part1.push(...exeAux);
                     part1.push(...executableCodeAux);
+                    part1.push(response.tokenLoop)
                     part1.push(...part2);
 
                     executableCode = part1;
