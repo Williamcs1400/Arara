@@ -64,19 +64,35 @@ export function compiler(code, isScope) {
     const preProcessingResult = preProcessing(code);
 
     // retirando quebras de linha
-    const tokens = generateTokens(preProcessingResult.preProcessingCode);
+    let tokens = generateTokens(preProcessingResult.preProcessingCode);
+
 
     // array de declarações de variáveis
     const declarationVariables = [];
     const useVariables = [];
     try {
 
+        let result;
+        let arrayTemp = [];
         // analise léxica completa
-        tokens.forEach(token => {
-            if (token !== '') {
-                lexicalAnalyze(token, preProcessingResult.definitions);
+        for(let i = 0; i < tokens.length; i++){
+            if (tokens[i] !== '') {
+                result = lexicalAnalyze(tokens[i], preProcessingResult.definitions);
+                if(result !== null && result !== undefined){
+                    const part1 = tokens.slice(0, i);
+                    const part2 = tokens.slice(i + 1, tokens.length);
+
+                    part1.push(...result);
+                    arrayTemp.push(...result);
+                    part1.push(...part2);
+
+                    tokens = part1;
+                }
             }
-        });
+        }
+
+        if(arrayTemp.length > 0)
+            preProcessingResult.preProcessingCode = paraToEnqunto(arrayTemp, preProcessingResult.preProcessingCode);
 
         // syntactic analyze
         let order = 0;
@@ -175,6 +191,28 @@ function exportExecutableCode(code) {
 }
 
 /*
+ * Função que transforma o comando 'para' em um 'enquanto'
+ * @param tokens: array de tokens do comando 'para'
+ * @param code: código a ser compilado
+ * @return: código com o comando 'para' transformado em 'enquanto'
+ */
+function paraToEnqunto(tokens, code){
+    let newCode = '';
+    for(let i = 0; i < tokens.length; i = i + 2){
+        const part1 = code.substring(0, code.indexOf('para('));
+        const part2 = code.substring(code.indexOf('para(') + 5, code.length);
+        const part3 = part2.substring(code.indexOf('}') + 1, code.length);
+
+        if(newCode === '')
+            newCode += part1 + tokens[i] + ';' + tokens[i + 1];
+        else
+            newCode += tokens[i] + ';' + tokens[i + 1] + part3;
+    }
+
+    return newCode;
+}
+
+/*
  * Função que pre processa o código
  * Retorna um objeto com o código sem comentários e um array de definições
  * Remove espaços em branco desnecessários
@@ -239,7 +277,7 @@ function generateTokens(code) {
     const preTokens = code.replaceAll('\n', '');
 
     const aux = preTokens.split('');
-    const tokens = [];
+    let tokens = [];
     let token = '';
     let flagBracesOpen = false;
     aux.forEach((char) => {
@@ -247,11 +285,11 @@ function generateTokens(code) {
             flagBracesOpen = true;
         }
         if(char === ';' && !flagBracesOpen){
-            tokens.push(token);
+            tokens.push(token + ';');
             token = '';
         }
         else if(char === '}'){
-            tokens.push(token + char);
+            tokens.push(token + char + ';');
             token = '';
             flagBracesOpen = false;
         }
@@ -259,6 +297,36 @@ function generateTokens(code) {
             token += char;
         }
     });
+
+    // agrupar a instrução 'para' caso exista, além de remover ';' do final
+    for(let i = 0; i < tokens.length; i++) {
+        try {
+
+            if (tokens[i].startsWith('para')) {
+                // agrupa os tokens do escopo
+                const part1 = tokens.slice(0, i);
+                const part2 = tokens.slice(i, i + 3);
+                const part3 = tokens.slice(i + 3, tokens.length);
+
+                // insere o código que será executado no ponto onde o se estava
+                let forInstruction = '';
+                part2.forEach(p => {
+                    forInstruction += p;
+                });
+                forInstruction = forInstruction.substring(0, forInstruction.length - 1);
+                part1.push(forInstruction);
+                part1.push(...part3);
+
+                tokens = part1;
+            } else {
+                // remove o ';' do final
+                tokens[i] = tokens[i].substring(0, tokens[i].length - 1);
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return tokens;
 }

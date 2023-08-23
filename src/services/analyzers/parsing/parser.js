@@ -81,6 +81,10 @@ export function syntacticAnalyze(instruction) {
         }
         return {'action': 'else'};
     }
+
+    if(instruction === 'para'){
+
+    }
 }
 
 // atualiza a última instrução

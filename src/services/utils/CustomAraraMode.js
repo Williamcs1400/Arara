@@ -67,6 +67,9 @@ export class CustomHighlightRules extends window.ace.acequire('ace/mode/text_hig
             }, {
                 token: 'keyword.operator',
                 regex: '\\benquanto\\b'
+            },{
+                token: 'keyword.operator',
+                regex: '\\bpara\\b'
             }
             ]
         };

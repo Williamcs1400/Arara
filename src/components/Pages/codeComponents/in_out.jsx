@@ -182,8 +182,8 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                             const exeAux = [{token: null, content: null}];
                             part1.push(...exeAux);
                             part1.push(...executableCodeAux);
-                            part1.push(...part2);
                             part1.push(response.tokenLoop)
+                            part1.push(...part2);
 
                             executableCode = part1;
                         }
