@@ -46,11 +46,18 @@ export default function InOut({height, width, closeTerminal, executableCode, err
         let i = pauseOrder !== 0 ? pauseOrder + 1 : 0;
         let response;
         let lastResponse = null;
-        let loopActive = false;
+
 
         try {
+            let timeout = new Date().getTime() + 8000;
             if (executableCode !== undefined && executableCode.length > 0) {
                 for (; i < executableCode.length; i++) {
+
+                    // Verifica se o tempo de execução foi excedido
+                    if (new Date().getTime() > timeout) {
+                        throw new Error('Tempo de execução excedido');
+                    }
+
                     // Somente permite a leitura se o terminal quando cair no comando de leitura
                     if (readingEnabled) {
                         setReadingEnabled(false);
