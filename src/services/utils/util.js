@@ -23,3 +23,11 @@ export function cleanWhiteSpacesAllowed(code){
 
     return newCodeWithoutSpaces.join('\n');
 }
+
+/*
+ *
+ *
+ */
+export function teste(code){
+
+}

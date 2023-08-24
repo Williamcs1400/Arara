@@ -38,6 +38,12 @@ const knownComparisons = [
     '<=',
 ]
 
+const knownConditions = [
+    'se',
+    'senao se',
+    'senao',
+]
+
 const knownInstructions = {
     'escreva': {
         'description': 'Escreve na tela o que está entre aspas simples',

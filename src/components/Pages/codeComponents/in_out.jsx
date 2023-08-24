@@ -46,7 +46,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
         let i = pauseOrder !== 0 ? pauseOrder + 1 : 0;
         let response;
         let lastResponse = null;
-
+        let flagCondition = false;
 
         try {
             let timeout = new Date().getTime() + 8000;
@@ -69,7 +69,11 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                         response = executor(executableCode[i], valueVariables, null);
                     }
 
-                    if (response.actionType !== ExecutableActionType.comparison && executableCode[i].subContent === undefined) {
+                    if(executableCode[i].token.startsWith('se(') || executableCode[i].token.startsWith('senao se(') || executableCode[i].token.startsWith('senao(')) {
+                        // lastResponse = response;
+                    }else if(lastResponse !== null && lastResponse.subCode.includes(executableCode[i].token)){
+                        flagCondition = true;
+                    }else{
                         lastResponse = null;
                     }
 
@@ -127,7 +131,6 @@ export default function InOut({height, width, closeTerminal, executableCode, err
 
                     // Operações matemáticas
                     if (response.actionType === ExecutableActionType.operation) {
-                        console.log('response.value', JSON.stringify(response));
                         const operations = response.value;
                         operations.forEach((operation, index) => {
                             valueVariables.forEach((variable) => {
@@ -150,7 +153,8 @@ export default function InOut({height, width, closeTerminal, executableCode, err
 
                     // Condicional
                     if (response.actionType === ExecutableActionType.comparison) {
-                        lastResponse = response;
+                        if(!flagCondition)
+                            lastResponse = response;
                         if (response.value) {
                             // Se a condição for verdadeira, executa o código dentro do if
                             const executableCodeAux = []
