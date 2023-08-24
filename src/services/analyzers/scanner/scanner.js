@@ -15,15 +15,15 @@ export function lexicalAnalyze(token, codeDefinitions) {
     // verifica se o token é a instrução 'para'
     // se for, então transforma em um enquanto
     if(token.replaceAll(' ', '').startsWith('para(')){
-        const teste = token.split('(')[1];
-        const teste1 = teste.split(')')[0];
-        const teste2 = teste1.split(';');
+        const part1 = token.split('(')[1];
+        const part2 = part1.split(')')[0];
+        const part3 = part2.split(';');
 
-        validateFirstPartPara(teste2[0], codeDefinitions);
-        validateComparison(teste2[1]);
-        validateSecondPartPara(teste2[2]);
+        validateFirstPartPara(part3[0], codeDefinitions);
+        validateComparison(part3[1]);
+        validateSecondPartPara(part3[2]);
 
-        return transformParaEmEnquanto(teste2, token)
+        return transformParaEmEnquanto(part3, token)
     }
 
     // verifica se o token é um comando
@@ -43,6 +43,12 @@ function startsWithHash(token) {
 function getVariableName(token){
     if(token.indexOf('=') !== -1){
         return token.split('=')[0].trim();
+    }
+    if(token.indexOf('++') !== -1){
+        return token.split('++')[0].trim();
+    }
+    if(token.indexOf('--') !== -1){
+        return token.split('--')[0].trim();
     }
     return token;
 }

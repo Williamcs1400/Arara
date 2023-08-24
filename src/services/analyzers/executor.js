@@ -17,7 +17,12 @@ function execute(token, content, valueVariables, lastComparison) {
         return {actionType: ExecutableActionType.reading, value: getValueOfReading(token)};
     }
 
-    else if (token.indexOf('=') !== -1 && token.indexOf('se(') === -1 && token.indexOf('enquanto(') === -1) {
+
+    else if (
+        (token.indexOf('=') !== -1 || token.indexOf('++') !== -1 || token.indexOf('--') !== -1)
+        && token.indexOf('se(') === -1
+        && token.indexOf('enquanto(') === -1
+    ) {
         if (containsOperator(token)) {
             return {
                 actionType: ExecutableActionType.operation,
@@ -104,12 +109,22 @@ function getValueOfAssignment(token) {
 
 // recupera o nome da variável para atribuição de operação
 function getVariableForOperation(token) {
+    if(token.indexOf('++') !== -1 || token.indexOf('--') !== -1){
+        return token.substring(0, token.indexOf('++') !== -1 ? token.indexOf('++') : token.indexOf('--')).trim();
+    }
     return token.substring(0, token.indexOf('=')).trim();
 }
 
 // recupera operação para atribuição
 function getOperationForAssignment(token) {
-    return token.split('=')[1].replaceAll(' ', '').split(/[\+\-\*\/]/);
+    // regex para os operadores: + - * / ++ --
+    if(token.indexOf('++') !== -1){
+        return token.split('++')[0].replaceAll(' ', '').split(/\+|-|\*|\/|\+\+|--/);
+    }
+    if(token.indexOf('--') !== -1){
+        return token.split('--')[0].replaceAll(' ', '').split(/\+|-|\*|\/|\+\+|--/);
+    }
+    return token.split('=')[1].replaceAll(' ', '').split(/[+\-*\/]/);
 }
 
 // recupera ordem das operações para atribuição
@@ -169,6 +184,16 @@ function getDefaultValueOfTyping(token) {
 // executa a operação matemática
 // TODO: implementar a ordem de precedência dos operadores
 export function executeOperation(operands, operators) {
+
+    // verifica se é uma operação de incremento ou decremento
+    if(operators.length === 2){
+        if(operators[0] === '+' && operators[1] === '+'){
+            return parseFloat(operands[0]) + 1;
+        }else if(operators[0] === '-' && operators[1] === '-'){
+            return parseFloat(operands[0]) - 1;
+        }
+    }
+
     for (let i = 0; i < operands.length; i++) {
         if (operators[i] === '+') {
             operands[i + 1] = parseFloat(operands[i]) + parseFloat(operands[i + 1]);

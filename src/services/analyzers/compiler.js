@@ -209,6 +209,10 @@ function paraToEnqunto(tokens, code){
             newCode += tokens[i] + ';' + tokens[i + 1] + part3;
     }
 
+    if(newCode.indexOf('#FIM_PROGRAMA;') === -1){
+        newCode += '#FIM_PROGRAMA;';
+    }
+
     return newCode;
 }
 

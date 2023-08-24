@@ -120,6 +120,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
 
                     // Operações matemáticas
                     if (response.actionType === ExecutableActionType.operation) {
+                        console.log('response.value', JSON.stringify(response));
                         const operations = response.value;
                         operations.forEach((operation, index) => {
                             valueVariables.forEach((variable) => {
