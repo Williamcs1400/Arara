@@ -1,8 +1,9 @@
 import {
     containsOperator,
-    getNotAcceptedSpecialCharacters,
+    getNotAcceptedSpecialCharacters, removeArrayDeclaration,
     validateTyping
 } from "../definitions/dictionary";
+import {getElementsOfArray, getPointerOfArray, isArrayDeclaration} from "../../utils/util";
 
 export function semanticAnalyzer(code, variables, usages, defAndTypes, isScope){
     if(!isScope) {
@@ -11,6 +12,7 @@ export function semanticAnalyzer(code, variables, usages, defAndTypes, isScope){
     findDuplicatedVariables(variables);
     findOrderDeclarationAndUsage(variables, usages);
     validateAssignmentAndTypes(defAndTypes, usages);
+    validateAllocatedArray(variables, usages, defAndTypes);
 }
 
 // verifica se há o comando #INICIO_PROGRAMA e #FIM_PROGRAMA e se estão na ordem correta
@@ -46,7 +48,7 @@ function findOrderDeclarationAndUsage(variables, usages){
     // Verifica se a variável foi declarada
     usages.forEach(usage => {
         variables.forEach(variable => {
-            if(getVariableFromConcat(usage.name) === variable.name){
+            if(getVariableFromConcat(removeArrayDeclaration(variable.name)) === removeArrayDeclaration(variable.name)){
                 flag = true;
             }
         });
@@ -109,4 +111,29 @@ function validateAssignmentAndTypes(defAndTypes, usages){
             }
         });
     });
+}
+
+function validateAllocatedArray(variables, usages, defAndTypes){
+    defAndTypes.forEach(defAndType => {
+        if(defAndType.line.indexOf('[') === 1 && defAndType.line.indexOf(']') !== 1){
+            const sizePointer = Number(defAndType.line.replaceAll(' ', '').substring(defAndType.line.indexOf('[') + 1, defAndType.line.indexOf(']')));
+            const name = defAndType.line.replaceAll(' ', '').substring(0, defAndType.line.indexOf('['));
+            const usagesOfVariable = usages.filter(usage => removeArrayDeclaration(usage.name) === name);
+            usagesOfVariable.forEach(usage => {
+                if(usage.value !== undefined && isArrayDeclaration(usage.value)) {
+                    if (getElementsOfArray(usage.value).length !== sizePointer) {
+                        throw new Error('Erro semântico | O tamanho do array ' + name + ' é diferente da quantidade de valores atribuídos.');
+                    }
+                }
+                if(usage.value !== undefined && isArrayDeclaration(usage.name)) {
+                    if (getPointerOfArray(usage.name) > sizePointer - 1) {
+                        throw new Error('Erro semântico | O índice do array ' + name + ' é maior que o tamanho do array.');
+                    }
+                    if(getPointerOfArray(usage.name) < 0){
+                        throw new Error('Erro semântico | O índice do array ' + name + ' é menor que zero.');
+                    }
+                }
+            });
+        }
+    })
 }

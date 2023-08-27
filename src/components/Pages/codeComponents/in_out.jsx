@@ -4,6 +4,8 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import '../../../styles/in_out.css';
 import {executeOperation, executor} from '../../../services/analyzers/executor.js'
 import {ExecutableActionType} from "../../../services/analyzers/definitions/actionTypes";
+import {getElementsOfArray, getPointerOfArray, isArrayDeclaration} from "../../../services/utils/util";
+import {removeArrayDeclaration} from "../../../services/analyzers/definitions/dictionary";
 
 
 export default function InOut({height, width, closeTerminal, executableCode, errorMessage}) {
@@ -95,8 +97,30 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                             }
                             // Verifica se o valor é uma variável
                         } else if (response.type === 'variable') {
+                            // Verifica se a variável é um array
+                            if(isArrayDeclaration(response.value)){
+                                for(let i = 0; i < valueVariables.length; i++){
+                                    if(removeArrayDeclaration(valueVariables[i].name) === response.value.split('[')[0]){
+                                        const index = response.value.split('[')[1].split(']')[0];
+                                        const array = valueVariables[i].value.replace('[', '').replace(']', '').split(',');
+
+                                        // verifica se o index é uma variável ou um número
+                                        if(isNaN(index)){
+                                            for(let j = 0; j < valueVariables.length; j++){
+                                                if(valueVariables[j].name === index){
+                                                    aux += array[valueVariables[j].value.replace('\n', '')];
+                                                }
+                                            }
+                                        }else{
+                                            aux += array[index];
+                                        }
+                                    }
+                                }
+                            }
                             for (let i = 0; i < valueVariables.length; i++) {
                                 if (valueVariables[i].name === response.value) {
+                                    aux += valueVariables[i].value;
+                                }else if(removeArrayDeclaration(valueVariables[i].name) === response.value){
                                     aux += valueVariables[i].value;
                                 }
                             }
@@ -118,8 +142,17 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                     if (response.actionType === ExecutableActionType.assignment) {
                         let exists = false;
                         for (let i = 0; i < valueVariables.length; i++) {
-                            if (valueVariables[i].name === response.variable) {
-                                valueVariables[i].value = response.value;
+                            if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
+                                if(isArrayDeclaration(valueVariables[i].value)){
+                                    const index = getPointerOfArray(response.variable);
+                                    const array = getElementsOfArray(valueVariables[i].value);
+
+                                    // verifica se o index é uma variável ou um número
+                                    array[index] = response.value;
+                                    valueVariables[i].value = '[' + array + ']';
+                                }else {
+                                    valueVariables[i].value = response.value;
+                                }
                                 exists = true;
                             }
                         }
@@ -139,6 +172,13 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                                         operations[index] = 0;
                                     } else {
                                         operations[index] = variable.value;
+                                    }
+                                }else if(removeArrayDeclaration(operation) === removeArrayDeclaration(variable.name)){
+                                    if (variable.value === undefined || variable.value === '') {
+                                        operations[index] = 0;
+                                    } else {
+                                        const values = getElementsOfArray(variable.value);
+                                        operations[index] = values[getPointerOfArray(operation)];
                                     }
                                 }
                             });

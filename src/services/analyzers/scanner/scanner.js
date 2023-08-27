@@ -1,4 +1,4 @@
-import {isCommand, isDefinition} from '../definitions/dictionary.js';
+import {isCommand, isDefinition, isKnownDefinition, removeArrayDeclaration} from '../definitions/dictionary.js';
 import {validateComparison} from "../parsing/validateConditional";
 
 /*
@@ -27,7 +27,7 @@ export function lexicalAnalyze(token, codeDefinitions) {
     }
 
     // verifica se o token é um comando
-    if(!startsWithHash(token) && !isCommand(token) && !codeDefinitions.includes(getVariableName(token))) {
+    if(!startsWithHash(token) && !isCommand(token) && !codeDefinitions.includes(getVariableName(token)) && isKnownDefinition(codeDefinitions, token)) {
         throw new Error('Erro léxico | Comando desconhecido: ' + token);
     }
 

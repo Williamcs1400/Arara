@@ -24,10 +24,14 @@ export function cleanWhiteSpacesAllowed(code){
     return newCodeWithoutSpaces.join('\n');
 }
 
-/*
- *
- *
- */
-export function teste(code){
+export function isArrayDeclaration(token){
+    return token.split('[').length - 1 === 1 && token.split(']').length - 1 === 1;
+}
 
+export function getElementsOfArray(token){
+    return token.substring(token.indexOf('[') + 1, token.indexOf(']')).split(',');
+}
+
+export function getPointerOfArray(token){
+    return Number(token.replaceAll(' ', '').substring(token.indexOf('[') + 1, token.indexOf(']')));
 }

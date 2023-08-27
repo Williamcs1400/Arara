@@ -1,4 +1,9 @@
-import {getInstructionByToken, getNotAcceptedSpecialCharacters, validateTyping} from '../definitions/dictionary.js';
+import {
+    getInstructionByToken,
+    getKnownDeclarations,
+    getNotAcceptedSpecialCharacters,
+    validateTyping
+} from '../definitions/dictionary.js';
 import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
 import {compilerFromScope} from "../compiler";
@@ -22,7 +27,7 @@ export function syntacticAnalyze(instruction) {
         return validateAssignmentInstruction(instruction, token);
     }
 
-    // TODO: comparação do se de uma forma melhor
+    // TODO: comparação do 'se' de uma forma melhor
     // verificação para atribuição de valor fora da declaração
     else if(instruction.indexOf('=') !== -1 && instruction.indexOf('se(') === -1 && instruction.indexOf('senao se(') === -1 && instruction.indexOf('senao(') === -1 && instruction.indexOf('enquanto(') === -1){
         return validateAssignmentWithDeclarationInstruction(instruction);
@@ -120,21 +125,44 @@ function validateAssignmentInstruction(instruction, token) {
         getErrorAssignmentExample(token);
     }
 
+    let isArray = false;
     // verifica se há atribuição de valor e se o valor é válido
     if(name.indexOf('=') !== -1){
-        if(validateTyping(token, name.split('=')[1].trim())){
-            name = name.split('=')[0].trim();
-        }else{
-            getErrorTypingExample(name.split('=')[0].trim(), name.split('=')[1].trim(),  token);
+        isArray = name.split('=')[0].split('[').length - 1 === 1 && name.split('=')[0].split(']').length - 1 === 1;
+        if(isArray){
+            const values = name.replaceAll('[', '').replaceAll(']', '').split('=')[1].trim().split(',');
+            values.forEach(value => {
+                if (validateTyping(token, value.trim())) {
+                    name = name.split('=')[0].trim().replaceAll('[', '').replaceAll(']', '');
+                } else {
+                    getErrorTypingExample(name.split('=')[0].trim(), value.trim(), token);
+                }
+            });
+        }else {
+            if (validateTyping(token, name.split('=')[1].trim())) {
+                name = name.split('=')[0].trim();
+            } else {
+                getErrorTypingExample(name.split('=')[0].trim(), name.split('=')[1].trim(), token);
+            }
+        }
+    }else{
+        isArray = name.split('[').length - 1 === 1 && name.split(']').length - 1 === 1;
+        if(isArray){
+            name = name.replaceAll('[', '').replaceAll(']', '');
         }
     }
 
     // verifica se o nome da variável é válido
-    if(getNotAcceptedSpecialCharacters().test(name) || name.indexOf(' ') !== -1){
+    if(!isArray && (getNotAcceptedSpecialCharacters().test(name) || name.indexOf(' ') !== -1)){
         getErrorAssignmentObs(token);
     }
 
-    return name === '' ? null : {'name': name, 'action': 'declaration'};
+    // verifica se o nome da variável é válido - array
+    if(isArray && (getKnownDeclarations(name) || name.indexOf(' ') !== -1)){
+        getErrorAssignmentObs(token);
+    }
+
+    return name === '' ? null : {'name': name, 'action': 'declaration', space: isArray ? name.substring(name.indexOf('['), name.indexOf(']') + 1) : ''};
 }
 
 // Validação da instrução de escrita
@@ -197,7 +225,8 @@ function validateLeiaInstruction(instruction) {
 
     // recuperar o nome da variável e remover da instrução
     const name = instruction.substring(instruction.indexOf('(') + 1, instruction.indexOf(')'));
-    instruction = instruction.replace(name, '');
+    // replace last occurrence of name
+    instruction = instruction.replace(instruction.substring(instruction.lastIndexOf(name), instruction.lastIndexOf(')') + 1), '') + ')';
 
     // Verifica se a instrução está correta
     if(instruction !== syntax){
@@ -251,7 +280,7 @@ function getErrorAssignmentExample(token) {
 }
 
 function getErrorAssignmentObs(token){
-    throw new Error('Erro sintático | O nome da ' + token + ' é inválido - deve ser da seguinte forma: ' + getInstructionByToken(token).obs);
+    throw new Error('Erro sintático | O nome ' + token + ' é inválido - deve ser da seguinte forma: ' + getInstructionByToken(token).obs);
 }
 
 // Erros de escrita

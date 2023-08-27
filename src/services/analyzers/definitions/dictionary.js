@@ -167,6 +167,59 @@ export function getNotAcceptedSpecialCharacters() {
     return /[ `´!@#$%^&*()+\-=\]{};':"\\|,.<>?~]/;
 }
 
+export function getNotAcceptedSpecialCharactersExceptSquareBrackets() {
+    return /[ `´!@#$%^&*()+\-=\}{};':"\\|,.<>?~]/;
+}
+
+/*
+ * Testa se a palavra contém caracteres especiais não aceitos - exceto colchetes no caso de arrays
+ * @param token: palavra a ser testada
+ *
+ * @return booleano que indica se a palavra é válida ou não
+ */
+export function getKnownDeclarations(token) {
+    if(token.split('[').length - 1 === 1 && token.split(']').length - 1 === 1){
+        return getNotAcceptedSpecialCharactersExceptSquareBrackets().test(token);
+    }
+    return getNotAcceptedSpecialCharacters().test(token);
+}
+
+/*
+ * Remove declaração de array de uma variável []
+ * @param token: token a ter [] removido
+ *
+ * @return token sem []
+ */
+export function removeArrayDeclaration(token) {
+    if(token.indexOf('=') !== -1){
+        if(token.split('[').length - 1 === 1 && token.split(']').length - 1 === 1){
+            const subToken = token.substring(token.indexOf('['), token.indexOf(']') + 1);
+            return token.replace(subToken, '');
+        }
+    }else if(token.split('[').length - 1 === 1 && token.split(']').length - 1 === 1){
+        const subToken = token.substring(token.indexOf('['), token.indexOf(']') + 1);
+        return token.replace(subToken, '');
+    }
+    return token;
+}
+
+/*
+ * Verifica se existe uma definição com o nome da variável
+ */
+export function isKnownDefinition(codeDefinitions, variableName) {
+    for(let i = 0; i < codeDefinitions.length; i++){
+        const dName = removeArrayDeclaration(codeDefinitions[i]).replaceAll(' ', '');
+        const vName = variableName.split('=')[0].replaceAll(' ', '');
+        if(dName === vName){
+            return false;
+        }
+        if(dName.split('[')[0] === vName.split('[')[0]){
+            return false;
+        }
+    }
+    return true;
+}
+
 /*
  * Função que verifica se a palavra começa com um número ou é apenas um número
  * @param word: palavra a ser verificada
