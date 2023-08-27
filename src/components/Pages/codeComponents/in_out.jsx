@@ -101,14 +101,14 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                             if(isArrayDeclaration(response.value)){
                                 for(let i = 0; i < valueVariables.length; i++){
                                     if(removeArrayDeclaration(valueVariables[i].name) === response.value.split('[')[0]){
-                                        const index = response.value.split('[')[1].split(']')[0];
+                                        const index = response.value.replaceAll(' ', '').split('[')[1].split(']')[0];
                                         const array = valueVariables[i].value.replace('[', '').replace(']', '').split(',');
 
                                         // verifica se o index é uma variável ou um número
                                         if(isNaN(index)){
                                             for(let j = 0; j < valueVariables.length; j++){
                                                 if(valueVariables[j].name === index){
-                                                    aux += array[valueVariables[j].value.replace('\n', '')];
+                                                    aux += array[Number(valueVariables[j].value)];
                                                 }
                                             }
                                         }else{
