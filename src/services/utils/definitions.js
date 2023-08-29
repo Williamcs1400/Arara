@@ -127,3 +127,49 @@ export const condicionalSenaoSe =
     "\n\tescreva('Nessa idade e ainda quer aprender a programar???');" +
     '\n}' +
     '\n\n#FIM_PROGRAMA;';
+
+export const condicionalOperadoresLogicos =
+    '#INICIO_PROGRAMA;' +
+    '\n\nlogico var1 = verdadeiro;' +
+    '\nlogico var2 = falso;' +
+    '\n\nse(var1 || var2){' +
+    "\n\tescreva('Operador ou');" +
+    '\n}' +
+    '\n\nse(var1 && var2){' +
+    "\n\tescreva('Operador e');" +
+    '\n}' +
+    '\n\n#FIM_PROGRAMA;';
+
+export const whileLoop =
+    '#INICIO_PROGRAMA;' +
+    '\n\ninteiro index = 0;' +
+    '\n\nenquanto(index <= 10){' +
+    "\n\tescreva('valor: ', index);" +
+    "\n\tescreva('\\n');" +
+    '\n\tindex++;' +
+    '\n}' +
+    '\n\n#FIM_PROGRAMA;';
+
+export const forLoop =
+    '#INICIO_PROGRAMA;' +
+    '\n\npara(inteiro i = 0; i < 10; i++){' +
+    "\n\tescreva('Valor: ', i);" +
+    "\n\tescreva('\\n');" +
+    '\n}' +
+    '\n\n#FIM_PROGRAMA;';
+
+export const vetorDeclaracao =
+    '#INICIO_PROGRAMA;' +
+    '\n\ninteiro vetor[5];' +
+    '\nvetor = [44, 55, 66, 77, 88];' +
+    '\nvetor[2] = 100;' +
+    '\nescreva(vetor);' +
+    '\n\n#FIM_PROGRAMA;';
+
+export const vetorAcesso =
+    '#INICIO_PROGRAMA;' +
+    '\n\ninteiro vetor[2] = [50, 51];' +
+    '\ninteiro resultado;' +
+    '\n\nresultado = vetor[0] + vetor[1];' +
+    '\nescreva(resultado);' +
+    '\n\n#FIM_PROGRAMA;';
