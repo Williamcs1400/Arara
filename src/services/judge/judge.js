@@ -1,6 +1,8 @@
 import {executeOperation, executor} from "../analyzers/executor";
 import {ExecutableActionType} from "../analyzers/definitions/actionTypes";
 import {compilerFromCodeEditor} from "../analyzers/compiler";
+import {removeArrayDeclaration} from "../analyzers/definitions/dictionary";
+import {getElementsOfArray, getPointerOfArray, isArrayDeclaration} from "../utils/util";
 
 /*
  * Este método é o resposnável por iniciar o teste de uma solução de um aluno
@@ -50,6 +52,7 @@ function executeCode(inputArray, executableCode) {
     let result = '';
     let response;
     let lastResponse = null;
+    let flagCondition = false;
 
     if (executableCode !== undefined && executableCode.length > 0) {
         for (let i = 0; i < executableCode.length; i++) {
@@ -60,10 +63,13 @@ function executeCode(inputArray, executableCode) {
                 response = executor(executableCode[i], valueVariables, null);
             }
 
-            if (response.actionType !== ExecutableActionType.comparison && executableCode[i].subContent === undefined) {
+            if(executableCode[i].token.startsWith('se(') || executableCode[i].token.startsWith('senao se(') || executableCode[i].token.startsWith('senao(')) {
+                // lastResponse = response;
+            }else if(lastResponse !== null && lastResponse.subCode.includes(executableCode[i].token)){
+                flagCondition = true;
+            }else{
                 lastResponse = null;
             }
-
 
             // Escrita no terminal
             if (response.actionType === ExecutableActionType.writing) {
@@ -83,6 +89,26 @@ function executeCode(inputArray, executableCode) {
                     }
                     // Verifica se o valor é uma variável
                 } else if (response.type === 'variable') {
+                    // Verifica se a variável é um array
+                    if(isArrayDeclaration(response.value)){
+                        for(let i = 0; i < valueVariables.length; i++){
+                            if(removeArrayDeclaration(valueVariables[i].name) === response.value.split('[')[0]){
+                                const index = response.value.replaceAll(' ', '').split('[')[1].split(']')[0];
+                                const array = valueVariables[i].value.replace('[', '').replace(']', '').split(',');
+
+                                // verifica se o index é uma variável ou um número
+                                if(isNaN(index)){
+                                    for(let j = 0; j < valueVariables.length; j++){
+                                        if(valueVariables[j].name === index){
+                                            aux += array[Number(valueVariables[j].value)];
+                                        }
+                                    }
+                                }else{
+                                    aux += array[index];
+                                }
+                            }
+                        }
+                    }
                     for (let i = 0; i < valueVariables.length; i++) {
                         if (valueVariables[i].name === response.value) {
                             aux += valueVariables[i].value;
@@ -113,14 +139,23 @@ function executeCode(inputArray, executableCode) {
             if (response.actionType === ExecutableActionType.assignment) {
                 let exists = false;
                 for (let i = 0; i < valueVariables.length; i++) {
-                    if (valueVariables[i].name === response.variable) {
-                        valueVariables[i].value = response.value;
+                    if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
+                        if(isArrayDeclaration(valueVariables[i].value)){
+                            const index = getPointerOfArray(response.variable);
+                            const array = getElementsOfArray(valueVariables[i].value);
+
+                            // verifica se o index é uma variável ou um número
+                            array[index] = response.value;
+                            valueVariables[i].value = '[' + array + ']';
+                        }else {
+                            valueVariables[i].value = response.value;
+                        }
                         exists = true;
                     }
                 }
 
                 if (!exists) {
-                    valueVariables.push({name: response.variable, value: response.value});
+                    valueVariables.push({name: response.variable, value: response.value, type: response.type});
                 }
             }
 
@@ -135,6 +170,13 @@ function executeCode(inputArray, executableCode) {
                             } else {
                                 operations[index] = variable.value;
                             }
+                        }else if(removeArrayDeclaration(operation) === removeArrayDeclaration(variable.name)){
+                            if (variable.value === undefined || variable.value === '') {
+                                operations[index] = 0;
+                            } else {
+                                const values = getElementsOfArray(variable.value);
+                                operations[index] = values[getPointerOfArray(operation)];
+                            }
                         }
                     });
                 });
@@ -147,6 +189,32 @@ function executeCode(inputArray, executableCode) {
             }
 
             // Condicional
+            if (response.actionType === ExecutableActionType.loop) {
+                if(!flagCondition)
+                    lastResponse = response;
+                if(response.value){
+                    // Se a condição for verdadeira, executa o código dentro do if
+                    const executableCodeAux = []
+                    // monta o código que será executado
+                    response.subCode.forEach((code) => {
+                        executableCodeAux.push({token: code, content: null, subContent: true});
+                    });
+
+                    // remove a instrução se já processada
+                    const part1 = executableCode.slice(0, i);
+                    const part2 = executableCode.slice(i + 1, executableCode.length);
+
+                    // insere o código que será executado no ponto onde o se estava
+                    const exeAux = [{token: null, content: null}];
+                    part1.push(...exeAux);
+                    part1.push(...executableCodeAux);
+                    part1.push(...part2);
+
+                    executableCode = part1;
+                }
+            }
+
+            // Repetição
             if (response.actionType === ExecutableActionType.loop) {
                 if(response.value){
                     const executableCodeAux = []
