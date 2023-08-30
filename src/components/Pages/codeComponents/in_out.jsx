@@ -143,8 +143,16 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                         for (let i = 0; i < valueVariables.length; i++) {
                             if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
                                 if(isArrayDeclaration(valueVariables[i].value) || isArrayDeclaration(response.variable)){
-                                    const index = getPointerOfArray(response.variable);
+                                    let index = getPointerOfArray(response.variable);
                                     const array = getElementsOfArray(valueVariables[i].value);
+
+                                    if(isNaN(index)){
+                                        for(let j = 0; j < valueVariables.length; j++){
+                                            if(valueVariables[j].name === index){
+                                                index = Number(valueVariables[j].value);
+                                            }
+                                        }
+                                    }
 
                                     // verifica se o index é uma variável ou um número
                                     array[index] = response.value;
@@ -268,8 +276,25 @@ export default function InOut({height, width, closeTerminal, executableCode, err
             // Verifica se a variável já existe, se sim, atualiza o valor, se não, cria uma nova
             let exists = false;
             for (let i = 0; i < valueVariables.length; i++) {
-                if (valueVariables[i].name === lastVariable) {
-                    valueVariables[i].value = lastInput;
+                if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(lastVariable)) {
+                    if(isArrayDeclaration(lastVariable)){
+                        let index = getPointerOfArray(lastVariable);
+                        const array = getElementsOfArray(valueVariables[i].value);
+
+                        if(isNaN(index)){
+                            for(let j = 0; j < valueVariables.length; j++){
+                                if(valueVariables[j].name === index){
+                                    index = Number(valueVariables[j].value);
+                                }
+                            }
+                        }
+
+                        // verifica se o index é uma variável ou um número
+                        array[index] = lastInput.replace('\n', '');
+                        valueVariables[i].value = '[' + array + ']';
+                    }else {
+                        valueVariables[i].value = lastInput;
+                    }
                     exists = true;
                 }
             }

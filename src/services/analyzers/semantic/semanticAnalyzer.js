@@ -1,5 +1,5 @@
 import {
-    containsOperator, getKnownOperators,
+    containsOperator,
     getNotAcceptedSpecialCharacters, removeArrayDeclaration,
     validateTyping
 } from "../definitions/dictionary";
@@ -126,10 +126,10 @@ function validateAllocatedArray(variables, usages, defAndTypes){
                     }
                 }
                 if(usage.value !== undefined && isArrayDeclaration(usage.name)) {
-                    if (getPointerOfArray(usage.name) > sizePointer - 1) {
+                    if (Number(getPointerOfArray(usage.name)) > sizePointer - 1) {
                         throw new Error('Erro semântico | O índice do array ' + name + ' é maior que o tamanho do array.');
                     }
-                    if(getPointerOfArray(usage.name) < 0){
+                    if(Number(getPointerOfArray(usage.name)) < 0){
                         throw new Error('Erro semântico | O índice do array ' + name + ' é menor que zero.');
                     }
                 }

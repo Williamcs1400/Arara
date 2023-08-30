@@ -122,9 +122,27 @@ function executeCode(inputArray, executableCode) {
             if (response.actionType === ExecutableActionType.reading) {
                 let exists = false;
                 for (let i = 0; i < valueVariables.length; i++) {
-                    if (valueVariables[i].name === response.value) {
-                        valueVariables[i].value = inputArray[0];
-                        inputArray.shift()
+                    if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.value)) {
+                        if(isArrayDeclaration(inputArray[0])) {
+                            const index = getPointerOfArray(inputArray[0]);
+                            const array = getElementsOfArray(valueVariables[i].value);
+
+                            if(isNaN(index)){
+                                for(let j = 0; j < valueVariables.length; j++){
+                                    if(valueVariables[j].name === index){
+                                        aux = array[Number(valueVariables[j].value)];
+                                    }
+                                }
+                            }else{
+                                aux = array[index];
+                            }
+
+                            valueVariables[i].value = '[' + array + ']';
+                            inputArray.shift()
+                        }else {
+                            valueVariables[i].value = inputArray[0];
+                            inputArray.shift()
+                        }
                         exists = true;
                     }
                 }
@@ -141,8 +159,16 @@ function executeCode(inputArray, executableCode) {
                 for (let i = 0; i < valueVariables.length; i++) {
                     if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
                         if(isArrayDeclaration(valueVariables[i].value) || isArrayDeclaration(response.variable)){
-                            const index = getPointerOfArray(response.variable);
+                            let index = getPointerOfArray(response.variable);
                             const array = getElementsOfArray(valueVariables[i].value);
+
+                            if(isNaN(index)){
+                                for(let j = 0; j < valueVariables.length; j++){
+                                    if(valueVariables[j].name === index){
+                                        index = valueVariables[j].value;
+                                    }
+                                }
+                            }
 
                             // verifica se o index é uma variável ou um número
                             array[index] = response.value;
@@ -175,7 +201,16 @@ function executeCode(inputArray, executableCode) {
                                 operations[index] = 0;
                             } else {
                                 const values = getElementsOfArray(variable.value);
-                                operations[index] = values[getPointerOfArray(operation)];
+                                let index = getPointerOfArray(operation);
+
+                                if(isNaN(index)){
+                                    for(let j = 0; j < valueVariables.length; j++){
+                                        if(valueVariables[j].name === index){
+                                            index = valueVariables[j].value;
+                                        }
+                                    }
+                                }
+                                operations[index] = values[index];
                             }
                         }
                     });

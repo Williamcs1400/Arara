@@ -25,7 +25,9 @@ export function cleanWhiteSpacesAllowed(code){
 }
 
 export function isArrayDeclaration(token){
-    return token.split('[').length - 1 === 1 && token.split(']').length - 1 === 1;
+    if(token.indexOf('[') !== -1 &&  token.indexOf(']') !== -1)
+        return token.split('[').length - 1 === 1 && token.split(']').length - 1 === 1;
+    return false;
 }
 
 export function getElementsOfArray(token){
@@ -33,7 +35,7 @@ export function getElementsOfArray(token){
 }
 
 export function getPointerOfArray(token){
-    return Number(token.replaceAll(' ', '').substring(token.indexOf('[') + 1, token.indexOf(']')));
+    return token.replaceAll(' ', '').substring(token.indexOf('[') + 1, token.indexOf(']'));
 }
 
 export function getSizeOfArray(token){

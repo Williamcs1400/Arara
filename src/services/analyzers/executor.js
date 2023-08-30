@@ -172,7 +172,7 @@ function isAssignment(token) {
 // retorna o valor padrão de uma variável - quando a declaração não possui valor
 function getDefaultValueOfTyping(token) {
     if(isArrayDeclaration(token)){
-        return '[' + new Array(getSizeOfArray(token)).fill(getDefaultValueOfTyping(token.split('[')[0])) + ']';
+        return '[' + new Array(getSizeOfArray(token)).fill(null) + ']';
     }
     if (token.startsWith('inteiro'))
         return '0'
