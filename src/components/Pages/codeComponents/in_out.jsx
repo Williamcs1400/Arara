@@ -103,7 +103,6 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                                     if(removeArrayDeclaration(valueVariables[i].name) === response.value.split('[')[0]){
                                         const index = response.value.replaceAll(' ', '').split('[')[1].split(']')[0];
                                         const array = valueVariables[i].value.replace('[', '').replace(']', '').split(',');
-
                                         // verifica se o index é uma variável ou um número
                                         if(isNaN(index)){
                                             for(let j = 0; j < valueVariables.length; j++){
@@ -143,7 +142,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                         let exists = false;
                         for (let i = 0; i < valueVariables.length; i++) {
                             if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
-                                if(isArrayDeclaration(valueVariables[i].value)){
+                                if(isArrayDeclaration(valueVariables[i].value) || isArrayDeclaration(response.variable)){
                                     const index = getPointerOfArray(response.variable);
                                     const array = getElementsOfArray(valueVariables[i].value);
 

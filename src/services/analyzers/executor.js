@@ -1,5 +1,6 @@
 import {ExecutableActionType} from "./definitions/actionTypes";
 import {containsOperator, isDeclaration, isOperator} from "./definitions/dictionary";
+import {getSizeOfArray, isArrayDeclaration} from "../utils/util";
 
 // executa o código gerado pelo compilador linha a linha
 export function executor(token, valueVariables, lastComparison) {
@@ -104,6 +105,9 @@ function getValueOfAssignment(token) {
     if (value.indexOf('\'') !== -1) {
         return value.replaceAll('\'', '');
     }
+    if(isArrayDeclaration(value)){
+        return value.replaceAll(' ', '');
+    }
     return value;
 }
 
@@ -167,6 +171,9 @@ function isAssignment(token) {
 
 // retorna o valor padrão de uma variável - quando a declaração não possui valor
 function getDefaultValueOfTyping(token) {
+    if(isArrayDeclaration(token)){
+        return '[' + new Array(getSizeOfArray(token)).fill(getDefaultValueOfTyping(token.split('[')[0])) + ']';
+    }
     if (token.startsWith('inteiro'))
         return '0'
     else if (token.startsWith('real'))

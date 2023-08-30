@@ -35,3 +35,7 @@ export function getElementsOfArray(token){
 export function getPointerOfArray(token){
     return Number(token.replaceAll(' ', '').substring(token.indexOf('[') + 1, token.indexOf(']')));
 }
+
+export function getSizeOfArray(token){
+    return Number(token.replaceAll(' ', '').substring(token.indexOf('['), token.indexOf(']') - 1));
+}
