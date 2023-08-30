@@ -140,7 +140,7 @@ function executeCode(inputArray, executableCode) {
                 let exists = false;
                 for (let i = 0; i < valueVariables.length; i++) {
                     if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
-                        if(isArrayDeclaration(valueVariables[i].value)){
+                        if(isArrayDeclaration(valueVariables[i].value) || isArrayDeclaration(response.variable)){
                             const index = getPointerOfArray(response.variable);
                             const array = getElementsOfArray(valueVariables[i].value);
 
