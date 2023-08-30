@@ -147,7 +147,8 @@ function Ide(props) {
                 justifyItems: 'start',
                 alignItems: 'start',
                 flexDirection: 'column',
-                position: 'absolute'
+                position: 'absolute',
+                height: '100%',
             }}>
                 <div>
                     <Sidebar executeCode={executeCode} executeCodeError={executeCodeError} openTerminal={handleTerminal} isTask={isTask}

@@ -47,7 +47,7 @@ class App extends React.PureComponent {
                     onChange={this.onChange.bind(this)}
                     name="UNIQUE_ID_OF_DIV"
                     editorProps={{ $blockScrolling: true }}
-                    height={this.props.height ? this.props.height - 70 : 500}
+                    height={this.props.height ? this.props.height : 500}
                     width={this.props.width ? this.props.width - 64 : 500}
                     fontSize={21}
                 />

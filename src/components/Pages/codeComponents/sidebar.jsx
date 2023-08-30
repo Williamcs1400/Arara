@@ -9,6 +9,9 @@ import playButton from '../../../assets/playButton.png';
 import terminalButton from '../../../assets/terminal.png';
 import judge from '../../../assets/judge.png';
 import infoTask from '../../../assets/infoTask.png';
+import personRed from '../../../assets/personRed.png';
+import logo512 from '../../../assets/logo512.png';
+import {useNavigate} from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -19,6 +22,7 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
     const [result, setResult] = React.useState({});
     const [message, setMessage] = React.useState('');
     const [typeOfAlert, setTypeOfAlert] = React.useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (result.sucess === undefined && result.message === undefined)
@@ -59,9 +63,14 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
                     if (selected === 'judge') {
                         startTestSolution();
                     }
-
                     if (selected === 'infoTask') {
                         openTaskInfo();
+                    }
+                    if (selected === 'login') {
+                        window.location.href = '/#/entrar';
+                    }
+                    if (selected === 'home') {
+                        navigate('/');
                     }
                 }}
             >
@@ -108,8 +117,29 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
                         </NavItem>
                     }
 
+                    <NavItem eventKey="login">
+                        <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <img src={personRed} width="28" height="28" alt="loggin button"/>
+                        </NavIcon>
+                        <NavText>
+                            Entrar no Arara
+                        </NavText>
+                    </NavItem>
+
+                    <NavItem eventKey="home">
+                        <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <img src={logo512} width="28" height="28" alt="loggin home"/>
+                        </NavIcon>
+                        <NavText>
+                            Voltar para o início
+                        </NavText>
+                    </NavItem>
+
+
+
 
                 </SideNav.Nav>
+
             </SideNav>
             <Stack spacing={2} sx={{width: '100%'}}>
                 <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}

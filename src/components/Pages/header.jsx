@@ -16,6 +16,7 @@ import Drawer from '@mui/material/Drawer';
 import getHeaderStyleByPath from "../../styles/header/headerStyleByPath";
 
 export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, nameT, nameUser, teacher}) {
+    const [open, setOpen] = React.useState(true);
     const [showLogo, setShowLogo] = React.useState(true);
     const [showLogin, setShowLogin] = React.useState(true);
     const [textButton, setTextButton] = React.useState('Entrar/Registrar');
@@ -35,11 +36,12 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
         setShowLogin(headerStyle.showButtonLogin);
         setBarColor(headerStyle.barColor);
         setdefRedirectUrl(headerStyle.redirectUrl);
+        setOpen(headerStyle.showBar);
 
         setNameTask(nameT);
         setName(nameUser);
         setIsTeacher(teacher);
-        if(nameUser !== ''){
+        if (nameUser !== '') {
             setTextButton(nameUser);
         }
     }, [location.pathname]);
@@ -73,142 +75,145 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
     }
 
     return (
-        <div className="main-header" style={{backgroundColor: barColor}}>
-            <Drawer
-                anchor={'right'}
-                open={openDrawer}
-                onClose={() => setOpenDrawer(false)}
-                PaperProps={{
-                    sx: {
-                        backgroundColor: "#17202A",
-                        color: "white",
-                    }
-                }}
-            >
-                <div>
-                    <div style={{display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'right'}}>
-
-                        <div style={{visibility: isTeacher ? 'visible' : 'collapse'}}>
-                            <Button
-                                style={{
-                                    color: '#fff', fontSize: 22, fontWeight: 'lighter',
-                                    alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
-                                    textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
-                                }}
-                                sx={{':hover': {backgroundColor: '#85d249'}}}
-                                onClick={openRegisterTask}
-                            >
-                                <img src={tasks} alt="logo" width='25' height='25'
-                                     style={{alignSelf: 'center', marginRight: 5}}/>
-                                Cadastar Tarefa
-                            </Button>
-
-                        </div>
-
-                        <div>
-                            <Button
-                                style={{
-                                    color: '#fff', fontSize: 22, fontWeight: 'lighter',
-                                    alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
-                                    textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
-                                }}
-                                sx={{':hover': {backgroundColor: '#85d249'}}}
-                                onClick={openMyTasks}
-                            >
-                                <img src={myFolder} alt="logo" width='25' height='25'
-                                     style={{alignSelf: 'center', marginRight: 5}}/>
-                                Minhas Tarefas
-                            </Button>
-
-                            <hr style={{width: '90%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
-                        </div>
-
-
-                        <Button
-                            style={{
-                                color: '#fff', fontSize: 22, fontWeight: 'lighter',
-                                alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
-                                textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
-                            }}
-                            sx={{':hover': {backgroundColor: '#fdca00'}}}
-                        >
-                            <img src={github} alt="logo" width='25' height='25'
-                                 style={{alignSelf: 'center', marginRight: 5}}/>
-                            Código Arara
-                        </Button>
-
-                        <Button
-                            style={{
-                                color: '#fff', fontSize: 22, fontWeight: 'lighter',
-                                alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
-                                textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
-                            }}
-                            sx={{':hover': {backgroundColor: '#fdca00'}}}
-                        >
-                            <img src={question} alt="logo" width='25' height='25'
-                                 style={{alignSelf: 'center', marginRight: 5}}/>
-                            Quem somos?
-                        </Button>
-
-
-                        <hr style={{width: '90%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
-
-                        <Button
-                            style={{
-                                color: '#fff', fontSize: 22, fontWeight: 'lighter', alignSelf: 'center',
-                                fontFamily: 'Poppins', textTransform: 'none', textAlign: 'right', marginLeft: 10,
-                                marginRight: 10, width: 250, marginTop: 5
-                            }}
-                            sx={{':hover': {backgroundColor: '#ff4155'}}}
-                            onClick={logout}
-                        >
-                            <img src={exit} alt="logo" width='25' height='25'
-                                 style={{alignSelf: 'center', marginRight: 5}}/>
-                            Sair
-                        </Button>
-
-                    </div>
-                </div>
-            </Drawer>
-            {showLogo &&
-                <img
-                    src={logo512}
-                    alt="logo" width='50'
-                    height='50'
-                    style={{alignSelf: 'center', marginLeft: 15, cursor: 'pointer'}}
-                    onClick={goToHome}/>
-            }
-            <div style={{display: 'flex', alignSelf: 'center', textAlign: 'center', marginLeft: 25}}>
-                <f7 style={{
-                    color: '#fff',
-                    fontSize: 26,
-                    fontWeight: 'bold',
-                    alignSelf: 'center',
-                    fontFamily: 'Poppins',
-                    textTransform: 'none',
-                    textAlign: 'right'
-                }}>
-                    {nameTask}
-                </f7>
-            </div>
-            {showLogin &&
-                <div style={{display: 'flex', flexDirection: 'row', flex: 1, justifyContent: 'right'}}>
-                    <Button style={{
-                        color: '#fff',
-                        fontSize: 18,
-                        fontWeight: 'lighter',
-                        alignSelf: 'center',
-                        fontFamily: 'Poppins',
-                        textTransform: 'none',
-                        textAlign: 'right'
-                    }}
-                            onClick={handleClickOpen}
+        <div>
+            {open ? <div className="main-header" style={{backgroundColor: barColor}}>
+                    <Drawer
+                        anchor={'right'}
+                        open={openDrawer}
+                        onClose={() => setOpenDrawer(false)}
+                        PaperProps={{
+                            sx: {
+                                backgroundColor: "#17202A",
+                                color: "white",
+                            }
+                        }}
                     >
-                        <img src={person} alt="logo" width='50' height='50' style={{alignSelf: 'center'}}/>
-                        {textButton}
-                    </Button>
+                        <div>
+                            <div style={{display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'right'}}>
+
+                                <div style={{visibility: isTeacher ? 'visible' : 'collapse'}}>
+                                    <Button
+                                        style={{
+                                            color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                            alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                            textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                        }}
+                                        sx={{':hover': {backgroundColor: '#85d249'}}}
+                                        onClick={openRegisterTask}
+                                    >
+                                        <img src={tasks} alt="logo" width='25' height='25'
+                                             style={{alignSelf: 'center', marginRight: 5}}/>
+                                        Cadastar Tarefa
+                                    </Button>
+
+                                </div>
+
+                                <div>
+                                    <Button
+                                        style={{
+                                            color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                            alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                            textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                        }}
+                                        sx={{':hover': {backgroundColor: '#85d249'}}}
+                                        onClick={openMyTasks}
+                                    >
+                                        <img src={myFolder} alt="logo" width='25' height='25'
+                                             style={{alignSelf: 'center', marginRight: 5}}/>
+                                        Minhas Tarefas
+                                    </Button>
+
+                                    <hr style={{width: '90%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
+                                </div>
+
+
+                                <Button
+                                    style={{
+                                        color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                        alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                        textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                    }}
+                                    sx={{':hover': {backgroundColor: '#fdca00'}}}
+                                >
+                                    <img src={github} alt="logo" width='25' height='25'
+                                         style={{alignSelf: 'center', marginRight: 5}}/>
+                                    Código Arara
+                                </Button>
+
+                                <Button
+                                    style={{
+                                        color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                        alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                        textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                    }}
+                                    sx={{':hover': {backgroundColor: '#fdca00'}}}
+                                >
+                                    <img src={question} alt="logo" width='25' height='25'
+                                         style={{alignSelf: 'center', marginRight: 5}}/>
+                                    Quem somos?
+                                </Button>
+
+
+                                <hr style={{width: '90%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
+
+                                <Button
+                                    style={{
+                                        color: '#fff', fontSize: 22, fontWeight: 'lighter', alignSelf: 'center',
+                                        fontFamily: 'Poppins', textTransform: 'none', textAlign: 'right', marginLeft: 10,
+                                        marginRight: 10, width: 250, marginTop: 5
+                                    }}
+                                    sx={{':hover': {backgroundColor: '#ff4155'}}}
+                                    onClick={logout}
+                                >
+                                    <img src={exit} alt="logo" width='25' height='25'
+                                         style={{alignSelf: 'center', marginRight: 5}}/>
+                                    Sair
+                                </Button>
+
+                            </div>
+                        </div>
+                    </Drawer>
+                    {showLogo &&
+                        <img
+                            src={logo512}
+                            alt="logo" width='50'
+                            height='50'
+                            style={{alignSelf: 'center', marginLeft: 15, cursor: 'pointer'}}
+                            onClick={goToHome}/>
+                    }
+                    <div style={{display: 'flex', alignSelf: 'center', textAlign: 'center', marginLeft: 25}}>
+                        <f7 style={{
+                            color: '#fff',
+                            fontSize: 26,
+                            fontWeight: 'bold',
+                            alignSelf: 'center',
+                            fontFamily: 'Poppins',
+                            textTransform: 'none',
+                            textAlign: 'right'
+                        }}>
+                            {nameTask}
+                        </f7>
+                    </div>
+                    {showLogin &&
+                        <div style={{display: 'flex', flexDirection: 'row', flex: 1, justifyContent: 'right'}}>
+                            <Button style={{
+                                color: '#fff',
+                                fontSize: 18,
+                                fontWeight: 'lighter',
+                                alignSelf: 'center',
+                                fontFamily: 'Poppins',
+                                textTransform: 'none',
+                                textAlign: 'right'
+                            }}
+                                    onClick={handleClickOpen}
+                            >
+                                <img src={person} alt="logo" width='50' height='50' style={{alignSelf: 'center'}}/>
+                                {textButton}
+                            </Button>
+                        </div>
+                    }
                 </div>
-            }
+                : null}
         </div>
     );
 }
