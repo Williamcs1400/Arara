@@ -1,4 +1,5 @@
 import {removeCodeExpression} from '../../utils/codeFixer';
+import {isArrayDeclaration} from "../../utils/util";
 
 // Descrição: Este arquivo contém o dicionário da linguagem
 const knownDefinitions = [
@@ -151,15 +152,17 @@ export function getOperator(instruction) {
     return knownOperators.find(operator => instruction.includes(operator));
 }
 
-export function containsOperator(instruction) {
-    // regex para se possui alguma operação entre números
-    const regex = /^[0-9]+[+\-*/][0-9]+$/;
-    if(instruction.indexOf('=') !== -1){
-        const tmp = instruction.split('=')[1];
-        return regex.test(tmp.replaceAll(' ', ''));
-    }
-    return regex.test(instruction.replaceAll(' ', ''));
+export function getKnownOperators() {
+    return knownOperators;
+}
 
+export function containsOperator(instruction) {
+    const regexVariableOperationVariable = /^[a-zA-Z0-9_\[\]]+[+\-*/][a-zA-Z0-9_\[\]]+$/;
+    if(instruction.indexOf('=') !== -1){
+        const tmp = instruction.split('=')[1].replaceAll(' ', '');
+        return regexVariableOperationVariable.test(tmp);
+    }
+    return regexVariableOperationVariable.test(instruction.replaceAll(' ', ''));
 }
 
 export function getKnownDefinitions() {

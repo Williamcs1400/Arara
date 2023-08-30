@@ -1,5 +1,5 @@
 import {
-    containsOperator,
+    containsOperator, getKnownOperators,
     getNotAcceptedSpecialCharacters, removeArrayDeclaration,
     validateTyping
 } from "../definitions/dictionary";
