@@ -153,8 +153,13 @@ export function getOperator(instruction) {
 
 export function containsOperator(instruction) {
     // regex para se possui alguma operação entre números
-    const regex = /(\d+)(\+|\-|\*|\/)(\d+)/;
-    return regex.test(instruction);
+    const regex = /^[0-9]+[+\-*/][0-9]+$/;
+    if(instruction.indexOf('=') !== -1){
+        const tmp = instruction.split('=')[1];
+        return regex.test(tmp.replaceAll(' ', ''));
+    }
+    return regex.test(instruction.replaceAll(' ', ''));
+
 }
 
 export function getKnownDefinitions() {
