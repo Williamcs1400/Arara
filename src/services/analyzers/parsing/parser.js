@@ -7,6 +7,7 @@ import {
 import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
 import {compilerFromScope} from "../compiler";
+import {getPointerOfArray, getSizeOfArray} from "../../utils/util";
 
 let lastInstruction = '';
 
@@ -131,7 +132,13 @@ function validateAssignmentInstruction(instruction, token) {
         isArray = name.split('=')[0].split('[').length - 1 === 1 && name.split('=')[0].split(']').length - 1 === 1;
         if(isArray){
             const values = name.replaceAll('[', '').replaceAll(']', '').split('=')[1].trim().split(',');
+            const nameAndSize = name.split('=')[0].trim();
+            if(values.length !== Number(getPointerOfArray(nameAndSize))){
+                getErrorArraySizeExample(nameAndSize, values.length);
+            }
+
             values.forEach(value => {
+                console.log(value)
                 if (validateTyping(token, value.trim())) {
                     name = name.split('=')[0].trim().replaceAll('[', '').replaceAll(']', '');
                 } else {
@@ -290,4 +297,9 @@ function getErrorWriteExample(){
 // Erros de leitura
 function getErrorReadExample(){
     throw new Error('Erro sintático | A instrução leia está incorreta - deve ser da seguinte forma: ' + getInstructionByToken('leia').example);
+}
+
+// Erros de tamanho de array
+function getErrorArraySizeExample(token, value){
+    throw new Error('Erro sintático | O tamanho do array declarado ' + token + ' é diferente da quantidade de valores atribuídos - <' + value + '>.');
 }
