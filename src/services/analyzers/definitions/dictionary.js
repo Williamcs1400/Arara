@@ -152,7 +152,9 @@ export function getOperator(instruction) {
 }
 
 export function containsOperator(instruction) {
-    return knownOperators.some(operator => instruction.includes(operator));
+    // regex para se possui alguma operação entre números
+    const regex = /(\d+)(\+|\-|\*|\/)(\d+)/;
+    return regex.test(instruction);
 }
 
 export function getKnownDefinitions() {
