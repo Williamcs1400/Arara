@@ -188,7 +188,10 @@ function validateEscrevaInstruction(instruction) {
     if(aux.indexOf('\'') !== -1){
         getErrorWriteExample();
     }
-    instruction = instruction.replace(aux, '');
+
+    // substitui o trecho entre ' ' por '' na instrução
+    const pos = instruction.lastIndexOf(aux);
+    instruction = instruction.substring(0, pos) + instruction.substring(pos + aux.length, instruction.length);
 
     // verifica se há a quantidade correta de cada componente da instrução
     if (instruction.split('escreva').length - 1 !== 1 ||
