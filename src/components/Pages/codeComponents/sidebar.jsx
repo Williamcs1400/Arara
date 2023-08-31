@@ -79,6 +79,15 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
                 <SideNav.Toggle/>
                 <SideNav.Nav>
 
+                    <NavItem eventKey="home">
+                        <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <img src={logo512} width="28" height="28" alt="loggin home"/>
+                        </NavIcon>
+                        <NavText>
+                            Voltar para o início
+                        </NavText>
+                    </NavItem>
+
                     <NavItem eventKey="execute">
                         <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                             <img src={playButton} width="20" height="20" alt="play button"/>
@@ -127,18 +136,6 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
                             Entrar no Arara
                         </NavText>
                     </NavItem>
-
-                    <NavItem eventKey="home">
-                        <NavIcon style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                            <img src={logo512} width="28" height="28" alt="loggin home"/>
-                        </NavIcon>
-                        <NavText>
-                            Voltar para o início
-                        </NavText>
-                    </NavItem>
-
-
-
 
                 </SideNav.Nav>
 
