@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Arara/static/css/main.c3d30ac7.css",
-    "main.js": "/Arara/static/js/main.a8163544.js",
+    "main.js": "/Arara/static/js/main.c6b2e9d7.js",
     "static/media/personRed.png": "/Arara/static/media/personRed.f9f0621c1f20b3645ac2.png",
     "static/media/wrong.png": "/Arara/static/media/wrong.3dbdd42f7ec7025627a4.png",
     "static/media/accept.png": "/Arara/static/media/accept.8e7f02b8024991b5ec84.png",
@@ -22,10 +22,10 @@
     "static/media/documentation.png": "/Arara/static/media/documentation.42f3c06c32418d119ae1.png",
     "index.html": "/Arara/index.html",
     "main.c3d30ac7.css.map": "/Arara/static/css/main.c3d30ac7.css.map",
-    "main.a8163544.js.map": "/Arara/static/js/main.a8163544.js.map"
+    "main.c6b2e9d7.js.map": "/Arara/static/js/main.c6b2e9d7.js.map"
   },
   "entrypoints": [
     "static/css/main.c3d30ac7.css",
-    "static/js/main.a8163544.js"
+    "static/js/main.c6b2e9d7.js"
   ]
 }
