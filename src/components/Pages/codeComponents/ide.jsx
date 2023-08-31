@@ -169,7 +169,7 @@ function Ide(props) {
                             }}
                             maxWidth={width - 64}
                             onResize={(e, direction, ref, d) => {
-                                setTerminalHeight(terminalHeight + d.height);
+                                setTerminalHeight(terminalHeight + (d.height / 40));
                             }}
                         >
                             <InOut height={terminalHeight} width={width} closeTerminal={executeCode}

@@ -138,7 +138,6 @@ function validateAssignmentInstruction(instruction, token) {
             }
 
             values.forEach(value => {
-                console.log(value)
                 if (validateTyping(token, value.trim())) {
                     name = name.split('=')[0].trim().replaceAll('[', '').replaceAll(']', '');
                 } else {

@@ -73,6 +73,8 @@ export default function Sidebar({executeCode, executeCodeError, openTerminal, is
                         navigate('/');
                     }
                 }}
+                // color="dark"
+                style={{backgroundColor: '#17202A'}}
             >
                 <SideNav.Toggle/>
                 <SideNav.Nav>

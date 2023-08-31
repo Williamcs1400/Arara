@@ -6,7 +6,6 @@ import {executeOperation, executor} from '../../../services/analyzers/executor.j
 import {ExecutableActionType} from "../../../services/analyzers/definitions/actionTypes";
 import {getElementsOfArray, getPointerOfArray, isArrayDeclaration} from "../../../services/utils/util";
 import {removeArrayDeclaration} from "../../../services/analyzers/definitions/dictionary";
-import { Resizable } from 're-resizable';
 
 export default function InOut({height, width, closeTerminal, executableCode, errorMessage}) {
     const [text, setText] = React.useState('');
@@ -315,21 +314,22 @@ export default function InOut({height, width, closeTerminal, executableCode, err
     }, [finalized]);
 
     return (
-        <div style={{width: width - 64, maxHeight: height, background: '#2F2F2F'}}>
+        <div style={{width: width - 64, maxHeight: height, background: '#0F1114'}}>
             <div style={{
                 width: width - 64,
                 height: 30,
                 maxHeight: 30,
-                background: '#272727',
+                background: '#111922',
                 display: 'flex',
-                justifyContent: "flex-end"
+                justifyContent: 'flex-end',
+                overflow: 'auto'
             }}>
                 <IconButton aria-label="delete" style={{marginLeft: 'auto', marginRight: 0}}
                             onClick={() => closeTerminal()}>
                     <CloseOutlinedIcon color='error'/>
                 </IconButton>
             </div>
-            <div style={{border: '2px solid #008F11', height: height - 43, padding: 5, overflow: 'scroll'}}>
+            <div style={{height: height - 40, padding: 5, overflow: 'scroll'}}>
                 <text className="textOut" style={{color: errorMessage ? '#FF2E44' : '#fff'}}>
                     {errorMessage ? errorMessage : text}
                 </text>
