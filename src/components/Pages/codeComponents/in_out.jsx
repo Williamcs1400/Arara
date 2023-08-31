@@ -6,7 +6,7 @@ import {executeOperation, executor} from '../../../services/analyzers/executor.j
 import {ExecutableActionType} from "../../../services/analyzers/definitions/actionTypes";
 import {getElementsOfArray, getPointerOfArray, isArrayDeclaration} from "../../../services/utils/util";
 import {removeArrayDeclaration} from "../../../services/analyzers/definitions/dictionary";
-
+import { Resizable } from 're-resizable';
 
 export default function InOut({height, width, closeTerminal, executableCode, errorMessage}) {
     const [text, setText] = React.useState('');

@@ -20,6 +20,7 @@
     "brace": "^0.11.1",
     "firebase": "^9.21.0",
     "mdb-react-ui-kit": "^5.1.0",
+    "re-resizable": "^6.9.11",
     "react": "^18.2.0",
     "react-ace": "^10.1.0",
     "react-bootstrap": "^2.7.4",

@@ -4,6 +4,7 @@ import CodeEditor from "./codeEditor";
 import InOut from "./in_out";
 import Swal from "sweetalert2";
 import {startTest} from "../../../services/judge/judge";
+import {Resizable} from "re-resizable";
 
 function Ide(props) {
     const [openTerminal, setOpenTerminal] = React.useState(false);
@@ -149,16 +150,34 @@ function Ide(props) {
                 flexDirection: 'column',
                 position: 'absolute',
                 height: '100%',
+                maxHeight: '100%',
+                overflow: 'hidden',
             }}>
                 <div>
-                    <Sidebar executeCode={executeCode} executeCodeError={executeCodeError} openTerminal={handleTerminal} isTask={isTask}
+                    <Sidebar executeCode={executeCode} executeCodeError={executeCodeError} openTerminal={handleTerminal}
+                             isTask={isTask}
                              openTaskInfo={openTaskInfo} startTestSolution={startTestSolution}/>
                 </div>
 
                 <div style={{marginLeft: 64}}>
                     <CodeEditor height={height - terminalHeight} width={width}/>
-                    {openTerminal ? <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
-                                           executableCode={executedCode} errorMessage={errorMessage}/> : null}
+                    {openTerminal ?
+                        <Resizable
+                            defaultSize={{
+                                width: width - 64,
+                                height: height,
+                            }}
+                            maxWidth={width - 64}
+                            onResize={(e, direction, ref, d) => {
+                                setTerminalHeight(terminalHeight + d.height);
+                            }}
+                        >
+                            <InOut height={terminalHeight} width={width} closeTerminal={executeCode}
+                                   executableCode={executedCode} errorMessage={errorMessage}/>
+                        </Resizable>
+                        :
+                        null
+                    }
                 </div>
             </div>
         </React.Fragment>
