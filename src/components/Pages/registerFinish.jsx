@@ -1,11 +1,9 @@
 import React, {useEffect} from "react";
-import Header from "./header";
 import {useLocation} from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import accept from "../../assets/accept.png";
 import copy from "../../assets/copy.png";
 import Tooltip from '@mui/material/Tooltip';
-
 
 function RegisterFinish(props) {
     const [height, setHeight] = React.useState(null);

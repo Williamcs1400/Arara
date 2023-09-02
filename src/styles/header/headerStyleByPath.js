@@ -23,6 +23,9 @@ export default function getHeaderStyleByPath(path){
     else if (path.startsWith('/atividade')) {
         return {showIcon: true, showButtonLogin: true, redirectUrl: path, barColor: '#2F2F2F', showBar: true};
     }
+    else if (path === '/quemSomos') {
+        return {showIcon: true, showButtonLogin: true, redirectUrl: '/quemSomos', barColor: '#17202A', showBar: true};
+    }
     else {
         return {showIcon: false, showButtonLogin: true, redirectUrl: '/', barColor: '#17202A', showBar: true};
     }

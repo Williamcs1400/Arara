@@ -13,6 +13,7 @@ import Header from './components/Pages/header';
 import {getCurrentUser, persistIsTeacher, persistName, persistUuid} from './services/firebase/firebaseAux';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {db} from './services/firebase/firabaseConfig';
+import About from "./components/Pages/about";
 
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
                 <Route id='minhasAtividades' path='/minhasAtividades' element={<MyTasks />}/>
                 <Route id='detalhes' path='/detalhes/:id?' element={<TaskDetails />}/>
                 <Route id='atividade' path='/atividade/:id?' element={<Task />}/>
+                <Route id='quemSomos' path='/quemSomos' element={<About />}/>
             </Routes>
         </HashRouter>
     );

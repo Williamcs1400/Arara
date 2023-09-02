@@ -13,7 +13,7 @@ import {auth} from "../../services/firebase/firabaseConfig";
 import {getCurrentUser} from "../../services/firebase/firebaseAux";
 import Drawer from '@mui/material/Drawer';
 import getHeaderStyleByPath from "../../styles/header/headerStyleByPath";
-import {projectRepository} from "../../services/analyzers/definitions/consts";
+import {projectRepositoryLink} from "../../services/analyzers/definitions/consts";
 
 export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, nameT, nameUser, teacher}) {
     const [open, setOpen] = React.useState(true);
@@ -75,7 +75,11 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
     }
 
     function openRepository() {
-        window.open(projectRepository, '_blank');
+        window.open(projectRepositoryLink, '_blank');
+    }
+
+    function openAboutUs() {
+        navigate('/quemSomos');
     }
 
     return (
@@ -152,6 +156,7 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
                                         textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
                                     }}
                                     sx={{':hover': {backgroundColor: '#fdca00'}}}
+                                    onClick={openAboutUs}
                                 >
                                     <img src={question} alt="logo" width='25' height='25'
                                          style={{alignSelf: 'center', marginRight: 5}}/>
