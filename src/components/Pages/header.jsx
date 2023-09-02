@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React from 'react';
 import '../../styles/header.css';
 import logo512 from '../../assets/logo512.png';
 import person from '../../assets/person.png';
@@ -9,11 +9,11 @@ import question from '../../assets/question.png';
 import github from '../../assets/github.png';
 import {Button} from "@mui/material";
 import {useLocation, useNavigate} from "react-router-dom";
-import {auth, db} from "../../services/firebase/firabaseConfig";
-import {getCurrentUser, persistIsTeacher, persistName, persistUuid} from "../../services/firebase/firebaseAux";
-import {getDocs, collection, query, where} from "firebase/firestore";
+import {auth} from "../../services/firebase/firabaseConfig";
+import {getCurrentUser} from "../../services/firebase/firebaseAux";
 import Drawer from '@mui/material/Drawer';
 import getHeaderStyleByPath from "../../styles/header/headerStyleByPath";
+import {projectRepository} from "../../services/analyzers/definitions/consts";
 
 export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, nameT, nameUser, teacher}) {
     const [open, setOpen] = React.useState(true);
@@ -72,6 +72,10 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
 
     function openMyTasks() {
         navigate('/minhasAtividades');
+    }
+
+    function openRepository() {
+        window.open(projectRepository, '_blank');
     }
 
     return (
@@ -134,6 +138,7 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
                                         textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
                                     }}
                                     sx={{':hover': {backgroundColor: '#fdca00'}}}
+                                    onClick={openRepository}
                                 >
                                     <img src={github} alt="logo" width='25' height='25'
                                          style={{alignSelf: 'center', marginRight: 5}}/>

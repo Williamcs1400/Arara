@@ -1,0 +1,1 @@
+export const projectRepository = 'https://github.com/Williamcs1400/Arara';
