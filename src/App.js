@@ -14,6 +14,7 @@ import {getCurrentUser, persistIsTeacher, persistName, persistUuid} from './serv
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {db} from './services/firebase/firabaseConfig';
 import About from "./components/Pages/about";
+import Feedback from "./components/Pages/feedback";
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
                 <Route id='detalhes' path='/detalhes/:id?' element={<TaskDetails />}/>
                 <Route id='atividade' path='/atividade/:id?' element={<Task />}/>
                 <Route id='quemSomos' path='/quemSomos' element={<About />}/>
+                <Route id="feedback" path="/melhorias" element={<Feedback /> }/>
             </Routes>
         </HashRouter>
     );

@@ -7,6 +7,7 @@ import tasks from '../../assets/tasks.png';
 import myFolder from '../../assets/myFolder.png';
 import question from '../../assets/question.png';
 import github from '../../assets/github.png';
+import lightbulbWhite from '../../assets/lightbulbWhite.png';
 import {Button} from "@mui/material";
 import {useLocation, useNavigate} from "react-router-dom";
 import {auth} from "../../services/firebase/firabaseConfig";
@@ -82,6 +83,10 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
         navigate('/quemSomos');
     }
 
+    function openFeedback() {
+        navigate('/melhorias');
+    }
+
     return (
         <div>
             {open ? <div className="main-header" style={{backgroundColor: barColor}}>
@@ -134,6 +139,19 @@ export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, 
                                     <hr style={{width: '90%', backgroundColor: '#fff', marginTop: 10, marginBottom: 10}}/>
                                 </div>
 
+                                <Button
+                                    style={{
+                                        color: '#fff', fontSize: 22, fontWeight: 'lighter',
+                                        alignSelf: 'center', fontFamily: 'Poppins', textTransform: 'none',
+                                        textAlign: 'right', marginLeft: 10, marginRight: 10, width: 250, marginTop: 5,
+                                    }}
+                                    sx={{':hover': {backgroundColor: '#fdca00'}}}
+                                    onClick={openFeedback}
+                                >
+                                    <img src={lightbulbWhite} alt="logo" width='25' height='25'
+                                         style={{alignSelf: 'center', marginRight: 5}}/>
+                                    Relatar
+                                </Button>
 
                                 <Button
                                     style={{
