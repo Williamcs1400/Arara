@@ -41,3 +41,9 @@ export function getPointerOfArray(token){
 export function getSizeOfArray(token){
     return Number(token.replaceAll(' ', '').substring(token.indexOf('['), token.indexOf(']') - 1));
 }
+
+// remove o conteúdo entre aspas simples
+export function removeStringForWriteCommand(token){
+    const regex = /'[^']*'/g;
+    return token.replaceAll(regex, '');
+}

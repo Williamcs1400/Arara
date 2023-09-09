@@ -7,7 +7,7 @@ import {
 import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
 import {compilerFromScope} from "../compiler";
-import {getPointerOfArray, getSizeOfArray} from "../../utils/util";
+import {getPointerOfArray, getSizeOfArray, removeStringForWriteCommand} from "../../utils/util";
 
 let lastInstruction = '';
 
@@ -183,6 +183,7 @@ function validateEscrevaInstruction(instruction) {
         name = instruction.substring(instruction.indexOf('(') + 1, instruction.lastIndexOf(')'));
         instruction = instruction.replace(instruction.substring(instruction.indexOf('(') + 1, instruction.lastIndexOf(')')), '');
     }
+
     const aux = instruction.substring(instruction.indexOf('\'') + 1, instruction.lastIndexOf('\''));
     if(aux.indexOf('\'') !== -1){
         getErrorWriteExample();
@@ -200,6 +201,9 @@ function validateEscrevaInstruction(instruction) {
         getErrorWriteExample();
     }
 
+    // remove trechos entre ' ' da instrução
+    name = removeStringForWriteCommand(name);
+
     // Verifica se a instrução está correta
     if(name !== '' && name.indexOf(',') !== -1){
         const values = name.split(',');
@@ -212,6 +216,7 @@ function validateEscrevaInstruction(instruction) {
             }
         }
     }
+
     else if(instruction !== syntax[0] && instruction !== syntax[1]){
         getErrorWriteExample();
     }

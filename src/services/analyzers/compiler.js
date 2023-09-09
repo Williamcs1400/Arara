@@ -3,7 +3,7 @@ import {semanticAnalyzer} from './semantic/semanticAnalyzer.js';
 import {getKnownDefinitions, isDeclaration} from './definitions/dictionary.js';
 import {syntacticAnalyze} from "./parsing/parser";
 import {removeCodeExpression} from "../utils/codeFixer";
-import {cleanWhiteSpacesAllowed} from "../utils/util";
+import {cleanWhiteSpacesAllowed, removeStringForWriteCommand} from "../utils/util";
 import {defaultCode} from "../utils/definitions";
 
 let codeEditor = '';
@@ -163,8 +163,9 @@ function exportExecutableCode(code) {
 
     tokens.forEach(token => {
         if (token !== '' && !getKnownDefinitions().includes(token)) {
-            // se for concatenação, retorna um array de "escrevas" na tela
-            if(token.startsWith('escreva') && token.indexOf(",") !== -1) {
+            // se for concatenação, retorna um array de "escrevas" na tela, removeStringForWriteCommand para
+            // ignorar vírgulas entre aspas simples
+            if(token.startsWith('escreva') && removeStringForWriteCommand(token).indexOf(",") !== -1) {
                 const newObject = dismemberEscrevaConcat(token);
                 newObject.forEach(object => {
                     executableCode.push({token: object, content: null});
@@ -258,7 +259,8 @@ function preProcessing(code){
  */
 function dismemberEscrevaConcat(object){
     const name = object.substring(object.indexOf('(') + 1, object.lastIndexOf(')'));
-    const parts = name.split(',');
+    // split por virgula, mas não dentro de aspas simples
+    const parts = name.split(/,(?=(?:(?:[^']*'){2})*[^']*$)/);
     const newObject = [];
 
     parts.forEach(part => {
