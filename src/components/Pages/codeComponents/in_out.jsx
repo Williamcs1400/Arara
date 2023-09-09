@@ -143,7 +143,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                             if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
                                 if(isArrayDeclaration(valueVariables[i].value) || isArrayDeclaration(response.variable)){
                                     let index = getPointerOfArray(response.variable);
-                                    const array = getElementsOfArray(valueVariables[i].value);
+                                    const array = getElementsOfArray(response.value);
 
                                     if(isNaN(index)){
                                         for(let j = 0; j < valueVariables.length; j++){
