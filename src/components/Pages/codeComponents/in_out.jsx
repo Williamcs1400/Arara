@@ -140,10 +140,19 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                     if (response.actionType === ExecutableActionType.assignment) {
                         let exists = false;
                         for (let i = 0; i < valueVariables.length; i++) {
+                            // verifica se o nome da variável já existe (isso tirando a sintaxe de array [...])
                             if (removeArrayDeclaration(valueVariables[i].name) === removeArrayDeclaration(response.variable)) {
+                                // verifica se a variável é um array
                                 if(isArrayDeclaration(valueVariables[i].value) || isArrayDeclaration(response.variable)){
                                     let index = getPointerOfArray(response.variable);
-                                    const array = getElementsOfArray(response.value);
+
+                                    let array;
+                                    // verifica se a atribuição ao array é total ou indexada
+                                    if(!isArrayDeclaration(response.variable)){
+                                        array = getElementsOfArray(response.value);
+                                    }else{
+                                        array = getElementsOfArray(valueVariables[i].value);
+                                    }
 
                                     if(isNaN(index)){
                                         for(let j = 0; j < valueVariables.length; j++){
