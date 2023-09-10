@@ -6,7 +6,7 @@ import {
 } from '../definitions/dictionary.js';
 import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
-import {compilerFromScope} from "../compiler";
+import {compilerFromScope, generateTokens} from "../compiler";
 import {getPointerOfArray, getSizeOfArray, removeStringForWriteCommand} from "../../utils/util";
 
 let lastInstruction = '';
@@ -15,7 +15,7 @@ let lastInstruction = '';
     Analisador sintático
     Verifica se a construção da instrução está correta
  */
-export function syntacticAnalyze(instruction) {
+export function syntacticAnalyze(instruction, pastInstructions) {
 
     setLastInstruction(instruction);
 
@@ -55,7 +55,7 @@ export function syntacticAnalyze(instruction) {
         if(instruction.split('enquanto').length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
-        return validateEnquantoInstruction(instruction);
+        return validateEnquantoInstruction(instruction, pastInstructions);
     }
 
     // verificação para instrução **se**
@@ -215,7 +215,9 @@ function validateEscrevaInstruction(instruction) {
                 getErrorWriteExample();
             }
         }
+        name = name.split(',')[1].replaceAll(' ', '');
     }
+
 
     else if(instruction !== syntax[0] && instruction !== syntax[1]){
         getErrorWriteExample();
@@ -251,7 +253,7 @@ function validateLeiaInstruction(instruction) {
 }
 
 // Validação da instrução enquanto
-function validateEnquantoInstruction(instruction) {
+function validateEnquantoInstruction(instruction, pastInstructions) {
     const definition = getInstructionByToken('enquanto');
     const syntax = definition.syntax;
 
@@ -277,7 +279,15 @@ function validateEnquantoInstruction(instruction) {
     const resultComparison = validateComparison(condition);
 
     // TODO: tratar erros do conteudo
-    compilerFromScope(content);
+    const tokens = generateTokens(content);
+    let fullContent = JSON.parse(JSON.stringify(pastInstructions));
+    fullContent.tokens.push(...tokens)
+    fullContent.tokens.push('#FIM_PROGRAMA')
+    fullContent.preProcessingCode = fullContent.tokens;
+    const result = compilerFromScope(fullContent);
+    if(!result.sucess){
+        throw new Error(result.message);
+    }
 
     return {'condition': condition, 'action': 'while', 'content': content, variables: resultComparison};
 

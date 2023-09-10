@@ -61,11 +61,10 @@ export function compiler(code, isScope) {
     }
 
     // pre processa o código para retirar comentários e salvar as definições
-    const preProcessingResult = preProcessing(code);
+    const preProcessingResult = isScope ? code : preProcessing(code);
 
     // retirando quebras de linha
-    let tokens = generateTokens(preProcessingResult.preProcessingCode);
-
+    let tokens = isScope ? code.preProcessingCode : generateTokens(preProcessingResult.preProcessingCode);
 
     // array de declarações de variáveis
     const declarationVariables = [];
@@ -78,6 +77,7 @@ export function compiler(code, isScope) {
         for(let i = 0; i < tokens.length; i++){
             if (tokens[i] !== '') {
                 result = lexicalAnalyze(tokens[i], preProcessingResult.definitions);
+                // utilizada somente para a transformação do 'para' em 'enquanto'
                 if(result !== null && result !== undefined){
                     const part1 = tokens.slice(0, i);
                     const part2 = tokens.slice(i + 1, tokens.length);
@@ -91,14 +91,18 @@ export function compiler(code, isScope) {
             }
         }
 
+        // atualiza o código pre processado com o 'para' transformado em 'enquanto'
         if(arrayTemp.length > 0)
             preProcessingResult.preProcessingCode = paraToEnqunto(arrayTemp, preProcessingResult.preProcessingCode);
 
         // syntactic analyze
         let order = 0;
+        const previousTokens= preProcessingResult;
+        previousTokens.tokens = [];
         tokens.forEach(token => {
             if (token !== '') {
-                const response = syntacticAnalyze(token);
+                const response = syntacticAnalyze(token, previousTokens);
+                previousTokens.tokens.push(token);
 
                 if (response !== null && response !== undefined) {
                     // se for declaração, adiciona no array de declarações
@@ -143,6 +147,8 @@ export function compiler(code, isScope) {
 
         // semantic analyze
         semanticAnalyzer(preProcessingResult.preProcessingCode, declarationVariables, useVariables, preProcessingResult.defAndTypes, isScope);
+        if(isScope)
+            return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: null};
         return {sucess: true, message: 'Compilação realizada com sucesso!', executableCode: exportExecutableCode(preProcessingResult.preProcessingCode)};
 
     } catch (error) {
@@ -279,7 +285,7 @@ function dismemberEscrevaConcat(object){
  * Instruções simples terminam com ';' (não vai ter ';' dentro do token)
  * Instruções com escopo terminam com '}' (vai ter '}' dentro do token)
 */
-function generateTokens(code) {
+export function generateTokens(code) {
     const preTokens = code.replaceAll('\n', '');
 
     const aux = preTokens.split('');

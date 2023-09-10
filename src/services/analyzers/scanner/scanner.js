@@ -1,5 +1,6 @@
 import {isCommand, isDefinition, isKnownDefinition, removeArrayDeclaration} from '../definitions/dictionary.js';
 import {validateComparison} from "../parsing/validateConditional";
+import {removeStringForWriteCommand} from "../../utils/util";
 
 /*
     Analisador léxico
@@ -29,6 +30,13 @@ export function lexicalAnalyze(token, codeDefinitions) {
     // verifica se o token é um comando
     if(!startsWithHash(token) && !isCommand(token) && !codeDefinitions.includes(getVariableName(token)) && isKnownDefinition(codeDefinitions, token)) {
         throw new Error('Erro léxico | Comando desconhecido: ' + token);
+    }
+
+    if(token.startsWith('escreva(') && removeStringForWriteCommand(token).indexOf(',') !== -1){
+        const variable = removeStringForWriteCommand(token).split(',')[1].replaceAll(' ', '').replaceAll(')', '');
+        if(!codeDefinitions.includes(variable)){
+            throw new Error('Erro léxico | Variável não declarada: ' + variable);
+        }
     }
 
     return null
