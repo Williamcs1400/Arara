@@ -8,22 +8,26 @@ export function executor(token, valueVariables, lastComparison) {
 }
 
 function execute(token, content, valueVariables, lastComparison) {
+
+    // trata o token para escrever na tela
     if (token.startsWith('escreva')) {
         const response = getValueOfWriting(token);
         return {actionType: ExecutableActionType.writing, value: response.value, type: response.type};
     }
 
+    // trata o token para ler do teclado
     else if (token.startsWith('leia')) {
         // TODO: implementar a verificação de tipo de variável para leitura
         return {actionType: ExecutableActionType.reading, value: getValueOfReading(token)};
     }
 
-
+    // trata o token para atribuição, operação matemática ou incremento/decremento
     else if (
         (token.indexOf('=') !== -1 || token.indexOf('++') !== -1 || token.indexOf('--') !== -1)
         && token.indexOf('se(') === -1
         && token.indexOf('enquanto(') === -1
     ) {
+        // verifica se é uma operação matemática, incluindo incremento e decremento
         if (containsOperator(token)) {
             return {
                 actionType: ExecutableActionType.operation,
@@ -39,15 +43,19 @@ function execute(token, content, valueVariables, lastComparison) {
                 variable: getVariableOfAssignment(token)
             };
         }
+    }
 
-    } else if (isDeclaration(token)) {
+    // trata o token para declaração de variável sem atribuição
+    else if (isDeclaration(token)) {
         return {actionType: ExecutableActionType.assignment, value: getDefaultValueOfTyping(token), type: isAssignment(token), variable: getVariableOfDeclarationWithoutAssignment(token)};
     }
 
+    // trata o token para condicional **se**
     else if (token.startsWith('se') && !token.startsWith('senao se') && !token.startsWith('senao')) {
         return {actionType: ExecutableActionType.comparison, value: executeComparison(token, valueVariables), subCode: content};
     }
 
+    // trata o token para condicional **senao se**
     else if (token.startsWith('senao se')){
         const result = executeComparison(token, valueVariables);
 
@@ -60,6 +68,7 @@ function execute(token, content, valueVariables, lastComparison) {
         }
     }
 
+    // trata o token para condicional **senao**
     else if (token.startsWith('senao')) {
         if(lastComparison === null){
             throw new Error('Erro semântico | Não há uma instrução **se** ou senão se anterior para a instrução **senao**.');
@@ -70,6 +79,7 @@ function execute(token, content, valueVariables, lastComparison) {
         }
     }
 
+    // trata o token para loop enquanto (o for é tratado como um loop **enquanto**)
     else if (token.startsWith('enquanto')) {
         const result = executeComparison(token, valueVariables);
         if(result){
@@ -79,6 +89,7 @@ function execute(token, content, valueVariables, lastComparison) {
         }
     }
 
+    // retorna nulo para tokens que não são executáveis (aconteceu algum erro na montagem do código)
     else {
         return {actionType: null, value: null};
     }
