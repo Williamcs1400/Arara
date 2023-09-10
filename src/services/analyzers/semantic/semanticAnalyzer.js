@@ -81,13 +81,12 @@ function getVariableFromConcat(object){
 }
 
 function validateAssignmentAndTypes(defAndTypes, usages){
-
     // recuperar as variáveis que possuem valor - ou seja - que foram atribuídas
     const usagesWithValue = usages.filter(usage => usage.value !== '' && usage.value !== undefined);
 
     usagesWithValue.forEach(usage => {
         defAndTypes.forEach(defAndType => {
-            if(usage.name === defAndType.line){
+            if(removeArrayDeclaration(usage.name) === removeArrayDeclaration(defAndType.line)){
 
                 // se é feito um cálculo matemático com operadores
                 if(containsOperator(usage.value)){

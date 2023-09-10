@@ -1,5 +1,5 @@
 import {removeCodeExpression} from '../../utils/codeFixer';
-import {isArrayDeclaration} from "../../utils/util";
+import {getElementsOfArray, getSizeOfArray, isArrayDeclaration} from "../../utils/util";
 
 // Descrição: Este arquivo contém o dicionário da linguagem
 const knownDefinitions = [
@@ -276,6 +276,18 @@ export function isDeclaration(token) {
 }
 
 export function validateTyping(declaration, value) {
+
+    // se for uma declaração de array chama a função recursivamente para cada elemento do array
+    if(isArrayDeclaration(value)){
+        const elements = getElementsOfArray(value);
+        elements.forEach(element => {
+            if(!validateTyping(declaration, element)){
+                return false;
+            }
+        });
+        return true;
+    }
+
     if (declaration.startsWith('inteiro')) {
         const number = Number(value);
         return Number.isInteger(number);
