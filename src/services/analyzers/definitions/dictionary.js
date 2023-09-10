@@ -156,12 +156,29 @@ export function getKnownOperators() {
     return knownOperators;
 }
 
+/*
+    * Verifica se a instrução é uma operação entre variáveis ou números
+    * @param instruction: instrução a ser verificada
+    *
+    * @return booleano que indica se a instrução é válida ou não
+ */
 export function containsOperator(instruction) {
+    // regex para verificar se a instrução contém um operador entre variáveis ou números
     const regexVariableOperationVariable = /^[a-zA-Z0-9_\[\]]+[+\-*/][a-zA-Z0-9_\[\]]+$/;
+
+    // usar apenas o lado direito da atribuição
     if(instruction.indexOf('=') !== -1){
         const tmp = instruction.split('=')[1].replaceAll(' ', '');
         return regexVariableOperationVariable.test(tmp);
     }
+
+    // verificar se a instrução é uma operação de incremento ou decremento
+    if(instruction.indexOf('--') !== -1 || instruction.indexOf('++') !== -1){
+        // regex para verificar se a instrução contém uma variável seguida de ++ ou --
+        const regexVariableOperation = /^[a-zA-Z0-9_\[\]]+[+\-]{2}$/;
+        return regexVariableOperation.test(instruction.replaceAll(' ', ''));
+    }
+
     return regexVariableOperationVariable.test(instruction.replaceAll(' ', ''));
 }
 
