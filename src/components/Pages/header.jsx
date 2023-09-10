@@ -14,7 +14,7 @@ import {auth} from "../../services/firebase/firabaseConfig";
 import {getCurrentUser} from "../../services/firebase/firebaseAux";
 import Drawer from '@mui/material/Drawer';
 import getHeaderStyleByPath from "../../styles/header/headerStyleByPath";
-import {projectRepositoryLink} from "../../services/analyzers/definitions/consts";
+import {projectRepositoryLink} from "../../services/utils/consts";
 
 export default function Header({showIcon, showButtonLogin, redirectUrl, bColor, nameT, nameUser, teacher}) {
     const [open, setOpen] = React.useState(true);

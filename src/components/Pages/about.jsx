@@ -7,7 +7,7 @@ import instagram from "../../assets/instagram.png";
 import linkedin from "../../assets/linkedin.png";
 import portfolio from "../../assets/portfolio.png";
 import {useNavigate} from "react-router-dom";
-import {githubLink, linkedinLink, instagramLink, portfolioLink} from "../../services/analyzers/definitions/consts";
+import {githubLink, linkedinLink, instagramLink, portfolioLink} from "../../services/utils/consts";
 
 function About() {
     const [height, setHeight] = React.useState(null);
