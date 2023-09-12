@@ -47,3 +47,9 @@ export function removeStringForWriteCommand(token){
     const regex = /'[^']*'/g;
     return token.replaceAll(regex, '');
 }
+
+// retorna quantidade de vezes que um token aparece em uma instrução
+export function isOnlyOneReservedWord(token, instruction){
+    const regex = new RegExp('\\b' + token + '\\b', 'g');
+    return instruction.match(regex).length;
+}

@@ -7,7 +7,7 @@ import {
 import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
 import {compilerFromScope, generateTokens} from "../compiler";
-import {getPointerOfArray, getSizeOfArray, removeStringForWriteCommand} from "../../utils/util";
+import {getPointerOfArray, isOnlyOneReservedWord, removeStringForWriteCommand} from "../../utils/util";
 
 let lastInstruction = '';
 
@@ -22,7 +22,7 @@ export function syntacticAnalyze(instruction, pastInstructions) {
     // verificação para declaração de variáveis
     if (instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
         const token = instruction.split(' ')[0];
-        if(instruction.split(token).length - 1 !== 1){
+        if(isOnlyOneReservedWord(token, instruction) !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
         return validateAssignmentInstruction(instruction, token);
@@ -114,7 +114,7 @@ function validateAssignmentWithDeclarationInstruction(instruction){
 // Validação da instrução de atribuição
 function validateAssignmentInstruction(instruction, token) {
     // verifica se há a quantidade correta de cada componente da instrução
-    if (instruction.split(token).length - 1 !== 1 ||
+    if (isOnlyOneReservedWord(token, instruction) !== 1 ||
         instruction.split(' ').length - 1 < 1
     ) {
         getErrorAssignmentExample(token);
