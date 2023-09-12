@@ -7,7 +7,12 @@ import {
 import {validateComparison, validateSeInstruction} from "./validateConditional";
 import {ConditionalType} from "../definitions/actionTypes";
 import {compilerFromScope, generateTokens} from "../compiler";
-import {getPointerOfArray, isOnlyOneReservedWord, removeStringForWriteCommand} from "../../utils/util";
+import {
+    getPointerOfArray,
+    getLengthTokenInInstruction,
+    removeStringForWriteCommand,
+    validateLengthOperatorsInInstruction
+} from "../../utils/util";
 
 let lastInstruction = '';
 
@@ -22,7 +27,7 @@ export function syntacticAnalyze(instruction, pastInstructions) {
     // verificação para declaração de variáveis
     if (instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
         const token = instruction.split(' ')[0];
-        if(isOnlyOneReservedWord(token, instruction) !== 1){
+        if(getLengthTokenInInstruction(token, instruction) !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
         return validateAssignmentInstruction(instruction, token);
@@ -108,13 +113,16 @@ function validateAssignmentWithDeclarationInstruction(instruction){
     const split = instruction.split('='); // separa a instrução em duas partes, antes e depois do '='
     const name = split[0].trim(); // nome da variável
     const value = split[1].trim(); // valor da variável
+    if(validateLengthOperatorsInInstruction(value) > 1){
+        throw new Error('Erro sintático | Comando não conhecido: ' + value);
+    }
     return {'name': name, 'value': value, 'action': 'assignment'};
 }
 
 // Validação da instrução de atribuição
 function validateAssignmentInstruction(instruction, token) {
     // verifica se há a quantidade correta de cada componente da instrução
-    if (isOnlyOneReservedWord(token, instruction) !== 1 ||
+    if (getLengthTokenInInstruction(token, instruction) !== 1 ||
         instruction.split(' ').length - 1 < 1
     ) {
         getErrorAssignmentExample(token);

@@ -49,7 +49,14 @@ export function removeStringForWriteCommand(token){
 }
 
 // retorna quantidade de vezes que um token aparece em uma instrução
-export function isOnlyOneReservedWord(token, instruction){
+export function getLengthTokenInInstruction(token, instruction){
     const regex = new RegExp('\\b' + token + '\\b', 'g');
+    return instruction.match(regex).length;
+}
+
+// retorna quantidade de operadores na instrução
+export function validateLengthOperatorsInInstruction(instruction){
+    // regex para encontrar os operadores na instrução + - * /
+    const regex = /([+\-*/])/g;
     return instruction.match(regex).length;
 }
