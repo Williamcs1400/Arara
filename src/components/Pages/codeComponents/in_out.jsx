@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import IconButton from '@mui/material/IconButton';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import '../../../styles/in_out.css';
-import {executeOperation, executor} from '../../../services/analyzers/executor.js'
+import {executeOperation, executor, truncate} from '../../../services/analyzers/executor.js'
 import {ExecutableActionType} from "../../../services/analyzers/definitions/actionTypes";
 import {getElementsOfArray, getPointerOfArray, isArrayDeclaration} from "../../../services/utils/util";
 import {removeArrayDeclaration} from "../../../services/analyzers/definitions/dictionary";
@@ -201,7 +201,7 @@ export default function InOut({height, width, closeTerminal, executableCode, err
                         const value = executeOperation(operations, response.order);
                         for (let i = 0; i < valueVariables.length; i++) {
                             if (valueVariables[i].name === response.variable) {
-                                valueVariables[i].value = value;
+                                valueVariables[i].value = truncate(value, valueVariables[i]);
                             }
                         }
                     }

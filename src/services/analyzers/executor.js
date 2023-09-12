@@ -227,6 +227,25 @@ export function executeOperation(operands, operators) {
     return operands[operands.length - 1];
 }
 
+/*
+ * Função para truncar o valor de uma variável, caso necessário
+ * @param value: valor a ser truncado
+ * @param variable: objeto com as informações da variável
+ * @return: valor truncado ou não
+ */
+export function truncate(value, variable) {
+    if (variable.type === 'inteiro') {
+        return Math.trunc(value);
+    }
+    return value;
+}
+
+/*
+ * Função para executar a comparação de valores
+ * @param instruction: instrução de comparação
+ * @param valueVariables: valor das variáveis
+ * @return: valor booleano da comparação
+ */
 export function executeComparison(instruction, valueVariables) {
     // regex para os simbolos de comparação: == != > < >= <= && ||
     let regex = /==|!=|>=|<=|>|<|&&|\|\|/;
