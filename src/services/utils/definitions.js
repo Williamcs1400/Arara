@@ -55,11 +55,11 @@ export const tiposDados =
     "\n\n// número real sempre deve ser declarado com um . seguido de um algarismo" +
     "\nreal numero_real = 10.5;" +
     "\n\n// para atribuir o tipo texto deve-se usar aspas simples" +
-    "\ntexto texto = 'Texto de teste'" +
+    "\ntexto txt = 'Texto de teste'" +
     "\n\n// o tipo caractere funciona como o tipo texto com a limitação de apenas uma entrada" +
     "\ncaractere caractere = 'A';" +
     "\n\n// o tipo lógico pode assumir apenas os valores verdadeiro ou falso" +
-    "\nlogico logico = verdadeiro;" +
+    "\nlogico lgc = verdadeiro;" +
     '\n\n#FIM_PROGRAMA;';
 
 export const soma =
