@@ -57,7 +57,7 @@ export const tiposDados =
     "\n\n// para atribuir o tipo texto deve-se usar aspas simples" +
     "\ntexto txt = 'Texto de teste'" +
     "\n\n// o tipo caractere funciona como o tipo texto com a limitação de apenas uma entrada" +
-    "\ncaractere caractere = 'A';" +
+    "\ncaractere char = 'A';" +
     "\n\n// o tipo lógico pode assumir apenas os valores verdadeiro ou falso" +
     "\nlogico lgc = verdadeiro;" +
     '\n\n#FIM_PROGRAMA;';
