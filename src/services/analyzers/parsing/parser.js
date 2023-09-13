@@ -21,21 +21,20 @@ let lastInstruction = '';
     Verifica se a construção da instrução está correta
  */
 export function syntacticAnalyze(instruction, pastInstructions) {
-
-    setLastInstruction(instruction);
-
     // verificação para declaração de variáveis
     if (instruction.startsWith('inteiro') || instruction.startsWith('real') || instruction.startsWith('texto') || instruction.startsWith('logico') || instruction.startsWith('caractere')) {
         const token = instruction.split(' ')[0];
         if(getLengthTokenInInstruction(token, instruction) !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
+        setLastInstruction(instruction);
         return validateAssignmentInstruction(instruction, token);
     }
 
     // TODO: comparação do 'se' de uma forma melhor
     // verificação para atribuição de valor fora da declaração
     else if(instruction.indexOf('=') !== -1 && instruction.indexOf('se(') === -1 && instruction.indexOf('senao se(') === -1 && instruction.indexOf('senao(') === -1 && instruction.indexOf('enquanto(') === -1){
+        setLastInstruction(instruction);
         return validateAssignmentWithDeclarationInstruction(instruction);
     }
 
@@ -44,6 +43,7 @@ export function syntacticAnalyze(instruction, pastInstructions) {
         if(instruction.split('escreva').length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
+        setLastInstruction(instruction);
         return validateEscrevaInstruction(instruction);
     }
 
@@ -52,6 +52,8 @@ export function syntacticAnalyze(instruction, pastInstructions) {
         if(instruction.split('leia').length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
+        setLastInstruction(instruction);
+
         return validateLeiaInstruction(instruction);
     }
 
@@ -60,6 +62,7 @@ export function syntacticAnalyze(instruction, pastInstructions) {
         if(instruction.split('enquanto').length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
+        setLastInstruction(instruction);
         return validateEnquantoInstruction(instruction, pastInstructions);
     }
 
@@ -68,6 +71,7 @@ export function syntacticAnalyze(instruction, pastInstructions) {
         if(instruction.split('se').length - 1 !== 1){
             throw new Error('Erro sintático | Instrução não conhecida: ' + instruction);
         }
+        setLastInstruction(instruction);
         return validateSeInstruction(instruction, ConditionalType.se);
     }
 
@@ -79,6 +83,7 @@ export function syntacticAnalyze(instruction, pastInstructions) {
         if(lastInstruction.indexOf('se') === -1){
             throw new Error('Erro sintático | Não há uma instrução **se** anterior para a instrução **senao se**.');
         }
+        setLastInstruction(instruction);
         return validateSeInstruction(instruction, ConditionalType.senao);
     }
 
@@ -90,11 +95,8 @@ export function syntacticAnalyze(instruction, pastInstructions) {
         if(lastInstruction.indexOf('se') === -1){
             throw new Error('Erro sintático | Não há uma instrução **se** anterior para a instrução **senao**.');
         }
+        setLastInstruction(instruction);
         return {'action': 'else'};
-    }
-
-    if(instruction === 'para'){
-
     }
 }
 
