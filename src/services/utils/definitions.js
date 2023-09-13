@@ -54,7 +54,7 @@ export const tiposDados =
     "\n\ninteiro numero_inteiro = 10;" +
     "\n\n// número real sempre deve ser declarado com um . seguido de um algarismo" +
     "\nreal numero_real = 10.5;" +
-    "\n\n// para atribuir o tipo texto deve-se usar aspas símples" +
+    "\n\n// para atribuir o tipo texto deve-se usar aspas simples" +
     "\ntexto texto = 'Texto de teste'" +
     "\n\n// o tipo caractere funciona como o tipo texto com a limitação de apenas uma entrada" +
     "\ncaractere caractere = 'A';" +
