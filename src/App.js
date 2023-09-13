@@ -31,6 +31,8 @@ function App() {
 
     const [flag, setFlag] = React.useState(false);
 
+    let interval = setInterval(getUserData, 1000);
+
     // Atualiza o tamanho da tela
     function updateSize() {
         setHeight(window.innerHeight);
@@ -40,7 +42,7 @@ function App() {
     // TODO: Verificar se o usuário está logado logo de primeira
     // QUANDO ELE ENTRA NA TELA INICIAL APARECE QUE ELE NÃO ESTÁ LOGADO
     async function getUserData() {
-        if (getCurrentUser() || nameUser === '') {
+        if (getCurrentUser() && nameUser === '') {
             setFlag(true);
             const email = getCurrentUser().email;
             const q = query(collection(db, 'users'), where('email', '==', email));
@@ -54,17 +56,23 @@ function App() {
                 persistUuid(doc.data().uid);
                 persistName(doc.data().name);
             }
+        }else{
+            clearInterval(interval)
         }
     }
 
+
     useEffect(() => {
         updateSize();
-        getUserData();
     }, []);
 
+    useEffect(() => {
+        if(nameUser !== '') {
+            clearInterval(interval);
+        }
+    }, [getUserData]);
+
     window.addEventListener('resize', updateSize);
-
-
 
     ReactDOM.createRoot(document.getElementById('root')).render(
         <HashRouter>
