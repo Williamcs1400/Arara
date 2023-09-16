@@ -76,17 +76,23 @@ export function compiler(code, isScope) {
         // analise léxica completa
         for(let i = 0; i < tokens.length; i++){
             if (tokens[i] !== '') {
-                result = lexicalAnalyze(tokens[i], preProcessingResult.definitions);
-                // utilizada somente para a transformação do 'para' em 'enquanto'
-                if(result !== null && result !== undefined){
-                    const part1 = tokens.slice(0, i);
-                    const part2 = tokens.slice(i + 1, tokens.length);
+                try {
+                    result = lexicalAnalyze(tokens[i], preProcessingResult.definitions);
+                    // utilizada somente para a transformação do 'para' em 'enquanto'
+                    if (result !== null && result !== undefined) {
+                        const part1 = tokens.slice(0, i);
+                        const part2 = tokens.slice(i + 1, tokens.length);
 
-                    part1.push(...result);
-                    arrayTemp.push(...result);
-                    part1.push(...part2);
+                        part1.push(...result);
+                        arrayTemp.push(...result);
+                        part1.push(...part2);
 
-                    tokens = part1;
+                        tokens = part1;
+                    }
+                } catch (error) {
+                    // para nao capturar erros falsos do 'para' transformado em 'enquanto'
+                    if(!isScope)
+                        throw new Error(error.message);
                 }
             }
         }
@@ -94,6 +100,8 @@ export function compiler(code, isScope) {
         // atualiza o código pre processado com o 'para' transformado em 'enquanto'
         if(arrayTemp.length > 0)
             preProcessingResult.preProcessingCode = paraToEnqunto(arrayTemp, preProcessingResult.preProcessingCode);
+
+        console.log('preProcessingResult.preProcessingCode: ' + preProcessingResult.preProcessingCode)
 
         // syntactic analyze
         let order = 0;
