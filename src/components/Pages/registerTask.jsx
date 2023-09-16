@@ -24,6 +24,7 @@ import Paper from '@mui/material/Paper';
 import Swal from "sweetalert2";
 import {getCurrentUser} from "../../services/firebase/firebaseAux";
 import {useNavigate} from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function RegisterTask() {
     const [height, setHeight] = React.useState(null);
@@ -200,6 +201,12 @@ function RegisterTask() {
         }
         aux[index] = value;
         setInputsAux(aux);
+    }
+
+    function handleDeleteRow(index) {
+        let copy = JSON.parse(JSON.stringify(inRows));
+        copy.splice(index, 1);
+        setInRows(copy);
     }
 
     const formInOut = () => {
@@ -409,7 +416,7 @@ function RegisterTask() {
                             <div style={{display: 'flex'}}>
                                 <TextField
                                     id='inputFormatTaskArara'
-                                    label='Formato da entrada'
+                                    label='Formato da entrada (ex: Dois números inteiros positivos separados por espaço)'
                                     variant='outlined'
                                     multiline
                                     sx={styleWhite}
@@ -474,7 +481,7 @@ function RegisterTask() {
 
                         {editSecond ? <TextField
                                 id='outputFormatTaskArara'
-                                label='Formato da saída'
+                                label='Formato da saída (ex: Um número inteiro sem espaços)'
                                 variant='outlined'
                                 multiline
                                 sx={styleWhite}
@@ -503,7 +510,7 @@ function RegisterTask() {
 
                         {editSecond ? <TextField
                                 id='outputExampleTaskArara'
-                                label='Exemplo de saída'
+                                label='Exemplo de saída (ex: 10 5 -> 15)'
                                 variant='outlined'
                                 multiline
                                 sx={styleWhite}
@@ -594,24 +601,33 @@ function RegisterTask() {
                                         <TableRow>
                                             {Array.from(Array(parseInt(qtdInput - 1)).keys()).map((i) => {
                                                 return (
-                                                    <TableCell align="right">Entrada {i + 1}</TableCell>
+                                                    <TableCell align="center">Entrada {i + 1}</TableCell>
                                                 )
                                             })}
-                                            <TableCell align="right">Saída esperada</TableCell>
+                                            <TableCell align="center">Saída esperada</TableCell>
+                                            <TableCell align="center"></TableCell>
+                                            <TableCell align="center">Excluir</TableCell>
                                         </TableRow>
                                         : <div></div>
                                     }
                                 </TableHead>
                                 <TableBody>
-                                    {inRows.map((row) => (
+                                    {inRows.map((row, index) => (
                                         <TableRow
                                             key={row.aux}
                                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                         >
                                             {row.aux.map((cell) => (
-                                                <TableCell align="right">{cell}</TableCell>
+                                                <TableCell align="center">{cell}</TableCell>
                                             ))}
-                                            <TableCell align="right">{row.out}</TableCell>
+                                            <TableCell align="center">{row.out}</TableCell>
+                                            <TableCell align="center">
+                                                <Button
+                                                    onClick={() => handleDeleteRow(index)}
+                                                    startIcon={<DeleteIcon/>}
+                                                    />
+                                            </TableCell>
+
                                         </TableRow>
                                     ))}
                                 </TableBody>
