@@ -237,7 +237,7 @@ export const whileLoop =
     '\n// A condição pode utlizar qualquer operador de comparação citado anteriormente' +
     '\nenquanto(index <= 10){' +
     '\n\t// Este bloco será executado enquanto a condição for verdadeira - nessse caso, 11 vezes' +
-    "\n\tescreva('valor: ', index);" +
+    "\n\tescreva('Valor: ', index);" +
     "\n\tescreva('\\n');" +
     '\n\t// O contador deve ser incrementado para que a condição seja falsa em algum momento' +
     '\n\t// Caso contrário, o laço será executado infinitamente - loop infinito' +
