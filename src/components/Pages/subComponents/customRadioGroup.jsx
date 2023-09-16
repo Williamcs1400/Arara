@@ -30,7 +30,7 @@ export default function CustomRadioGroup({options, subOptions, setChosen}) {
 
 
     return (
-        <Box>
+        <Box style={{marginLeft: 2}}>
             <RadioGroup
                 aria-labelledby="storage-label"
                 size="md"

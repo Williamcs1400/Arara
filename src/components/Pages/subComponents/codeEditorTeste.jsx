@@ -50,7 +50,7 @@ class CodeTeste extends React.Component {
                     editorProps={{ $blockScrolling: true }}
                     height={this.state.height ? this.state.height - 70 : 500}
                     width={this.state.width ? this.state.width - 64 : 500}
-                    fontSize={21}
+                    fontSize={20}
                 />
             </div>
         );

@@ -3,6 +3,7 @@ import CustomRadioGroup from "./subComponents/customRadioGroup";
 import Typography from "@mui/material/Typography";
 import {options, subOptions, texts} from "../../services/documentation/texts";
 import AceEditor from "react-ace";
+import ReactMarkdown from 'react-markdown'
 import CustomAraraMode from "../../services/utils/CustomAraraMode";
 import CodeTeste from "./subComponents/codeEditorTeste";
 import {getCodeExample, setCodeExample} from "../../services/analyzers/compiler";
@@ -39,11 +40,11 @@ function Documentation(props) {
 
     return (
         <div style={{display: 'flex', flexDirection: 'row', height: '100%', width: '100%'}}>
-            <div style={{width: '17%'}}>
+            <div style={{width: '25%', overflowY: 'scroll', overflowX: 'auto'}}>
                 <CustomRadioGroup options={options} subOptions={subOptions} setChosen={setOptions}/>
             </div>
-            <div style={{borderLeft: '1px solid #fff', marginLeft: 50, paddingLeft: 20}}/>
-            <div style={{marginLeft: 10, marginTop: 20, textAlign: 'center', width: '100%', flexDirection: 'column'}}>
+            <div style={{borderLeft: '1px solid #fff', paddingLeft: 20}}/>
+            <div style={{marginLeft: 10, marginTop: 20, width: '100%', flexDirection: 'column'}}>
                 {(chosen.selected === -1 && chosen.subSelected === -1) ?
                     <Typography
                         sx={{
@@ -56,17 +57,9 @@ function Documentation(props) {
                         Selecione uma opção para visualizar a documentação
                     </Typography>
                     :
-                    (chosen.selected === 0) ?
-                        <Typography
-                            sx={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Poppins',
-                                fontSize: 16,
-                                textAlign: 'center',
-                                color: '#fff'
-                            }}>
-                            {texts[chosen.selected][chosen.subSelected]}
-                        </Typography>
+                    (chosen.selected === 0 || chosen.subSelected === 0) ?
+
+                        <ReactMarkdown children={texts[chosen.selected][chosen.subSelected]}/>
                         :
                         <div>
                             {showCodeEditor(chosen)}

@@ -40,7 +40,7 @@ export default function CustomSubRadioGroup({options, setChosen}) {
                             borderRadius: 'md',
                             backgroundColor: 'transparent',
                             width: 'fit-content',
-                            minWidth: 180,
+                            minWidth: 160,
                         }}
                     >
                         <Radio
