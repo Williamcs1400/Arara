@@ -16,7 +16,6 @@ import {db} from './services/firebase/firabaseConfig';
 import About from "./components/Pages/about";
 import Feedback from "./components/Pages/feedback";
 
-
 function App() {
     const [height, setHeight] = React.useState(document.querySelector('#height'));
     const [width, setWidth] = React.useState(document.querySelector('#width'));
@@ -29,9 +28,7 @@ function App() {
     const [nameUser, setNameUser] = React.useState('');
     const [isTeacher, setIsTeacher] = React.useState(false);
 
-    const [flag, setFlag] = React.useState(false);
-
-    let interval = setInterval(getUserData, 1000);
+    const [running, setRunning] = React.useState(true);
 
     // Atualiza o tamanho da tela
     function updateSize() {
@@ -43,8 +40,8 @@ function App() {
     // QUANDO ELE ENTRA NA TELA INICIAL APARECE QUE ELE NÃO ESTÁ LOGADO
     async function getUserData() {
         if (getCurrentUser() && nameUser === '') {
-            setFlag(true);
             const email = getCurrentUser().email;
+            setRunning(false)
             const q = query(collection(db, 'users'), where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -56,8 +53,6 @@ function App() {
                 persistUuid(doc.data().uid);
                 persistName(doc.data().name);
             }
-        }else{
-            clearInterval(interval)
         }
     }
 
@@ -67,10 +62,12 @@ function App() {
     }, []);
 
     useEffect(() => {
-        if(nameUser !== '') {
-            clearInterval(interval);
+        if (running) {
+            const interval = setInterval(() => {getUserData()}, 1000);
+            return () => clearInterval(interval);
         }
-    }, [getUserData]);
+    },[running]);
+
 
     window.addEventListener('resize', updateSize);
 
