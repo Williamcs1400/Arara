@@ -1,3 +1,4 @@
+import {getKnownOperators} from "../analyzers/definitions/dictionary";
 
 export function convertDateHour(seconds) {
     return new Date(seconds * 1000).toTimeString().split(' ')[0] + ' ' + new Date(seconds * 1000).toLocaleDateString('pt-BR');
@@ -57,6 +58,9 @@ export function getLengthTokenInInstruction(token, instruction){
 // retorna quantidade de operadores na instrução
 export function validateLengthOperatorsInInstruction(instruction){
     // regex para encontrar os operadores na instrução + - * /
+    if(instruction.indexOf('+') === -1 && instruction.indexOf('-') === -1 && instruction.indexOf('*') === -1 && instruction.indexOf('/') === -1)
+        return 0;
+
     const regex = /([+\-*/])/g;
     return instruction.match(regex).length;
 }

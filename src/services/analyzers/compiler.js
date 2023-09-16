@@ -210,9 +210,9 @@ function paraToEnqunto(tokens, code){
         const part2 = code.substring(code.indexOf('para(') + 5, code.length);
         const part3 = part2.substring(code.indexOf('}') + 1, code.length);
 
-        if(newCode === '')
+        if(newCode === '') {
             newCode += part1 + tokens[i] + ';' + tokens[i + 1];
-        else
+        }else
             newCode += tokens[i] + ';' + tokens[i + 1] + part3;
     }
 
@@ -220,7 +220,7 @@ function paraToEnqunto(tokens, code){
         newCode += '#FIM_PROGRAMA;';
     }
 
-    return newCode;
+    return newCode.replaceAll('\n', '');
 }
 
 /*
