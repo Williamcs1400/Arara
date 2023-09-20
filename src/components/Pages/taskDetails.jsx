@@ -16,6 +16,9 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
+import Tooltip from "@mui/material/Tooltip";
+import copy from "../../assets/copy.png";
+import {Button} from "@mui/material";
 
 function TaskDetails(props) {
     const [height, setHeight] = React.useState(null);
@@ -26,7 +29,9 @@ function TaskDetails(props) {
     const [qtdCorrect, setQtdCorrect] = useState(0);
     const [qtdPeople, setQtdPeople] = useState(0);
     const [io, setIO] = useState([]);
-    const [teste, setTeste] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [textCopy, setTextCopy] = React.useState('Clique para copiar');
+
     const navigate = useNavigate();
     const location = useLocation();
     const {id} = useParams();
@@ -35,6 +40,27 @@ function TaskDetails(props) {
         setHeight(window.innerHeight);
         setWidth(window.innerWidth);
     }, []);
+
+    function getLink() {
+        if (location.state) {
+            return window.location.host + '/Arara/#/atividade/' + id;
+        }
+        return '/';
+    }
+
+    async function setDefaultText() {
+        await sleep(500);
+        setTextCopy('Clique para copiar');
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function copyToClipboard() {
+        navigator.clipboard.writeText(getLink());
+        setTextCopy('Link copiado!');
+    }
 
     async function findTask() {
         if (location.state.task !== undefined) {
@@ -105,7 +131,7 @@ function TaskDetails(props) {
             setQtdAttempts(querySnapshot.docs.length);
             setQtdPeople(listOfIds.length);
             setQtdCorrect(correctAux);
-            setTeste(arrayStudents);
+            setStudents(arrayStudents);
 
             Swal.close();
         }
@@ -136,7 +162,7 @@ function TaskDetails(props) {
     // informações da tarefa
     const InfoRow = (text1, text2) => {
         return (
-            <div style={{display: 'flex', marginBottom: 25}}>
+            <div style={{display: 'flex', marginBottom: 12}}>
                 <Typography variant='title' sx={{
                     fontWeight: 'bold',
                     fontFamily: 'Poppins',
@@ -275,7 +301,7 @@ function TaskDetails(props) {
                     marginTop: 20,
                     width: '100%'
                 }}>
-                    <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff', marginBottom: 50}}>
+                    <Accordion style={{width: '50%', backgroundColor: '#17202A', color: '#fff'}}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
                                           aria-controls="panel1a-content"
                                           id="panel1a-header"
@@ -291,7 +317,7 @@ function TaskDetails(props) {
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails style={{textAlign: 'center'}}>
-                            {teste.map((student) => (
+                            {students.map((student) => (
                                 <Accordion
                                     style={{width: '100%', backgroundColor: '#243649', color: '#fff', marginBottom: 5}}>
                                     <AccordionSummary expandIcon={<ExpandMoreIcon style={{color: '#fff'}}/>}
@@ -345,6 +371,51 @@ function TaskDetails(props) {
                             ))}
                         </AccordionDetails>
                     </Accordion>
+                </div>
+
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 20,
+                    marginBottom: 50,
+                    width: '100%'
+                }}>
+                    <Tooltip
+                        title={
+                            <Typography
+                                sx={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16,
+                                    textAlign: 'center'
+                                }}>
+                                {textCopy}
+                            </Typography>
+                        }
+                        onMouseOut={setDefaultText}
+                    >
+                        <Button
+                            variant="contained"
+                            style={{
+                                backgroundColor: '#17202a',
+                                color: '#fff',
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: 'thin',
+                                width: 300,
+                                height: 50,
+                                borderRadius: 5,
+                                textTransform: 'none',
+                                alignSelf: 'center'
+                            }}
+                            onClick={copyToClipboard}
+
+                        >
+                            Copiar link da tarefa
+                        </Button>
+                    </Tooltip>
                 </div>
             </div>
         </React.Fragment>
