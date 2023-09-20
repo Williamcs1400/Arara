@@ -21,7 +21,7 @@ export default function getHeaderStyleByPath(path){
         return {showIcon: true, showButtonLogin: true, redirectUrl: '/detalhes', barColor: '#17202A', showBar: true};
     }
     else if (path.startsWith('/atividade')) {
-        return {showIcon: true, showButtonLogin: true, redirectUrl: path, barColor: '#2F2F2F', showBar: true};
+        return {showIcon: true, showButtonLogin: true, redirectUrl: path, barColor: '#2F2F2F', showBar: false};
     }
     else if (path === '/quemSomos') {
         return {showIcon: true, showButtonLogin: true, redirectUrl: '/quemSomos', barColor: '#17202A', showBar: true};
