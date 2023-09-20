@@ -310,9 +310,10 @@ export default function InOut({height, width, closeTerminal, executableCode, err
             if (!exists) {
                 valueVariables.push({name: lastVariable, value: lastInput});
             }
+            setLastInput('');
             executeCode();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [lastInput]);
 
     useEffect(() => {
