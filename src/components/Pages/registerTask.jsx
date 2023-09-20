@@ -510,7 +510,7 @@ function RegisterTask() {
 
                         {editSecond ? <TextField
                                 id='outputExampleTaskArara'
-                                label='Exemplo de saída (ex: 10 5 -> 15)'
+                                label='Exemplo de entradas e saídas (ex: 10 5 -> 15)'
                                 variant='outlined'
                                 multiline
                                 sx={styleWhite}

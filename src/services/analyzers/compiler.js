@@ -101,8 +101,6 @@ export function compiler(code, isScope) {
         if(arrayTemp.length > 0)
             preProcessingResult.preProcessingCode = paraToEnqunto(arrayTemp, preProcessingResult.preProcessingCode);
 
-        console.log('preProcessingResult.preProcessingCode: ' + preProcessingResult.preProcessingCode)
-
         // syntactic analyze
         let order = 0;
         const previousTokens= preProcessingResult;
