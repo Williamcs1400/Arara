@@ -63,9 +63,9 @@ function TaskDetails(props) {
     }
 
     async function findTask() {
-        if (location.state.task !== undefined) {
-            setTask(location.state.task);
-        }
+        // if (location.state.task !== undefined) {
+        //     setTask(location.state.task);
+        // }
         if (id !== undefined) {
             Swal.fire({
                 title: 'Carregando detalhes da tarefa...',
@@ -79,6 +79,7 @@ function TaskDetails(props) {
             // salvando ids dos alunos que fizeram a tarefa
             const listOfIds = [];
             let correctAux = 0;
+            console.log(JSON.stringify(querySnapshot.docs))
             querySnapshot.forEach((doc) => {
                 if (!listOfIds.includes(doc.data().uid)) {
                     listOfIds.push(doc.data().uid);
@@ -101,23 +102,26 @@ function TaskDetails(props) {
             }
 
             // carregando dados dos alunos que fizeram a tarefa
-            const q2 = query(collection(db, 'users'), where('uid', 'in', listOfIds));
-            const querySnapshot2 = await getDocs(q2);
-            const arrayStudents = [];
-            let myAttempts = [];
-            querySnapshot2.forEach(async (doc) => {
-                const subQ = query(collection(db, 'users', doc.id, 'myAttempts'), where('taskCode', '==', id));
-                const subQuerySnapshot = await getDocs(subQ);
+            let arrayStudents = [];
+            while (listOfIds.length) {
+                const aux = listOfIds.splice(0, 10);
+                const q2 = query(collection(db, 'users'), where('uid', 'in', aux));
+                const querySnapshot2 = await getDocs(q2);
+                let myAttempts = [];
+                querySnapshot2.forEach(async (doc) => {
+                    const subQ = query(collection(db, 'users', doc.id, 'myAttempts'), where('taskCode', '==', id));
+                    const subQuerySnapshot = await getDocs(subQ);
 
-                subQuerySnapshot.forEach((subDoc) => {
-                    myAttempts.push(subDoc.data());
+                    subQuerySnapshot.forEach((subDoc) => {
+                        myAttempts.push(subDoc.data());
+                    });
+
+                    let aux = doc.data();
+                    aux.detail = myAttempts;
+                    arrayStudents.push(aux);
+                    myAttempts = [];
                 });
-
-                let aux = doc.data();
-                aux.detail = myAttempts;
-                arrayStudents.push(aux);
-                myAttempts = [];
-            });
+            }
 
             // carregando testes da tarefa
             const q3 = query(collection(db, 'tasks', id, 'tests'));
